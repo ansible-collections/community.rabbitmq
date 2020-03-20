@@ -54,7 +54,7 @@ options:
       required: false
       default: {}
 extends_documentation_fragment:
-- community.general.rabbitmq
+- community.rabbitmq
 
 '''
 

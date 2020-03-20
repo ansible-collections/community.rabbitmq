@@ -72,7 +72,7 @@ options:
             - extra arguments for queue. If defined this argument is a key/value dictionary
         default: {}
 extends_documentation_fragment:
-- community.general.rabbitmq
+- community.rabbitmq
 
 '''
 
