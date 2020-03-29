@@ -155,7 +155,7 @@
 
 - name: Collect all messages off the publish queue
   set_fact:
-    messages: "{{ lookup('rabbitmq', url='amqp://guest:guest@localhost:5672/%2F', queue='publish_test') }}"
+    messages: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2F', queue='publish_test') }}"
 
 - name: Check contents of published messages
   assert:

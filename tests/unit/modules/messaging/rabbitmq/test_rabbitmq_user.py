@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from ansible_collections.community.general.plugins.modules.messaging.rabbitmq import rabbitmq_user
-from ansible_collections.community.general.tests.unit.compat.mock import patch
-from ansible_collections.community.general.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
+from ansible_collections.community.rabbitmq.plugins.modules import rabbitmq_user
+from ansible_collections.community.rabbitmq.tests.unit.compat.mock import patch
+from ansible_collections.community.rabbitmq.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
 
 
 class TestRabbitMQUserModule(ModuleTestCase):
@@ -40,10 +40,10 @@ class TestRabbitMQUserModule(ModuleTestCase):
                              "Error parsing permissions: You can't have two permission dicts for the same vhost")
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.get')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.check_password')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.has_tags_modifications')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.has_permissions_modifications')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.get')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.check_password')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_permissions_modifications')
     def test_password_changes_only_when_needed(self, has_permissions_modifications, has_tags_modifications,
                                                check_password, get, get_bin_path):
         set_module_args({
@@ -64,9 +64,9 @@ class TestRabbitMQUserModule(ModuleTestCase):
             self._assert(e, 'state', 'present')
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._exec')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._get_permissions')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.has_tags_modifications')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_same_permissions_not_changing(self, has_tags_modifications, _get_permissions, _exec, get_bin_path):
         set_module_args({
             'user': 'someuser',
@@ -85,10 +85,10 @@ class TestRabbitMQUserModule(ModuleTestCase):
             self._assert(e, 'state', 'present')
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._exec')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._get_permissions')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.set_permissions')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.has_tags_modifications')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.set_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_permissions_are_fixed(self, has_tags_modifications, set_permissions, _get_permissions, _exec, get_bin_path):
         set_module_args({
             'user': 'someuser',
@@ -109,10 +109,10 @@ class TestRabbitMQUserModule(ModuleTestCase):
             assert set_permissions.call_count == 1
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._exec')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser._get_permissions')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.set_permissions')
-    @patch('ansible_collections.community.general.plugins.modules.messaging.rabbitmq.rabbitmq_user.RabbitMqUser.has_tags_modifications')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.set_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_permissions_are_fixed_with_different_host(self, has_tags_modifications, set_permissions, _get_permissions,
                                                        _exec, get_bin_path):
         set_module_args({
