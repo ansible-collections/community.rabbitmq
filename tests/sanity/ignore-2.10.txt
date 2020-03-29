@@ -24,3 +24,7 @@ plugins/doc_fragments/rabbitmq.py metaclass-boilerplate
 tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py future-import-boilerplate
 tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py metaclass-boilerplate
 tests/utils/shippable/timing.py shebang
+tests/unit/mock/path.py future-import-boilerplate
+tests/unit/mock/path.py metaclass-boilerplate
+tests/unit/mock/yaml_helper.py future-import-boilerplate
+tests/unit/mock/yaml_helper.py metaclass-boilerplate
