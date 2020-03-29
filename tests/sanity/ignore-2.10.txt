@@ -1,3 +1,5 @@
+plugins/doc_fragments/rabbitmq.py future-import-boilerplate
+plugins/doc_fragments/rabbitmq.py metaclass-boilerplate
 plugins/modules/messaging/rabbitmq/rabbitmq_binding.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/messaging/rabbitmq/rabbitmq_binding.py validate-modules:parameter-type-not-in-doc
 plugins/modules/messaging/rabbitmq/rabbitmq_exchange.py validate-modules:doc-choices-do-not-match-spec
@@ -16,15 +18,13 @@ plugins/modules/messaging/rabbitmq/rabbitmq_queue.py validate-modules:parameter-
 plugins/modules/messaging/rabbitmq/rabbitmq_user.py validate-modules:doc-missing-type
 plugins/modules/messaging/rabbitmq/rabbitmq_user.py validate-modules:parameter-list-no-elements
 plugins/modules/messaging/rabbitmq/rabbitmq_user.py validate-modules:parameter-type-not-in-doc
-plugins/modules/messaging/rabbitmq/rabbitmq_vhost.py validate-modules:doc-missing-type
 plugins/modules/messaging/rabbitmq/rabbitmq_vhost_limits.py validate-modules:parameter-type-not-in-doc
+plugins/modules/messaging/rabbitmq/rabbitmq_vhost.py validate-modules:doc-missing-type
 plugins/modules/notification/rabbitmq_publish.py validate-modules:parameter-type-not-in-doc
-plugins/doc_fragments/rabbitmq.py future-import-boilerplate
-plugins/doc_fragments/rabbitmq.py metaclass-boilerplate
-tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py future-import-boilerplate
-tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py metaclass-boilerplate
-tests/utils/shippable/timing.py shebang
 tests/unit/mock/path.py future-import-boilerplate
 tests/unit/mock/path.py metaclass-boilerplate
 tests/unit/mock/yaml_helper.py future-import-boilerplate
 tests/unit/mock/yaml_helper.py metaclass-boilerplate
+tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py future-import-boilerplate
+tests/unit/modules/messaging/rabbitmq/test_rabbitmq_user.py metaclass-boilerplate
+tests/utils/shippable/timing.py shebang
