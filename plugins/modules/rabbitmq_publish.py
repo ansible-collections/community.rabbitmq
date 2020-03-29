@@ -167,7 +167,7 @@ except ImportError:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native, to_text
-from ansible_collections.comunity.rabbitmql.plugins.module_utils.rabbitmq import RabbitClient
+from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import RabbitClient
 
 
 def main():

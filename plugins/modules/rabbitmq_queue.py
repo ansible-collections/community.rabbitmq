@@ -72,7 +72,7 @@ options:
             - extra arguments for queue. If defined this argument is a key/value dictionary
         default: {}
 extends_documentation_fragment:
-- community.rabbitmq
+- community.rabbitmq.rabbitmq
 
 '''
 
@@ -102,7 +102,7 @@ except ImportError:
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
-from ansible_collections.comunity.rabbitmql.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
+from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 
 
 def main():

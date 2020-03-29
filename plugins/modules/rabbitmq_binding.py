@@ -54,7 +54,7 @@ options:
       required: false
       default: {}
 extends_documentation_fragment:
-- community.rabbitmq
+- community.rabbitmq.rabbitmq
 
 '''
 
@@ -87,7 +87,7 @@ except ImportError:
 
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.comunity.rabbitmql.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
+from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 
 
 class RabbitMqBinding(object):
