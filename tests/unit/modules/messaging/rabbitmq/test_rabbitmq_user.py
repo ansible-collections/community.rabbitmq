@@ -2,7 +2,7 @@
 
 from ansible_collections.community.rabbitmq.plugins.modules import rabbitmq_user
 from ansible_collections.community.rabbitmq.tests.unit.compat.mock import patch
-from ansible_collections.community.general.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
+from ansible_collections.community.rabbitmq.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
 
 
 class TestRabbitMQUserModule(ModuleTestCase):
