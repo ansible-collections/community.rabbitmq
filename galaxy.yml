@@ -1,0 +1,16 @@
+namespace: community
+name: rabbitmq
+version: 0.1.0
+readme: README.rst
+authors:
+  - Ansible (https://github.com/ansible)
+description: null
+license: GPL-3.0-or-later
+license_file: LICENSE
+tags:
+  - cloud
+  - messaging
+dependencies: {}
+repository: https://github.com/ansible-collections/rabbitmq.git
+homepage: https://github.com/ansible-collections/rabbitmq
+issues: https://github.com/ansible-collections/rabbitmq/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
