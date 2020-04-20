@@ -11,7 +11,7 @@ license_file: LICENSE
 tags:
   - messaging
 dependencies: {}
-repository: https://github.com/ansible-collections/rabbitmq
-documentation: https://github.com/ansible-collections/rabbitmq/README.md
-homepage: https://github.com/ansible-collections/rabbitmq
-issues: https://github.com/ansible-collections/rabbitmq/issues
+repository: https://github.com/ansible-collections/community.rabbitmq
+documentation: https://github.com/ansible-collections/community.rabbitmq/README.md
+homepage: https://github.com/ansible-collections/community.rabbitmq
+issues: https://github.com/ansible-collections/community.rabbitmq/issues
