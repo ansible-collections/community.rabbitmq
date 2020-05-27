@@ -6,11 +6,9 @@ authors:
   - Ansible (https://github.com/ansible)
   - community.rabbitmq (https://github.com/ansible-collections/rabbitmq/graphs/contributors)
 description: null
-license: GPL-3.0-or-later
-license_file: LICENSE
+license_file: COPYING
 tags:
   - messaging
-dependencies: {}
 repository: https://github.com/ansible-collections/community.rabbitmq
 documentation: https://github.com/ansible-collections/community.rabbitmq/README.md
 homepage: https://github.com/ansible-collections/community.rabbitmq
