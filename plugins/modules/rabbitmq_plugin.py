@@ -27,6 +27,7 @@ options:
   names:
     description:
       - Comma-separated list of plugin names. Also, accepts plugin name.
+    type: str
     required: true
     aliases: [name]
   new_only:
@@ -38,16 +39,19 @@ options:
   state:
     description:
       - Specify if plugins are to be enabled or disabled.
+    type: str
     default: enabled
     choices: [enabled, disabled]
   broker_state:
     description:
       - Specify whether the broker should be online or offline for the plugin change.
+    type: str
     default: online
     choices: [online, offline]
   prefix:
     description:
       - Specify a custom install prefix to a Rabbit.
+    type: str
 '''
 
 EXAMPLES = '''
