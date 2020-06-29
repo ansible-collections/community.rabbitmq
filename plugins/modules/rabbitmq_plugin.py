@@ -40,6 +40,11 @@ options:
       - Specify if plugins are to be enabled or disabled.
     default: enabled
     choices: [enabled, disabled]
+  broker_state:
+    description:
+      - Specify whether the broker should be online or offline for the plugin change.
+    default: online
+    choices: [online, offline]
   prefix:
     description:
       - Specify a custom install prefix to a Rabbit.
@@ -66,6 +71,12 @@ EXAMPLES = '''
     names: rabbitmq_management,rabbitmq_management_visualiser,rabbitmq_shovel,rabbitmq_shovel_management
     state: enabled
     new_only: 'yes'
+
+- name: Enables the rabbitmq_peer_discovery_aws plugin without requiring a broker connection.
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+    broker_state: offline
 '''
 
 RETURN = '''
@@ -121,10 +132,10 @@ class RabbitMqPlugins(object):
         return plugins
 
     def enable(self, name):
-        self._exec(['enable', name])
+        self._exec(['enable', "--%s" % self.module.params['broker_state'], name])
 
     def disable(self, name):
-        self._exec(['disable', name])
+        self._exec(['disable', "--%s" % self.module.params['broker_state'], name])
 
 
 def main():
@@ -132,6 +143,7 @@ def main():
         names=dict(required=True, aliases=['name']),
         new_only=dict(default='no', type='bool'),
         state=dict(default='enabled', choices=['enabled', 'disabled']),
+        broker_state=dict(default='online', choices=['online', 'offline']),
         prefix=dict(required=False, default=None)
     )
     module = AnsibleModule(
