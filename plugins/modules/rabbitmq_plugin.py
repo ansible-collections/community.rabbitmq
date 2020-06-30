@@ -78,7 +78,7 @@ EXAMPLES = '''
 
 - name: Enables the rabbitmq_peer_discovery_aws plugin without requiring a broker connection.
   rabbitmq_plugin:
-    names: rabbitmq_management
+    names: rabbitmq_peer_discovery_aws_plugin
     state: enabled
     broker_state: offline
 '''
