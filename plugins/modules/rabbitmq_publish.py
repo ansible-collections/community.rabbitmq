@@ -24,81 +24,97 @@ options:
     description:
       - An URL connection string to connect to the RabbitMQ server.
       - I(url) and I(host)/I(port)/I(user)/I(pass)/I(vhost) are mutually exclusive, use either or but not both.
+    type: str
   proto:
     description:
       - The protocol to use.
+    type: str
     choices: [amqps, amqp]
   host:
     description:
       - The RabbitMQ server hostname or IP.
+    type: str
   port:
     description:
       - The RabbitMQ server port.
+    type: int
   username:
     description:
       - The RabbitMQ username.
+    type: str
   password:
     description:
       - The RabbitMQ password.
+    type: str
   vhost:
     description:
       - The virtual host to target.
       - If default vhost is required, use C('%2F').
+    type: str
   queue:
     description:
       - The queue to publish a message to.  If no queue is specified, RabbitMQ will return a random queue name.
+    type: str
   exchange:
     description:
       - The exchange to publish a message to.
+    type: str
   routing_key:
     description:
       - The routing key.
+    type: str
   body:
     description:
       - The body of the message.
       - A C(body) cannot be provided if a C(src) is specified.
+    type: str
   src:
     description:
       - A file to upload to the queue.  Automatic mime type detection is attempted if content_type is not defined (left as default).
       - A C(src) cannot be provided if a C(body) is specified.
       - The filename is added to the headers of the posted message to RabbitMQ. Key being the C(filename), value is the filename.
+    type: path
     aliases: ['file']
   content_type:
     description:
       - The content type of the body.
+    type: str
     default: text/plain
   durable:
     description:
       - Set the queue to be durable.
-    default: False
     type: bool
+    default: False
   exclusive:
     description:
       - Set the queue to be exclusive.
-    default: False
     type: bool
+    default: False
   auto_delete:
     description:
       - Set the queue to auto delete.
-    default: False
     type: bool
+    default: False
   headers:
     description:
       - A dictionary of headers to post with the message.
-    default: {}
     type: dict
+    default: {}
   cafile:
     description:
       - CA file used during connection to the RabbitMQ server over SSL.
       - If this option is specified, also I(certfile) and I(keyfile) must be specified.
+    type: str
   certfile:
     description:
       - Client certificate to establish SSL connection.
       - If this option is specified, also I(cafile) and I(keyfile) must be specified.
+    type: str
   keyfile:
     description:
       - Client key to establish SSL connection.
       - If this option is specified, also I(cafile) and I(certfile) must be specified.
+    type: str
 
 
 

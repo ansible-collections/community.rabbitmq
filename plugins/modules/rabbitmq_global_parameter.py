@@ -25,21 +25,25 @@ options:
   name:
     description:
       - Name of the global parameter being set
+    type: str
     required: true
     default: null
   value:
     description:
       - Value of the global parameter, as a JSON term
+    type: str
     required: false
     default: null
   node:
     description:
       - erlang node name of the rabbit we wish to configure
+    type: str
     required: false
     default: rabbit
   state:
     description:
       - Specify if user is to be added or removed
+    type: str
     required: false
     default: present
     choices: [ 'present', 'absent']

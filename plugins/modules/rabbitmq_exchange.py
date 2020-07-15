@@ -26,22 +26,25 @@ options:
     name:
         description:
             - Name of the exchange to create
+        type: str
         required: true
     state:
         description:
             - Whether the exchange should be present or absent
+        type: str
         choices: [ "present", "absent" ]
         required: false
         default: present
     durable:
         description:
             - whether exchange is durable or not
-        required: false
         type: bool
+        required: false
         default: yes
     exchange_type:
         description:
             - type for the exchange
+        type: str
         required: false
         choices: [ "fanout", "direct", "headers", "topic" ]
         aliases: [ "type" ]
@@ -49,22 +52,23 @@ options:
     auto_delete:
         description:
             - if the exchange should delete itself after all queues/exchanges unbound from it
-        required: false
         type: bool
+        required: false
         default: no
     internal:
         description:
             - exchange is available only for other exchanges
-        required: false
         type: bool
+        required: false
         default: no
     arguments:
         description:
             - extra arguments for exchange. If defined this argument is a key/value dictionary
+        type: dict
         required: false
         default: {}
 extends_documentation_fragment:
-- community.rabbitmq.rabbitmq
+  - community.rabbitmq.rabbitmq
 
 '''
 
@@ -106,7 +110,9 @@ def main():
             durable=dict(default=True, type='bool'),
             auto_delete=dict(default=False, type='bool'),
             internal=dict(default=False, type='bool'),
-            exchange_type=dict(default='direct', aliases=['type'], type='str'),
+            exchange_type=dict(default='direct', aliases=['type'],
+                               choices=['fanout', 'direct', 'headers', 'topic'],
+                               type='str'),
             arguments=dict(default=dict(), type='dict')
         )
     )

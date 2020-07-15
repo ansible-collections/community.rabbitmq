@@ -26,10 +26,12 @@ options:
     name:
         description:
             - Name of the queue
+        type: str
         required: true
     state:
         description:
             - Whether the queue should be present or absent
+        type: str
         choices: [ "present", "absent" ]
         default: present
     durable:
@@ -45,31 +47,35 @@ options:
     message_ttl:
         description:
             - How long a message can live in queue before it is discarded (milliseconds)
-        default: forever
+        type: int
     auto_expires:
         description:
             - How long a queue can be unused before it is automatically deleted (milliseconds)
-        default: forever
+        type: int
     max_length:
         description:
             - How many messages can the queue contain before it starts rejecting
-        default: no limit
+        type: int
     dead_letter_exchange:
         description:
             - Optional name of an exchange to which messages will be republished if they
             - are rejected or expire
+        type: str
     dead_letter_routing_key:
         description:
             - Optional replacement routing key to use when a message is dead-lettered.
             - Original routing key will be used if unset
+        type: str
     max_priority:
         description:
             - Maximum number of priority levels for the queue to support.
             - If not set, the queue will not support message priorities.
             - Larger numbers indicate higher priority.
+        type: int
     arguments:
         description:
             - extra arguments for queue. If defined this argument is a key/value dictionary
+        type: dict
         default: {}
 extends_documentation_fragment:
 - community.rabbitmq.rabbitmq

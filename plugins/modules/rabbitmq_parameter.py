@@ -24,25 +24,31 @@ options:
   component:
     description:
       - Name of the component of which the parameter is being set
+    type: str
     required: true
   name:
     description:
       - Name of the parameter being set
+    type: str
     required: true
   value:
     description:
       - Value of the parameter, as a JSON term
+    type: str
   vhost:
     description:
       - vhost to apply access privileges.
+    type: str
     default: /
   node:
     description:
       - erlang node name of the rabbit we wish to configure
+    type: str
     default: rabbit
   state:
     description:
       - Specify if user is to be added or removed
+    type: str
     default: present
     choices: [ 'present', 'absent']
 '''
