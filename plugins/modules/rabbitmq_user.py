@@ -24,6 +24,7 @@ options:
   user:
     description:
       - Name of user to add
+    type: str
     required: true
     aliases: [username, name]
   password:
@@ -31,9 +32,11 @@ options:
       - Password of user to add.
       - To change the password of an existing user, you must also specify
         C(update_password=always).
+    type: str
   tags:
     description:
       - User tags specified as comma delimited
+    type: str
   permissions:
     description:
       - a list of dicts, each dict contains vhost, configure_priv, write_priv, and read_priv,
@@ -41,15 +44,19 @@ options:
       - This option should be preferable when you care about all permissions of the user.
       - You should use vhost, configure_priv, write_priv, and read_priv options instead
         if you care about permissions for just some vhosts.
+    type: list
+    elements: dict
     default: []
   vhost:
     description:
       - vhost to apply access privileges.
       - This option will be ignored when permissions option is used.
+    type: str
     default: /
   node:
     description:
       - erlang node name of the rabbit we wish to configure
+    type: str
     default: rabbit
   configure_priv:
     description:
@@ -57,21 +64,24 @@ options:
         for the specified vhost.
       - By default all actions are restricted.
       - This option will be ignored when permissions option is used.
-    default: ^$
+    type: str
+    default: '^$'
   write_priv:
     description:
       - Regular expression to restrict configure actions on a resource
         for the specified vhost.
       - By default all actions are restricted.
       - This option will be ignored when permissions option is used.
-    default: ^$
+    type: str
+    default: '^$'
   read_priv:
     description:
       - Regular expression to restrict configure actions on a resource
         for the specified vhost.
       - By default all actions are restricted.
       - This option will be ignored when permissions option is used.
-    default: ^$
+    type: str
+    default: '^$'
   force:
     description:
       - Deletes and recreates the user.
@@ -80,14 +90,16 @@ options:
   state:
     description:
       - Specify if user is to be added or removed
+    type: str
     default: present
-    choices: [present, absent]
+    choices: ['present', 'absent']
   update_password:
     description:
       - C(on_create) will only set the password for newly created users.  C(always) will update passwords if they differ.
+    type: str
     required: false
     default: on_create
-    choices: [ on_create, always ]
+    choices: ['on_create', 'always']
 '''
 
 EXAMPLES = '''
@@ -239,7 +251,7 @@ def main():
         user=dict(required=True, aliases=['username', 'name']),
         password=dict(default=None, no_log=True),
         tags=dict(default=None),
-        permissions=dict(default=list(), type='list'),
+        permissions=dict(default=list(), type='list', elements='dict'),
         vhost=dict(default='/'),
         configure_priv=dict(default='^$'),
         write_priv=dict(default='^$'),

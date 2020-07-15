@@ -24,39 +24,47 @@ options:
   name:
     description:
       - The name of the policy to manage.
+    type: str
     required: true
   vhost:
     description:
       - The name of the vhost to apply to.
+    type: str
     default: /
   apply_to:
     description:
       - What the policy applies to. Requires RabbitMQ 3.2.0 or later.
+    type: str
     default: all
     choices: [all, exchanges, queues]
   pattern:
     description:
       - A regex of queues to apply the policy to. Required when
         C(state=present). This option is no longer required as of Ansible 2.9.
+    type: str
     required: false
     default: null
   tags:
     description:
       - A dict or string describing the policy. Required when
         C(state=present). This option is no longer required as of Ansible 2.9.
+    type: dict
     required: false
     default: null
   priority:
     description:
       - The priority of the policy.
-    default: 0
+    type: str
+    default: '0'
   node:
     description:
       - Erlang node name of the rabbit we wish to configure.
+    type: str
     default: rabbit
   state:
     description:
       - The state of the policy.
+    type: str
     default: present
     choices: [present, absent]
 '''

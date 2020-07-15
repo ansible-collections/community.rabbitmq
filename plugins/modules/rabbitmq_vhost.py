@@ -24,11 +24,13 @@ options:
   name:
     description:
       - The name of the vhost to manage
+    type: str
     required: true
     aliases: [vhost]
   node:
     description:
       - erlang node name of the rabbit we wish to configure
+    type: str
     default: rabbit
   tracing:
     description:
@@ -39,6 +41,7 @@ options:
   state:
     description:
       - The state of vhost
+    type: str
     default: present
     choices: [present, absent]
 '''

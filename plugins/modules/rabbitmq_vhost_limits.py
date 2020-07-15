@@ -28,25 +28,30 @@ options:
             - Max number of concurrent client connections.
             - Negative value means "no limit".
             - Ignored when the I(state) is C(absent).
+        type: int
         default: -1
     max_queues:
         description:
             - Max number of queues.
             - Negative value means "no limit".
             - Ignored when the I(state) is C(absent).
+        type: int
         default: -1
     node:
         description:
             - Name of the RabbitMQ Erlang node to manage.
+        type: str
     state:
         description:
             - Specify whether the limits are to be set or cleared.
             - If set to C(absent), the limits of both I(max_connections) and I(max-queues) will be cleared.
+        type: str
         default: present
         choices: [present, absent]
     vhost:
         description:
             - Name of the virtual host to manage.
+        type: str
         default: /
 '''
 

@@ -25,36 +25,42 @@ requirements: [ "requests >= 1.0.0" ]
 options:
     state:
       description:
-      - Whether the bindings should be present or absent.
+        - Whether the bindings should be present or absent.
+      type: str
       choices: [ "present", "absent" ]
       default: present
     name:
       description:
-      - source exchange to create binding on.
+        - source exchange to create binding on.
+      type: str
       required: true
       aliases: [ "src", "source" ]
     destination:
       description:
-      - destination exchange or queue for the binding.
+        - destination exchange or queue for the binding.
+      type: str
       required: true
       aliases: [ "dst", "dest" ]
     destination_type:
       description:
-      - Either queue or exchange.
+        - Either queue or exchange.
+      type: str
       required: true
       choices: [ "queue", "exchange" ]
       aliases: [ "type", "dest_type" ]
     routing_key:
       description:
-      - routing key for the binding.
+        - routing key for the binding.
+      type: str
       default: "#"
     arguments:
       description:
-      - extra arguments for exchange. If defined this argument is a key/value dictionary
+        - extra arguments for exchange. If defined this argument is a key/value dictionary
+      type: dict
       required: false
       default: {}
 extends_documentation_fragment:
-- community.rabbitmq.rabbitmq
+  - community.rabbitmq.rabbitmq
 
 '''
 
