@@ -259,7 +259,7 @@ def main():
         force=dict(default='no', type='bool'),
         state=dict(default='present', choices=['present', 'absent']),
         node=dict(default='rabbit'),
-        update_password=dict(default='on_create', choices=['on_create', 'always'])
+        update_password=dict(default='on_create', choices=['on_create', 'always'], no_log=False)
     )
     module = AnsibleModule(
         argument_spec=arg_spec,
