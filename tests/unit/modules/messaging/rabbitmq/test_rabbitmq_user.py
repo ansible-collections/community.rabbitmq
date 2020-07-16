@@ -17,9 +17,10 @@ else:
 from ansible_collections.community.rabbitmq.tests.unit.compat.mock import patch
 from ansible_collections.community.rabbitmq.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
 
-from ansible_collections.community.rabbitmq.tests.unit.modules.messaging.rabbitmq.rabbitmq_user_fixtures import (rabbitmq_3_6_status,
-                                                                     rabbitmq_3_7_status,
-                                                                     rabbitmq_3_8_status)
+from ansible_collections.community.rabbitmq.tests.unit.modules.messaging.rabbitmq.rabbitmq_user_fixtures import (
+    rabbitmq_3_6_status,
+    rabbitmq_3_7_status,
+    rabbitmq_3_8_status)
 
 
 def flatten(args):
