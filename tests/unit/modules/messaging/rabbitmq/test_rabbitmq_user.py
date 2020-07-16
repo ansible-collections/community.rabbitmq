@@ -24,7 +24,7 @@ from ansible_collections.community.rabbitmq.tests.unit.modules.messaging.rabbitm
 
 
 def flatten(args):
-    return [e for e in chain(*args)]
+    return list(chain(*args))
 
 
 def lists_equal(l1, l2):
