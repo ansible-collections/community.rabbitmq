@@ -1,0 +1,74 @@
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  httpapi: {}
+  inventory: {}
+  lookup:
+    rabbitmq:
+      description: Retrieve messages from an AMQP/AMQPS RabbitMQ queue.
+      name: rabbitmq
+      version_added: null
+  module:
+    rabbitmq_binding:
+      description: Manage rabbitMQ bindings
+      name: rabbitmq_binding
+      namespace: ''
+      version_added: null
+    rabbitmq_exchange:
+      description: Manage rabbitMQ exchanges
+      name: rabbitmq_exchange
+      namespace: ''
+      version_added: null
+    rabbitmq_global_parameter:
+      description: Manage RabbitMQ global parameters
+      name: rabbitmq_global_parameter
+      namespace: ''
+      version_added: null
+    rabbitmq_parameter:
+      description: Manage RabbitMQ parameters
+      name: rabbitmq_parameter
+      namespace: ''
+      version_added: null
+    rabbitmq_plugin:
+      description: Manage RabbitMQ plugins
+      name: rabbitmq_plugin
+      namespace: ''
+      version_added: null
+    rabbitmq_policy:
+      description: Manage the state of policies in RabbitMQ
+      name: rabbitmq_policy
+      namespace: ''
+      version_added: null
+    rabbitmq_publish:
+      description: Publish a message to a RabbitMQ queue.
+      name: rabbitmq_publish
+      namespace: ''
+      version_added: null
+    rabbitmq_queue:
+      description: Manage rabbitMQ queues
+      name: rabbitmq_queue
+      namespace: ''
+      version_added: null
+    rabbitmq_user:
+      description: Manage RabbitMQ users
+      name: rabbitmq_user
+      namespace: ''
+      version_added: null
+    rabbitmq_vhost:
+      description: Manage the state of a virtual host in RabbitMQ
+      name: rabbitmq_vhost
+      namespace: ''
+      version_added: null
+    rabbitmq_vhost_limits:
+      description: Manage the state of virtual host limits in RabbitMQ
+      name: rabbitmq_vhost_limits
+      namespace: ''
+      version_added: null
+  netconf: {}
+  shell: {}
+  strategy: {}
+  vars: {}
+version: 0.1.0
