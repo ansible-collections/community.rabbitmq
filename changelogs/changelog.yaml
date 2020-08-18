@@ -1,0 +1,21 @@
+ancestor: null
+releases:
+  1.0.0:
+    changes:
+      bugfixes:
+      - Refactor RabbitMQ user module to first check the version of the daemon and
+        then, when possible add flags to `rabbitmqctl` so that a machine readable  output
+        is returned. Also, depending on the version, parse the output in correctly.
+        Expands tests accordingly. (https://github.com/ansible/ansible/issues/48890)
+      - rabbitmq lookup plugin - Fix for rabbitmq lookups failing when using pika
+        v1.0.0 and newer.
+      - rabbitmq_publish - Fix to ensure the module works correctly for pika v1.0.0
+        and later. (https://github.com/ansible/ansible/pull/61960)
+      minor_changes:
+      - rabbitmq_publish - Support for connecting with SSL certificates.
+    fragments:
+    - 55919-rabbitmq_publish-fix-for-recent-pika-versions.yml
+    - 66876-parse_post_rabbitmq_3.7_output_as_json.yaml
+    - lookup_rabbitmq-is_closing-bug.yml
+    - rabbitmq_publish-certificate-checks.yml
+    release_date: '2020-08-18'
