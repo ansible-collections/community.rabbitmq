@@ -126,7 +126,7 @@ author: "John Imison (@Im0)"
 
 EXAMPLES = '''
 - name: Publish a message to a queue with headers
-  rabbitmq_publish:
+  community.rabbitmq.rabbitmq_publish:
     url: "amqp://guest:guest@192.168.0.32:5672/%2F"
     queue: 'test'
     body: "Hello world from ansible module rabbitmq_publish"
@@ -136,19 +136,19 @@ EXAMPLES = '''
 
 
 - name: Publish a file to a queue
-  rabbitmq_publish:
+  community.rabbitmq.rabbitmq_publish:
     url: "amqp://guest:guest@192.168.0.32:5672/%2F"
     queue: 'images'
     file: 'path/to/logo.gif'
 
 - name: RabbitMQ auto generated queue
-  rabbitmq_publish:
+  community.rabbitmq.rabbitmq_publish:
     url: "amqp://guest:guest@192.168.0.32:5672/%2F"
     body: "Hello world random queue from ansible module rabbitmq_publish"
     content_type: "text/plain"
 
 - name: Publish with certs
-  rabbitmq_publish:
+  community.rabbitmq.rabbitmq_publish:
     url: "amqps://guest:guest@192.168.0.32:5671/%2F"
     body: "Hello test queue from ansible module rabbitmq_publish via SSL certs"
     queue: 'test'

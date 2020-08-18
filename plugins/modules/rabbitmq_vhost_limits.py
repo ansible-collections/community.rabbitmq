@@ -53,7 +53,7 @@ options:
 
 EXAMPLES = '''
 # Limit both of the max number of connections and queues on the vhost '/'.
-- rabbitmq_vhost_limits:
+- community.rabbitmq.rabbitmq_vhost_limits:
     vhost: /
     max_connections: 64
     max_queues: 256
@@ -61,13 +61,13 @@ EXAMPLES = '''
 
 # Limit the max number of connections on the vhost '/'.
 # This task implicitly clears the max number of queues limit using default value: -1.
-- rabbitmq_vhost_limits:
+- community.rabbitmq.rabbitmq_vhost_limits:
     vhost: /
     max_connections: 64
     state: present
 
 # Clear the limits on the vhost '/'.
-- rabbitmq_vhost_limits:
+- community.rabbitmq.rabbitmq_vhost_limits:
     vhost: /
     state: absent
 '''

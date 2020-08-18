@@ -79,11 +79,11 @@ extends_documentation_fragment:
 
 EXAMPLES = '''
 # Create a queue
-- rabbitmq_queue:
+- community.rabbitmq.rabbitmq_queue:
     name: myQueue
 
 # Create a queue on remote host
-- rabbitmq_queue:
+- community.rabbitmq.rabbitmq_queue:
     name: myRemoteQueue
     login_user: user
     login_password: secret

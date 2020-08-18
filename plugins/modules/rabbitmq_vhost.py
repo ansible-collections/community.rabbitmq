@@ -43,7 +43,7 @@ options:
 
 EXAMPLES = '''
 # Ensure that the vhost /test exists.
-- rabbitmq_vhost:
+- community.rabbitmq.rabbitmq_vhost:
     name: /test
     state: present
 '''

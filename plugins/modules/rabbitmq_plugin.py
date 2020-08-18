@@ -49,28 +49,28 @@ options:
 
 EXAMPLES = '''
 - name: Enables the rabbitmq_management plugin
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management
     state: enabled
 
 - name: Enable multiple rabbitmq plugins
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management,rabbitmq_management_visualiser
     state: enabled
 
 - name: Disable plugin
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management
     state: disabled
 
 - name: Enable every plugin in list with existing plugins
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management,rabbitmq_management_visualiser,rabbitmq_shovel,rabbitmq_shovel_management
     state: enabled
     new_only: 'yes'
 
 - name: Enables the rabbitmq_peer_discovery_aws plugin without requiring a broker connection.
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_peer_discovery_aws_plugin
     state: enabled
     broker_state: offline

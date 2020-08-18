@@ -100,7 +100,7 @@ options:
 EXAMPLES = '''
 # Add user to server and assign full access control on / vhost.
 # The user might have permission rules for other vhost but you don't care.
-- rabbitmq_user:
+- community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
     vhost: /
@@ -111,7 +111,7 @@ EXAMPLES = '''
 
 # Add user to server and assign full access control on / vhost.
 # The user doesn't have permission rules for other vhosts
-- rabbitmq_user:
+- community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
     permissions:

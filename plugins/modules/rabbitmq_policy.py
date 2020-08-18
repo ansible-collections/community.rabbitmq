@@ -66,7 +66,7 @@ options:
 
 EXAMPLES = '''
 - name: ensure the default vhost contains the HA policy via a dict
-  rabbitmq_policy:
+  community.rabbitmq.rabbitmq_policy:
     name: HA
     pattern: .*
   args:
@@ -74,7 +74,7 @@ EXAMPLES = '''
       ha-mode: all
 
 - name: ensure the default vhost contains the HA policy
-  rabbitmq_policy:
+  community.rabbitmq.rabbitmq_policy:
     name: HA
     pattern: .*
     tags:

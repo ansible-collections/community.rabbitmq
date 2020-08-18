@@ -41,7 +41,7 @@ DOCUMENTATION = '''
 EXAMPLES = """
 - name: Get all messages off a queue
   debug:
-    msg: "{{ lookup('rabbitmq', url='amqp://guest:guest@192.168.0.10:5672/%2F', queue='hello') }}"
+    msg: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@192.168.0.10:5672/%2F', queue='hello') }}"
 
 
 # If you are intending on using the returned messages as a variable in more than
@@ -49,7 +49,7 @@ EXAMPLES = """
 
 - name: Get 2 messages off a queue and set a fact for re-use
   set_fact:
-    messages: "{{ lookup('rabbitmq', url='amqp://guest:guest@192.168.0.10:5672/%2F', queue='hello', count=2) }}"
+    messages: "{{ lookup('community.rabbitmq.rabbiotmq', url='amqp://guest:guest@192.168.0.10:5672/%2F', queue='hello', count=2) }}"
 
 - name: Dump out contents of the messages
   debug:
