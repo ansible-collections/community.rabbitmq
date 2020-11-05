@@ -298,8 +298,7 @@ class RabbitMqUser(object):
             users_and_tags = [user_entry.split('\t') for user_entry in users.strip().split('\n')]
 
             users = dict()
-            for user_entry in users_and_tags:
-                user_parts = user_entry.split('\t')
+            for user_parts in users_and_tags:
                 users[user_parts[0]] = process_tags(user_parts[1]) if len(user_parts) > 1 else []
 
         self.existing_tags = users.get(self.username, list())
