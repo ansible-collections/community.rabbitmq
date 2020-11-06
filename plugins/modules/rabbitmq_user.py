@@ -296,7 +296,10 @@ class RabbitMqUser(object):
                 return tags.replace('[', '').replace(']', '').replace(' ', '').strip('\t').split(',')
 
             users_and_tags = [user_entry.split('\t') for user_entry in users.strip().split('\n')]
-            users = dict([(user, process_tags(tags)) for user, tags in users_and_tags])
+
+            users = dict()
+            for user_parts in users_and_tags:
+                users[user_parts[0]] = process_tags(user_parts[1]) if len(user_parts) > 1 else []
 
         self.existing_tags = users.get(self.username, list())
         self.existing_permissions = self._get_permissions() if self.username in users else dict()
