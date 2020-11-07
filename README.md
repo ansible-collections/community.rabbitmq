@@ -79,11 +79,69 @@ one of the configured [COLLECTIONS_PATHS][2] and work on it there.
 
 ### Testing with `ansible-test`
 
-TBD
+* Requirements
+  * [Python 3.5+](https://www.python.org/)
+  * [pip](https://pypi.org/project/pip/)
+  * [virtualenv](https://virtualenv.pypa.io/en/latest/) or [pipenv](https://pypi.org/project/pipenv/) if you prefer.
+  * [git](https://git-scm.com/)
+  * [docker](https://www.docker.com/)
+
+* Useful Links
+  * [Pip & Virtual Environments](https://docs.python-guide.org/dev/virtualenvs/)
+  * [Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html)
+
+The ansible-test tool requires a specific directory hierarchy to function correctly so please follow carefully.
+
+```bash
+# These base directory environment variables can be adjusted to suit personal preferences
+SRC_BASE_DIR="~/code"
+VENV_BASE_DIR="~/.venvs"
+
+# These should not be altered
+COLL_DIR="${SRC_BASE_DIR}/ansible/ansible_collections/community/rabbitmq"
+VENV_DIR="${VENV_BASE_DIR}/ansible"
+
+# Create the required directory structure
+mkdir -p $(basename ${COLL_DIR})
+
+# Clone the collection repository
+git clone https://github.com/ansible-collections/community.rabbitmq.git ${COLL_DIR}
+
+# Create and activate a virtual environment.
+virtualenv ${VENV_DIR}
+source ${VENV_DIR}/bin/activate
+
+# Install the devel branch of ansible-base
+pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+
+# Switch into the collection directory
+cd ${COLL_DIR}
+
+# Run the integration tests
+ansible-test integration --docker default -v --color --python 3.6
+
+# Run the unit tests
+ansible-test units --docker default -v --color --python 3.6
+```
 
 ### Publishing New Version
 
-TBD
+The current process for publishing new versions of the Grafana Collection is
+manual, and requires a user who has access to the community.grafana namespace
+on Ansible Galaxy to publish the build artifact.
+
+#. Ensure ``CHANGELOG.md`` contains all the latest changes.
+#. Update ``galaxy.yml`` and this README's ``requirements.yml`` example with
+   the new version for the collection.
+#. Tag the version in Git and push to GitHub.
+#. Run the following commands to build and release the new version on Galaxy:
+
+```bash
+ansible-galaxy collection build
+ansible-galaxy collection publish ./community-rabbitmq-$VERSION_HERE.tar.gz
+```
+
+After the version is published, verify it exists on the Collection Galaxy page.
 
 ## More Information
 <!-- List out where the user can find additional information, such as working group meeting times, slack/IRC channels, or documentation for the product this collection automates. -->
