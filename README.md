@@ -71,14 +71,6 @@ reference set of guidelines.
 
 ### Local Testing
 
-If you want to develop new content for this collection or improve what is
-already here, the easiest way to work on the collection is to clone it into
-one of the configured [COLLECTIONS_PATHS][2] and work on it there.
-
-[2]:  https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
-
-### Testing with `ansible-test`
-
 * Requirements
   * [Python 3.5+](https://www.python.org/)
   * [pip](https://pypi.org/project/pip/)
@@ -90,7 +82,8 @@ one of the configured [COLLECTIONS_PATHS][2] and work on it there.
   * [Pip & Virtual Environments](https://docs.python-guide.org/dev/virtualenvs/)
   * [Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html)
 
-The ansible-test tool requires a specific directory hierarchy to function correctly so please follow carefully.
+Local testing is done with the ``ansible-test`` tool which requires a specific
+directory hierarchy to function correctly so please follow carefully.
 
 ```bash
 # These base directory environment variables can be adjusted to suit personal preferences
