@@ -123,11 +123,11 @@ The current process for publishing new versions of the Grafana Collection is
 manual, and requires a user who has access to the community.grafana namespace
 on Ansible Galaxy to publish the build artifact.
 
-#. Ensure ``CHANGELOG.md`` contains all the latest changes.
-#. Update ``galaxy.yml`` and this README's ``requirements.yml`` example with
+1. Ensure ``CHANGELOG.md`` contains all the latest changes.
+2. Update ``galaxy.yml`` and this README's ``requirements.yml`` example with
    the new version for the collection.
-#. Tag the version in Git and push to GitHub.
-#. Run the following commands to build and release the new version on Galaxy:
+3. Tag the version in Git and push to GitHub.
+4. Run the following commands to build and release the new version on Galaxy:
 
 ```bash
 ansible-galaxy collection build
