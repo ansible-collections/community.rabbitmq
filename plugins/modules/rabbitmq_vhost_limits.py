@@ -49,6 +49,12 @@ options:
             - Name of the virtual host to manage.
         type: str
         default: /
+    bin_cmd:
+        description:
+            - Specify the path to the rabbitmqctl binary, or alternatively the
+              way to execute it. This can optionally be used to access rabbitmqctl
+              via a container.
+        type: str
 '''
 
 EXAMPLES = '''
@@ -87,10 +93,10 @@ class RabbitMqVhostLimits(object):
         self._node = module.params['node']
         self._state = module.params['state']
         self._vhost = module.params['vhost']
-        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+        self._rabbitmqctl = module.params['bin_cmd'] or module.get_bin_path('rabbitmqctl', True)
 
     def _exec(self, args):
-        cmd = [self._rabbitmqctl, '-q', '-p', self._vhost]
+        cmd = self._rabbitmqctl.split() + ['-q', '-p', self._vhost]
         if self._node is not None:
             cmd.extend(['-n', self._node])
         rc, out, err = self._module.run_command(cmd + args, check_rc=True)
@@ -130,7 +136,8 @@ def main():
         max_queues=dict(default=-1, type='int'),
         node=dict(default=None, type='str'),
         state=dict(default='present', choices=['present', 'absent'], type='str'),
-        vhost=dict(default='/', type='str')
+        vhost=dict(default='/', type='str'),
+        bin_cmd=dict(default=None)
     )
 
     module = AnsibleModule(

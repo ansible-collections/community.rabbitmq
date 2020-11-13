@@ -39,6 +39,12 @@ options:
     type: str
     default: present
     choices: [present, absent]
+  bin_cmd:
+    description:
+      - Specify the path to the rabbitmqctl binary, or alternatively the
+        way to execute it. This can optionally be used to access rabbitmqctl
+        via a container.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -59,11 +65,11 @@ class RabbitMqVhost(object):
         self.node = node
 
         self._tracing = False
-        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+        self._rabbitmqctl = module.params['bin_cmd'] or module.get_bin_path('rabbitmqctl', True)
 
     def _exec(self, args, run_in_check_mode=False):
         if not self.module.check_mode or (self.module.check_mode and run_in_check_mode):
-            cmd = [self._rabbitmqctl, '-q', '-n', self.node]
+            cmd = self._rabbitmqctl.split() + ['-q', '-n', self.node]
             rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
         return list()
@@ -109,6 +115,7 @@ def main():
         tracing=dict(default='off', aliases=['trace'], type='bool'),
         state=dict(default='present', choices=['present', 'absent']),
         node=dict(default='rabbit'),
+        bin_cmd=dict(default=None)
     )
 
     module = AnsibleModule(

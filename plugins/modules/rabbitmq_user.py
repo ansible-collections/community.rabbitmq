@@ -95,6 +95,12 @@ options:
     required: false
     default: on_create
     choices: ['on_create', 'always']
+  bin_cmd:
+    description:
+      - Specify the path to the rabbitmqctl binary, or alternatively the
+        way to execute it. This can optionally be used to access rabbitmqctl
+        via a container.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -175,7 +181,7 @@ class RabbitMqUser(object):
 
         self.existing_tags = None
         self.existing_permissions = dict()
-        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+        self._rabbitmqctl = module.params['bin_cmd'] or module.get_bin_path('rabbitmqctl', True)
         self._version = self._check_version()
 
     def _check_version(self):
@@ -260,7 +266,7 @@ class RabbitMqUser(object):
         :param check_rc: when set to True, fail if the utility's exit code is non-zero
         :return: the output of the command or all the outputs plus the error code in case of error
         """
-        cmd = [self._rabbitmqctl, '-q']
+        cmd = self._rabbitmqctl.split() + ['-q']
         if self.node:
             cmd.extend(['-n', self.node])
         rc, out, err = self.module.run_command(cmd + args)
@@ -386,7 +392,8 @@ def main():
         force=dict(default='no', type='bool'),
         state=dict(default='present', choices=['present', 'absent']),
         node=dict(default='rabbit'),
-        update_password=dict(default='on_create', choices=['on_create', 'always'], no_log=False)
+        update_password=dict(default='on_create', choices=['on_create', 'always'], no_log=False),
+        bin_cmd=dict(default=None)
     )
     module = AnsibleModule(
         argument_spec=arg_spec,

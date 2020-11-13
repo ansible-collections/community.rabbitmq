@@ -41,10 +41,13 @@ options:
     type: str
     default: online
     choices: [online, offline]
-  prefix:
+  bin_cmd:
     description:
-      - Specify a custom install prefix to a Rabbit.
+      - Specify the path to the rabbitmq-plugins binary, or alternatively
+        the way to execute it. This can optionally be used to access the
+        rabbitmq-plugins via a container.
     type: str
+    aliases: [prefix]
 '''
 
 EXAMPLES = '''
@@ -98,22 +101,25 @@ class RabbitMqPlugins(object):
     def __init__(self, module):
         self.module = module
         bin_path = ''
-        if module.params['prefix']:
-            if os.path.isdir(os.path.join(module.params['prefix'], 'bin')):
-                bin_path = os.path.join(module.params['prefix'], 'bin')
-            elif os.path.isdir(os.path.join(module.params['prefix'], 'sbin')):
-                bin_path = os.path.join(module.params['prefix'], 'sbin')
+        if module.params['bin_cmd']:
+            if ' ' in module.params['bin_cmd']:
+                self._rabbitmq_plugins = module.params['bin_cmd']
             else:
-                # No such path exists.
-                module.fail_json(msg="No binary folder in prefix %s" % module.params['prefix'])
-
-            self._rabbitmq_plugins = os.path.join(bin_path, "rabbitmq-plugins")
+                if os.path.isdir(os.path.join(module.params['bin_cmd'], 'bin')):
+                    bin_path = os.path.join(module.params['bin_cmd'], 'bin')
+                elif os.path.isdir(os.path.join(module.params['bin_cmd'], 'sbin')):
+                    bin_path = os.path.join(module.params['bin_cmd'], 'sbin')
+                elif os.path.exists(module.params['bin_cmd']):
+                    bin_path = os.path.dirname(module.params['bin_cmd'])
+                else:
+                    module.fail_json(msg="No binary found in %s" % module.params['bin_cmd'])
+                self._rabbitmq_plugins = os.path.join(bin_path, "rabbitmq-plugins")
         else:
             self._rabbitmq_plugins = module.get_bin_path('rabbitmq-plugins', True)
 
     def _exec(self, args, run_in_check_mode=False):
         if not self.module.check_mode or (self.module.check_mode and run_in_check_mode):
-            cmd = [self._rabbitmq_plugins]
+            cmd = self._rabbitmq_plugins.split()
             rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
         return list()
@@ -141,7 +147,7 @@ def main():
         new_only=dict(default='no', type='bool'),
         state=dict(default='enabled', choices=['enabled', 'disabled']),
         broker_state=dict(default='online', choices=['online', 'offline']),
-        prefix=dict(required=False, default=None)
+        bin_cmd=dict(default=None, aliases=['prefix'])
     )
     module = AnsibleModule(
         argument_spec=arg_spec,

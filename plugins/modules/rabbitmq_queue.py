@@ -101,6 +101,7 @@ except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
     HAS_REQUESTS = False
 
+from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
@@ -140,8 +141,15 @@ def main():
     result = dict(changed=False, name=module.params['name'])
 
     # Check if queue already exists
-    r = requests.get(url, auth=(module.params['login_user'], module.params['login_password']),
-                     verify=module.params['ca_cert'], cert=(module.params['client_cert'], module.params['client_key']))
+    try:
+        r = requests.get(url, auth=(module.params['login_user'], module.params['login_password']),
+                         verify=module.params['ca_cert'], cert=(module.params['client_cert'],
+                         module.params['client_key']))
+    except requests.exceptions.RequestException as e:
+        module.fail_json(
+            msg="The request to %s failed. Please check connection parameters." % url,
+            details=to_native(e)
+        )
 
     if r.status_code == 200:
         queue_exists = True
