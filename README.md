@@ -110,11 +110,11 @@ pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pi
 # Switch into the collection directory
 cd ${COLL_DIR}
 
-# Run the integration tests
-ansible-test integration --docker default -v --color --python 3.6
-
 # Run the unit tests
 ansible-test units --docker default -v --color --python 3.6
+
+# Run the integration tests
+ansible-test integration --python-interpreter ${VENV_DIR}/bin/python -v --color
 ```
 
 ### Publishing New Version

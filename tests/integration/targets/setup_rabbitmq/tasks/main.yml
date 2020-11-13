@@ -1,3 +1,34 @@
 ---
-- include: ubuntu.yml
-  when: ansible_distribution == 'Ubuntu'
+- name: Start rabbitmq docker container
+  shell: >-
+    docker rm -f rabbitmq1 &>/dev/null || true;
+    docker run -d
+    --hostname rabbitmq1
+    --name rabbitmq1
+    {% if setup_rabbitmq_tls | bool %}
+    -p 15671:15671
+    -p 5671:5671
+    -e RABBITMQ_MANAGEMENT_SSL_CACERTFILE=/tls/ca_certificate.pem
+    -e RABBITMQ_MANAGEMENT_SSL_CERTFILE=/tls/server_certificate.pem
+    -e RABBITMQ_MANAGEMENT_SSL_KEYFILE=/tls/server_key.pem
+    -e RABBITMQ_MANAGEMENT_SSL_VERIFY=verify_peer
+    -e RABBITMQ_MANAGEMENT_SSL_FAIL_IF_NO_PEER_CERT=false
+    -v {{ role_path }}/files/tls:/tls:ro,Z
+    {% else %}
+    -p 15672:15672
+    -p 5672:5672
+    {% endif %}
+    rabbitmq:3-management
+
+- name: Wait until the service is responsive
+  uri:
+    url: "{{ (setup_rabbitmq_tls | bool) | ternary('https://localhost:15671', 'http://localhost:15672') }}/api/overview"
+    url_username: guest
+    url_password: guest
+    validate_certs: no
+  register: _service_check
+  delay: 5
+  retries: 10
+  until:
+    - _service_check.status is defined
+    - _service_check.status == 200
