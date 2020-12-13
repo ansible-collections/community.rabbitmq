@@ -1,4 +1,7 @@
 # community.rabbitmq Collection
+[![Build Status](
+https://dev.azure.com/ansible/community.rabbitmq/_apis/build/status/CI?branchName=main)](https://dev.azure.com/ansible/community.rabbitmq/_build?definitionId=29)
+
 <!-- Add CI and code coverage badges here. -->
 <!-- Describe the collection and why a user would want to use it. What does the collection do? -->
 
