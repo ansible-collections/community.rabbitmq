@@ -10,18 +10,23 @@ import re
 import sys
 import time
 
-from ansible.module_utils.urls import open_url
-
 try:
     from typing import NoReturn
 except ImportError:
     NoReturn = None
 
+try:
+    # noinspection PyCompatibility
+    from urllib2 import urlopen  # pylint: disable=ansible-bad-import-from
+except ImportError:
+    # noinspection PyCompatibility
+    from urllib.request import urlopen
+
 
 def main():  # type: () -> None
     """Main entry point."""
     repo_full_name = os.environ['REPO_FULL_NAME']
-    required_repo_full_name = 'ansible-collections/general'
+    required_repo_full_name = 'ansible-collections/community.rabbitmq'
 
     if repo_full_name != required_repo_full_name:
         sys.stderr.write('Skipping matrix check on repo "%s" which is not "%s".\n' % (repo_full_name, required_repo_full_name))
@@ -42,7 +47,7 @@ def main():  # type: () -> None
 
     for attempts_remaining in range(4, -1, -1):
         try:
-            jobs = json.loads(open_url('https://api.shippable.com/jobs?runIds=%s' % run_id).read())
+            jobs = json.loads(urlopen('https://api.shippable.com/jobs?runIds=%s' % run_id).read())
 
             if not isinstance(jobs, list):
                 raise Exception('Shippable run %s data is not a list.' % run_id)
