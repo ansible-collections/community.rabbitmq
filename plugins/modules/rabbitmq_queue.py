@@ -15,7 +15,8 @@ author: Manuel Sousa (@manuel-sousa)
 
 short_description: Manage rabbitMQ queues
 description:
-  - This module uses rabbitMQ Rest API to create/delete queues
+  - This module uses rabbitMQ Rest API to create/delete queues.
+  - Due to limitations in the API, it cannot modify existing queues.
 requirements: [ "requests >= 1.0.0" ]
 options:
     name:
@@ -70,6 +71,8 @@ options:
     arguments:
         description:
             - extra arguments for queue. If defined this argument is a key/value dictionary
+            - Arguments here take precedence over parameters. If both are defined, the
+              argument will be used.
         type: dict
         default: {}
 extends_documentation_fragment:
