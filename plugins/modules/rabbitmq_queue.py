@@ -109,6 +109,28 @@ from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 
 
+def check_if_arg_changed(module, current_args, desired_args, arg_name):
+    if arg_name not in current_args:
+        if arg_name in desired_args:
+            module.fail_json(
+                msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
+                     "Attempting to set %s which is not currently set." % arg_name),
+            )
+        # else don't care
+    else:  # arg_name in current_args
+        if arg_name in desired_args:
+            if current_args[arg_name] != desired_args[arg_name]:
+                module.fail_json(
+                    msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues.\n"
+                         "Attempting to change %s from '%s' to '%s'" % (arg_name, current_args[arg_name], desired_args[arg_name]))
+                )
+        else:
+            module.fail_json(
+                msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
+                     "Attempting to unset %s which is currently set to '%s'." % (arg_name, current_args[arg_name])),
+            )
+
+
 def main():
 
     argument_spec = rabbitmq_argument_spec()
@@ -158,6 +180,20 @@ def main():
             details=r.text
         )
 
+    arg_map = {
+        'message_ttl': 'x-message-ttl',
+        'auto_expires': 'x-expires',
+        'max_length': 'x-max-length',
+        'dead_letter_exchange': 'x-dead-letter-exchange',
+        'dead_letter_routing_key': 'x-dead-letter-routing-key',
+        'max_priority': 'x-max-priority'
+    }
+
+    # Sync arguments with parameters (the final request uses module.params['arguments'])
+    for k, v in arg_map.items():
+        if module.params[k] is not None:
+            module.params['arguments'][v] = module.params[k]
+
     if module.params['state'] == 'present':
         add_or_delete_required = not queue_exists
     else:
@@ -165,52 +201,11 @@ def main():
 
     # Check if attributes change on existing queue
     if not add_or_delete_required and r.status_code == 200 and module.params['state'] == 'present':
-        if not (
-            response['durable'] == module.params['durable'] and
-            response['auto_delete'] == module.params['auto_delete'] and
-            (
-                ('x-message-ttl' in response['arguments'] and response['arguments']['x-message-ttl'] == module.params['message_ttl']) or
-                ('x-message-ttl' not in response['arguments'] and module.params['message_ttl'] is None)
-            ) and
-            (
-                ('x-expires' in response['arguments'] and response['arguments']['x-expires'] == module.params['auto_expires']) or
-                ('x-expires' not in response['arguments'] and module.params['auto_expires'] is None)
-            ) and
-            (
-                ('x-max-length' in response['arguments'] and response['arguments']['x-max-length'] == module.params['max_length']) or
-                ('x-max-length' not in response['arguments'] and module.params['max_length'] is None)
-            ) and
-            (
-                ('x-dead-letter-exchange' in response['arguments'] and
-                 response['arguments']['x-dead-letter-exchange'] == module.params['dead_letter_exchange']) or
-                ('x-dead-letter-exchange' not in response['arguments'] and module.params['dead_letter_exchange'] is None)
-            ) and
-            (
-                ('x-dead-letter-routing-key' in response['arguments'] and
-                 response['arguments']['x-dead-letter-routing-key'] == module.params['dead_letter_routing_key']) or
-                ('x-dead-letter-routing-key' not in response['arguments'] and module.params['dead_letter_routing_key'] is None)
-            ) and
-            (
-                ('x-max-priority' in response['arguments'] and
-                 response['arguments']['x-max-priority'] == module.params['max_priority']) or
-                ('x-max-priority' not in response['arguments'] and module.params['max_priority'] is None)
-            )
-        ):
-            module.fail_json(
-                msg="RabbitMQ RESTAPI doesn't support attribute changes for existing queues",
-            )
+        check_if_arg_changed(module, response, module.params, 'durable')
+        check_if_arg_changed(module, response, module.params, 'auto_delete')
 
-    # Copy parameters to arguments as used by RabbitMQ
-    for k, v in {
-        'message_ttl': 'x-message-ttl',
-        'auto_expires': 'x-expires',
-        'max_length': 'x-max-length',
-        'dead_letter_exchange': 'x-dead-letter-exchange',
-        'dead_letter_routing_key': 'x-dead-letter-routing-key',
-        'max_priority': 'x-max-priority'
-    }.items():
-        if module.params[k] is not None:
-            module.params['arguments'][v] = module.params[k]
+        for arg in arg_map.values():
+            check_if_arg_changed(module, response['arguments'], module.params['arguments'], arg)
 
     # Exit if check_mode
     if module.check_mode:
