@@ -159,12 +159,12 @@ def main():
         )
 
     if module.params['state'] == 'present':
-        change_required = not queue_exists
+        add_or_delete_required = not queue_exists
     else:
-        change_required = queue_exists
+        add_or_delete_required = queue_exists
 
     # Check if attributes change on existing queue
-    if not change_required and r.status_code == 200 and module.params['state'] == 'present':
+    if not add_or_delete_required and r.status_code == 200 and module.params['state'] == 'present':
         if not (
             response['durable'] == module.params['durable'] and
             response['auto_delete'] == module.params['auto_delete'] and
@@ -214,13 +214,13 @@ def main():
 
     # Exit if check_mode
     if module.check_mode:
-        result['changed'] = change_required
+        result['changed'] = add_or_delete_required
         result['details'] = response
         result['arguments'] = module.params['arguments']
         module.exit_json(**result)
 
     # Do changes
-    if change_required:
+    if add_or_delete_required:
         if module.params['state'] == 'present':
             r = requests.put(
                 url,
