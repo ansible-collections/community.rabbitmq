@@ -108,7 +108,7 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 
-def check_if_arg_changed(current_args, desired_args, arg_name):
+def check_if_arg_changed(module, current_args, desired_args, arg_name):
     if not arg_name in current_args:
         if arg_name in desired_args:
             module.fail_json(
@@ -199,11 +199,11 @@ def main():
 
     # Check if attributes change on existing queue
     if not add_or_delete_required and r.status_code == 200 and module.params['state'] == 'present':
-        check_if_arg_changed(response, module.params, 'durable')
-        check_if_arg_changed(response, module.params, 'auto_delete')
+        check_if_arg_changed(module, response, module.params, 'durable')
+        check_if_arg_changed(module, response, module.params, 'auto_delete')
 
         for arg in arg_map.values():
-            check_if_arg_changed(response['arguments'], module.params['arguments'], arg)
+            check_if_arg_changed(module, response['arguments'], module.params['arguments'], arg)
 
     # Exit if check_mode
     if module.check_mode:
