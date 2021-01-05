@@ -108,15 +108,16 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 
+
 def check_if_arg_changed(module, current_args, desired_args, arg_name):
-    if not arg_name in current_args:
+    if arg_name not in current_args:
         if arg_name in desired_args:
             module.fail_json(
                 msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
                      "Attempting to set %s which is not currrently set." % arg_name),
             )
         # else don't care
-    else: # arg_name in current_args
+    else:  # arg_name in current_args
         if arg_name in desired_args:
             if current_args[arg_name] != desired_args[arg_name]:
                 module.fail_json(
@@ -128,6 +129,7 @@ def check_if_arg_changed(module, current_args, desired_args, arg_name):
                 msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
                      "Attempting to unset %s which is currrently set to '%s'." % (arg_name, current_args[arg_name])),
             )
+
 
 def main():
 
