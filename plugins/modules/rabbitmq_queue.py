@@ -112,21 +112,21 @@ def check_if_arg_changed(current_args, desired_args, arg_name):
     if not arg_name in current_args:
         if arg_name in desired_args:
             module.fail_json(
-                msg=(f"RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
-                     f"Attempting to set {arg_name} which is not currrently set."),
+                msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
+                     "Attempting to set %s which is not currrently set." % arg_name),
             )
         # else don't care
     else: # arg_name in current_args
         if arg_name in desired_args:
             if current_args[arg_name] != desired_args[arg_name]:
                 module.fail_json(
-                    msg=(f"RabbitMQ RESTAPI doesn't support attribute changes for existing queues.\n"
-                         f"Attempting to change {arg_name} from '{current_args[arg_name]}' to '{desired_args[arg_name]}'")
+                    msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues.\n"
+                         "Attempting to change %s from '%s' to '%s'" % (arg_name, current_args[arg_name], desired_args[arg_name]))
                 )
         else:
             module.fail_json(
-                msg=(f"RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
-                     f"Attempting to unset {arg_name} which is currrently set to '{current_args[arg_name]}'."),
+                msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
+                     "Attempting to unset %s which is currrently set to '%s'." % (arg_name, current_args[arg_name])),
             )
 
 def main():
