@@ -114,7 +114,7 @@ def check_if_arg_changed(module, current_args, desired_args, arg_name):
         if arg_name in desired_args:
             module.fail_json(
                 msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
-                     "Attempting to set %s which is not currrently set." % arg_name),
+                     "Attempting to set %s which is not currently set." % arg_name),
             )
         # else don't care
     else:  # arg_name in current_args
