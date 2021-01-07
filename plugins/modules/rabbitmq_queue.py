@@ -127,7 +127,7 @@ def check_if_arg_changed(module, current_args, desired_args, arg_name):
         else:
             module.fail_json(
                 msg=("RabbitMQ RESTAPI doesn't support attribute changes for existing queues."
-                     "Attempting to unset %s which is currrently set to '%s'." % (arg_name, current_args[arg_name])),
+                     "Attempting to unset %s which is currently set to '%s'." % (arg_name, current_args[arg_name])),
             )
 
 
