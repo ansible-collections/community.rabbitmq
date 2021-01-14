@@ -88,10 +88,13 @@ class RabbitMqGlobalParameter(object):
         return list()
 
     def get(self):
-        global_parameters = self._exec(['list_global_parameters'], True)
+        global_parameters = [param for param in self._exec(['list_global_parameters'], True) if param.strip()]
 
-        for param_item in global_parameters:
+        for idx, param_item in enumerate(global_parameters):
             name, value = param_item.split('\t')
+            # RabbitMQ 3.8.x and above return table header, ignore it
+            if idx == 0 and name == 'name' and value == 'value':
+                continue
 
             if name == self.name:
                 self._value = json.loads(value)
