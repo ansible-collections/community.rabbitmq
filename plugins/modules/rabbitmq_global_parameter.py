@@ -37,7 +37,7 @@ options:
     default: rabbit
   state:
     description:
-      - Specify if user is to be added or removed
+      - Specify if global parameter is to be added or removed
     type: str
     required: false
     default: present
