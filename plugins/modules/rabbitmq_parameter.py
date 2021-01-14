@@ -42,7 +42,7 @@ options:
     default: rabbit
   state:
     description:
-      - Specify if user is to be added or removed
+      - Specify if parameter is to be added or removed
     type: str
     default: present
     choices: [ 'present', 'absent']
