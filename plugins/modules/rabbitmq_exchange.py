@@ -41,7 +41,7 @@ options:
             - type for the exchange
         type: str
         required: false
-        choices: [ "fanout", "direct", "headers", "topic" ]
+        choices: [ "fanout", "direct", "headers", "topic", "x-delayed-message" ]
         aliases: [ "type" ]
         default: direct
     auto_delete:
@@ -106,7 +106,7 @@ def main():
             auto_delete=dict(default=False, type='bool'),
             internal=dict(default=False, type='bool'),
             exchange_type=dict(default='direct', aliases=['type'],
-                               choices=['fanout', 'direct', 'headers', 'topic'],
+                               choices=['fanout', 'direct', 'headers', 'topic', 'x-delayed-message'],
                                type='str'),
             arguments=dict(default=dict(), type='dict')
         )
