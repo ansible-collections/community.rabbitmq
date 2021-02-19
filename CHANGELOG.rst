@@ -4,6 +4,15 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
+v1.0.2
+======
+
+Bugfixes
+--------
+
+- rabbitmq_user: fix parsing of user output when no tags are associated
+- rabbitmq_exchange: Add x-delayed-message as a valid exchange type
+- rabbitmq_global_parameter: Fix parsing of empty result of list_global_parameters with RabbitMQ 3.7 and ignore header with RabbitMQ 3.8
 
 v1.0.0
 ======
