@@ -122,9 +122,9 @@ ansible-test units --docker default -v --color --python 3.6
 
 ### Publishing New Version
 
-The current process for publishing new versions of the Grafana Collection is
-manual, and requires a user who has access to the community.grafana namespace
-on Ansible Galaxy to publish the build artifact.
+The current process for publishing new versions of the Collection is manual
+and requires a user who has access to the community.grafana namespace on
+Ansible Galaxy to publish the build artifact.
 
 1. Ensure ``CHANGELOG.md`` contains all the latest changes.
 2. Update ``galaxy.yml`` and this README's ``requirements.yml`` example with
