@@ -122,22 +122,14 @@ ansible-test units --docker default -v --color --python 3.6
 
 ### Publishing New Version
 
-The current process for publishing new versions of the Grafana Collection is
-manual, and requires a user who has access to the community.grafana namespace
-on Ansible Galaxy to publish the build artifact.
+Basic instructions without release branches:
 
-1. Ensure ``CHANGELOG.md`` contains all the latest changes.
-2. Update ``galaxy.yml`` and this README's ``requirements.yml`` example with
-   the new version for the collection.
-3. Tag the version in Git and push to GitHub.
-4. Run the following commands to build and release the new version on Galaxy:
-
-```bash
-ansible-galaxy collection build
-ansible-galaxy collection publish ./community-rabbitmq-$VERSION_HERE.tar.gz
-```
-
-After the version is published, verify it exists on the Collection Galaxy page.
+1. Create `changelogs/fragments/<version>.yml` with `release_summary:` section (which must be a string, not a list).
+2. Run `antsibull-changelog release --collection-flatmap yes`
+3. Make sure `CHANGELOG.rst` and `changelogs/changelog.yaml` are added to git, and the deleted fragments have been removed.
+4. Tag the commit with `<version>`. Push changes and tag to the main repository.
+5. Monitor the release job on the [Zuul Status Dashboard](https://dashboard.zuul.ansible.com/t/ansible/status).
+6. Verify that the new version is available on [Ansible Galaxy](https://galaxy.ansible.com/community/rabbitmq).
 
 ## More Information
 <!-- List out where the user can find additional information, such as working group meeting times, slack/IRC channels, or documentation for the product this collection automates. -->
