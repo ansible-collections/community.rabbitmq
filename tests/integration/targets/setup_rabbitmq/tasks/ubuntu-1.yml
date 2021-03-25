@@ -12,11 +12,14 @@
         Pin: version 1:20.3.6
         Pin-Priority: 1000
 
-- name: Install https transport for apt
+- name: Install https transport for apt and sudo
   apt:
-    name: apt-transport-https
+    name: "{{ item }}"
     state: latest
     force: yes
+  loop:
+    - apt-transport-https
+    - sudo
 
 - name: Copy installation script
   copy:
