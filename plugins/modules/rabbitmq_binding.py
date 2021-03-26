@@ -282,7 +282,7 @@ def main():
             destination=dict(required=True, aliases=["dst", "dest"], type='str'),
             destination_type=dict(required=True, aliases=["type", "dest_type"], choices=["queue", "exchange"],
                                   type='str'),
-            routing_key=dict(default='#', type='str'),
+            routing_key=dict(default='#', type='str', no_log=False),
             arguments=dict(default=dict(), type='dict')
         )
     )
