@@ -144,7 +144,7 @@ def main():
             auto_expires=dict(default=None, type='int'),
             max_length=dict(default=None, type='int'),
             dead_letter_exchange=dict(default=None, type='str'),
-            dead_letter_routing_key=dict(default=None, type='str'),
+            dead_letter_routing_key=dict(default=None, type='str', no_log=False),
             arguments=dict(default=dict(), type='dict'),
             max_priority=dict(default=None, type='int')
         )

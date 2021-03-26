@@ -185,7 +185,7 @@ def main():
     argument_spec = RabbitClient.rabbitmq_argument_spec()
     argument_spec.update(
         exchange=dict(type='str', default=''),
-        routing_key=dict(type='str', required=False),
+        routing_key=dict(type='str', required=False, no_log=False),
         body=dict(type='str', required=False),
         src=dict(aliases=['file'], type='path', required=False),
         content_type=dict(default="text/plain", type='str'),
@@ -195,7 +195,7 @@ def main():
         headers=dict(default={}, type='dict'),
         cafile=dict(type='str', required=False),
         certfile=dict(type='str', required=False),
-        keyfile=dict(type='str', required=False),
+        keyfile=dict(type='str', required=False, no_log=False),
     )
     module = AnsibleModule(
         argument_spec=argument_spec,
