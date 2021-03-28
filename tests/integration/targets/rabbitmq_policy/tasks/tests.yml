@@ -1,6 +1,7 @@
 - block:
   - set_fact:
-      vhost_name: /hatest
+      vhost_name: /test
+      ha_policy_name: HA
 
   - name: Add host
     rabbitmq_vhost:
@@ -32,7 +33,7 @@
 
   - name: Add an HA Policy
     rabbitmq_policy:
-      name: HA
+      name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
       tags:
@@ -50,7 +51,7 @@
 
   - name: Add an HA Policy (idempotency)
     rabbitmq_policy:
-      name: HA
+      name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
       tags:
@@ -67,7 +68,7 @@
  
   - name: Remove the HA policy
     rabbitmq_policy:
-      name: HA
+      name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
     register: remove_policy
@@ -80,7 +81,7 @@
 
   - name: Remove the HA Policy (idempotency)
     rabbitmq_policy:
-      name: HA
+      name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
     register: remove_policy
