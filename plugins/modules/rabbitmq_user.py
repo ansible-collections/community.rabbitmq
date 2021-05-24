@@ -79,8 +79,9 @@ options:
     default: '^$'
   topic_permissions:
     description:
-      - a list of dicts, each dict contains vhost, exchange, read_priv and write_priv,
+      - A list of dicts, each dict contains vhost, exchange, read_priv and write_priv,
         and represents a topic permission rule for that vhost.
+      - By default vhost is / and exchange is amq.topic.
     type: list
     elements: dict
     default: []
@@ -507,12 +508,8 @@ def main():
                                  "have an empty vhost when setting permissions")
 
     for permission in topic_permissions:
-        if not permission['vhost']:
-            module.fail_json(msg="Error parsing vhost topic_permissions: You can't"
-                                 "have an empty vhost when setting topic permissions")
-        if not permission['exchange']:
-            module.fail_json(msg="Error parsing vhost topic_permissions: You can't"
-                                 "have an empty exchange when setting topic permissions")
+        permission.setdefault('vhost', '/')
+        permission.setdefault('exchange', 'amq.topic')
         # Normalize the arguments
         for perm_name in ("read", "write"):
             suffixed_perm_name = "{perm_name}_priv".format(perm_name=perm_name)

@@ -355,6 +355,55 @@ class TestRabbitMQUserModule(ModuleTestCase):
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._check_version')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_topic_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
+    def test_topic_permissions_defaults(self,
+                                   has_tags_modifications,
+                                   _get_permissions,
+                                   _get_topic_permissions,
+                                   _check_version,
+                                   _exec,
+                                   get_bin_path):
+        """Test that the topic permissions defaults are set."""
+        set_module_args({
+            'user': 'someuser',
+            'password': 'somepassword',
+            'state': 'present',
+            'topic_permissions': [
+                {'write_priv': '.*', 'read_priv': '.*'},
+            ],
+        })
+        get_bin_path.return_value = '/rabbitmqctl'
+        has_tags_modifications.return_value = False
+        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _get_permissions.return_value = {}
+        _get_topic_permissions.return_value = {}
+
+        def side_effect(args):
+            if 'list_users' in args:
+                self.assertTrue('--formatter' not in args)
+                self.assertTrue('json' not in args)
+                return 'someuser\t[administrator, management]'
+            if 'set_topic_permissions' in args:
+                self.assertTrue('someuser' in args)
+                self.assertTrue('/' in args, args)
+                self.assertTrue(['amq.topic', '.*', '.*'] == args[-3:])
+                return ''
+        _exec.side_effect = side_effect
+
+        try:
+            self.module.main()
+        except AnsibleExitJson as e:
+            self._assert(e, 'changed', True)
+            self._assert(e, 'state', 'present')
+            self.assertEqual(_exec.call_count, 3)
+            self.assertTrue(['set_topic_permissions', '-p', '/', 'someuser', 'amq.topic', '.*', '.*'] ==
+                            flatten(_exec.call_args_list[-1][0]))
+
+    @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
+    @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._check_version')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
     def test_tags_are_fixed(self, _get_permissions, _check_version, _exec, get_bin_path):
         """Test user tags are fixed."""
