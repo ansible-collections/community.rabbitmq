@@ -427,11 +427,11 @@ def main():
         if not permission['vhost']:
             module.fail_json(msg="Error parsing vhost permissions: You can't"
                                  "have an empty vhost when setting permissions")
-        if not 'configure_priv' in permission_keys:
+        if 'configure_priv' not in permission_keys:
             permission['configure_priv'] = '^$'
-        if not 'write_priv' in permission_keys:
+        if 'write_priv' not in permission_keys:
             permission['write_priv'] = '^$'
-        if not 'read_priv' in permission_keys:
+        if 'read_priv' not in permission_keys:
             permission['read_priv'] = '^$'
 
     rabbitmq_user = RabbitMqUser(module, username, password, tags, permissions,
