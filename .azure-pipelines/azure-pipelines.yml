@@ -247,7 +247,7 @@ stages:
       - Docker_devel
       - Docker_2_11
       - Docker_2_10
-      - Docker_2_9
+      #- Docker_2_9
       #- Remote_devel
       #- Remote_2_11
       #- Remote_2_10
