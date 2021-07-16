@@ -18,17 +18,13 @@
     state: latest
     force: yes
 
-- name: Add RabbitMQ release signing key
-  apt_key:
-    url: https://ansible-ci-files.s3.amazonaws.com/test/integration/targets/setup_rabbitmq/rabbitmq-release-signing-key.asc
-    state: present
+- name: Copy installation script
+  copy:
+    src: install.sh
+    dest: /tmp/install.sh
 
-- name: Add RabbitMQ Erlang repository
-  apt_repository:
-    repo: ppa:rabbitmq/rabbitmq-erlang
-    filename: 'rabbitmq-erlang'
-    state: present
-    update_cache: yes
+- name: Run installation script
+  script: /tmp/install.sh
 
 # Required by the rabbitmq modules that uses the management API
 - name: Install requests
@@ -37,17 +33,7 @@
 
 - name: Install RabbitMQ Server
   apt:
-    deb: https://ansible-ci-files.s3.us-east-1.amazonaws.com/test/integration/targets/setup_rabbitmq/rabbitmq-server_3.8.14-1_all.deb
-
-- name: Install RabbitMQ TLS dependencies
-  apt:
-    name: "{{ item }}"
-    state: latest
-  loop:
-    - erlang-asn1
-    - erlang-crypto
-    - erlang-public-key
-    - erlang-ssl
+    name: rabbitmq-server
 
 - name: Ensure TLS config
   copy:
