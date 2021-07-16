@@ -1,53 +1,92 @@
 ---
-# https://www.rabbitmq.com/install-debian.html#apt-pinning
-- name: Pin erlang version that rabbitmq supports
-  copy:
-    dest: /etc/apt/preferences.d/erlang
-    content: |
-        Package: erlang*
-        Pin: version 1:20.3.8.18-1
-        Pin-Priority: 1000
 
-        Package: esl-erlang
-        Pin: version 1:20.3.6
-        Pin-Priority: 1000
+# https://stackoverflow.com/questions/25193161/chfn-pam-system-error-intermittently-in-docker-hub-builds/25267015
+- name: Disable chfn
+  file:
+    path: /usr/bin/chfn
+    src: /bin/true
+    state: link
+    force: yes
+
+- name: Install Essential Dependencies
+  apt:
+    name:
+      - curl
+      - gnupg
+      - debian-keyring
+      - debian-archive-keyring
+      - python3-apt
+    state: present
 
 - name: Install https transport for apt
   apt:
     name: apt-transport-https
-    state: latest
+    state: present
     force: yes
 
-- name: Add RabbitMQ release signing key
+- name: Team RabbitMQ's main signing key
   apt_key:
-    url: https://ansible-ci-files.s3.amazonaws.com/test/integration/targets/setup_rabbitmq/rabbitmq-release-signing-key.asc
+    keyserver: hkps://keys.openpgp.org
+    id: 0A9AF2115F4687BD29803A206B73A36E6026DFCA
+
+# https://www.rabbitmq.com/install-debian.html#apt-cloudsmith
+#
+- name: Cloudsmith - modern Erlang repository
+  apt_key:
+    url: https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key
+    state: present
+
+- name: Cloudsmith - RabbitMQ repository
+  apt_key:
+    url: https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key
     state: present
 
 - name: Add RabbitMQ Erlang repository
   apt_repository:
-    repo: ppa:rabbitmq/rabbitmq-erlang
+    repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu bionic main
     filename: 'rabbitmq-erlang'
     state: present
     update_cache: yes
 
+- name: Add RabbitMQ repository
+  apt_repository:
+    repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu bionic main
+    filename: 'rabbitmq-server'
+    state: present
+    update_cache: yes
+
+
 # Required by the rabbitmq modules that uses the management API
-- name: Install requests
-  pip:
-    name: requests
+- name: Install python requests
+  apt:
+    name: python3-requests
+    state: present
+
+- name: Install Erlang packages
+  apt:
+    name:
+      - erlang-base
+      - erlang-asn1
+      - erlang-crypto
+      - erlang-eldap
+      - erlang-ftp
+      - erlang-inets
+      - erlang-mnesia
+      - erlang-os-mon
+      - erlang-parsetools
+      - erlang-public-key
+      - erlang-runtime-tools
+      - erlang-snmp
+      - erlang-ssl
+      - erlang-syntax-tools
+      - erlang-tftp
+      - erlang-tools
+      - erlang-xmerl
 
 - name: Install RabbitMQ Server
   apt:
-    deb: https://ansible-ci-files.s3.us-east-1.amazonaws.com/test/integration/targets/setup_rabbitmq/rabbitmq-server_3.8.14-1_all.deb
-
-- name: Install RabbitMQ TLS dependencies
-  apt:
-    name: "{{ item }}"
-    state: latest
-  loop:
-    - erlang-asn1
-    - erlang-crypto
-    - erlang-public-key
-    - erlang-ssl
+    name: rabbitmq-server
+    state: fixed
 
 - name: Ensure TLS config
   copy:
