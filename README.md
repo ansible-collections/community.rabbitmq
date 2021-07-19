@@ -131,6 +131,10 @@ ansible-test integration --docker default -v --color --python 3.6
 ansible-test units --docker default -v --color --python 3.6
 ```
 
+### Collection maintenance
+
+Maintainers of this collection follow the [mainteiner guidelines](https://github.com/ansible/community-docs/blob/main/maintaining.rst).
+
 ### Publishing New Version
 
 Basic instructions without release branches:
