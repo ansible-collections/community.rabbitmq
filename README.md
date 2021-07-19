@@ -5,56 +5,66 @@ https://dev.azure.com/ansible/community.rabbitmq/_apis/build/status/CI?branchNam
 <!-- Add CI and code coverage badges here. -->
 <!-- Describe the collection and why a user would want to use it. What does the collection do? -->
 
-This repo hosts the `community.rabbitmq` Ansible Collection.
+This repository hosts the `community.rabbitmq` Ansible Collection.
 
 The collection includes the rabbitmq modules and plugins supported by Ansible
 rabbitmq community to help the management of rabbitmq infrastructure.
 
-## Tested with Ansible
-<!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
-TBD
+This collection is a part of the Ansible package.
 
-## External requirements
-<!-- List any external resources the collection depends on, for example minimum versions of an OS, libraries, or utilities. Do not list other Ansible collections here. -->
-TBD
+## Code of Conduct
 
-### Supported connections
-<!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
-TBD
+We follow the [Ansible Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html) in all our interactions within this project.
 
-## Included content
-<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
-TBD
+If you encounter abusive behavior violating the [Ansible Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html), please refer to the [policy violations](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html#policy-violations) section of the Code of Conduct for information on how to raise a complaint.
 
 ## Using this collection
 <!--Include some quick examples that cover the most common use cases for your collection content. -->
 
-Before using the rabbitmq community collection, you need to install the
-collection with the `ansible-galaxy` CLI:
+### Installing the Collection from Ansible Galaxy
+
+Before using the collection, you need to install it with the Ansible Galaxy command-line tool:
 
 ```bash
 ansible-galaxy collection install community.rabbitmq
 ```
 
-Alternatively, you can also include it in a `requirements.yml` file and
-install it via `ansible-galaxy collection install -r requirements.yml` using
-the format:
+You can include it in a `requirements.yml` file and install it via `ansible-galaxy collection install -r requirements.yml`, using the format:
 
 ```yaml
+---
 collections:
-- name: community.rabbitmq
+  - name: community.rabbitmq
 ```
 
-For more information regarding using collections with Ansible, see the Ansible
-[user guide][3].
+You can also download the tarball from [Ansible Galaxy](https://galaxy.ansible.com/community/rabbitmq) and install the collection manually wherever you need.
 
-[3]: https://docs.ansible.com/ansible/latest/user_guide/collections_using.html
+Note that if you install the collection from Ansible Galaxy with the command-line tool or tarball, it will not be upgraded automatically when you upgrade the Ansible package. To upgrade the collection to the latest available version, run the following command:
+
+```bash
+ansible-galaxy collection install community.rabbitmq --upgrade
+```
+
+You can also install a specific version of the collection, for example, if you need to downgrade when something is broken in the latest version (please report an issue in this repository). Use the following syntax:
+
+```bash
+ansible-galaxy collection install community.rabbitmq:==X.Y.Z
+```
+
+See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
 <!--Describe how the community can contribute to your collection. At a minimum, include how and where users can create issues to report problems or request features for this collection.  List contribution requirements, including preferred workflows and necessary testing, so you can benefit from community PRs. -->
 
-While this community is still developing its guidelines, the aspiration is to
-follow the following general guidelines:
+The content of this collection is made by people just like you, a community of individuals collaborating on making the world better through developing automation software.
+
+We are actively accepting new contributors.
+
+All types of contributions are very welcome.
+
+You don't know how to start? Refer to our [contribution guide](https://github.com/ansible-collections/community.postgresql/blob/main/CONTRIBUTING.md)!
+
+The aspiration is to follow the following general guidelines:
 
 - Changes should include tests and documentation where appropriate.
 - Changes will be lint tested using standard python lint tests.
@@ -62,15 +72,16 @@ follow the following general guidelines:
 - The collection plugins must provide the same coverage of python support as
   the versions of Ansible supported.
 - The versions of Ansible supported by the collection must be the same as
-  those in developed, or those maintained, as shown in the Ansible [Release
-  and Maintenance][4] documentation.
+  those in developed, or those maintained, as shown in the Ansible [Release and Maintenance][4] documentation.
 
 [4]: https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html
 
-As a fallback, the [Ansible Community Guide][5] remains our community
-reference set of guidelines.
+We use the following guidelines:
 
-[5]: https://docs.ansible.com/ansible/latest/community/index.html
+* [CONTRIBUTING.md](https://github.com/ansible-collections/community.postgresql/blob/main/CONTRIBUTING.md)
+* [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html)
+* [Ansible Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/index.html)
+* [Ansible Collection Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections)
 
 ### Local Testing
 
@@ -131,17 +142,39 @@ Basic instructions without release branches:
 5. Monitor the release job on the [Zuul Status Dashboard](https://dashboard.zuul.ansible.com/t/ansible/status).
 6. Verify that the new version is available on [Ansible Galaxy](https://galaxy.ansible.com/community/rabbitmq).
 
+See the [releasing guidelines](https://github.com/ansible/community-docs/blob/main/releasing_collections_without_release_branches.rst) to learn more.
+
+## Tested with Ansible
+<!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
+TBD
+
+## External requirements
+<!-- List any external resources the collection depends on, for example minimum versions of an OS, libraries, or utilities. Do not list other Ansible collections here. -->
+TBD
+
+### Supported connections
+<!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
+TBD
+
+## Included content
+<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
+TBD
+
 ## More Information
 <!-- List out where the user can find additional information, such as working group meeting times, slack/IRC channels, or documentation for the product this collection automates. -->
 
 ### Communication
 
-This is a small collection with a small number of contributors. As such, there
-is no formal Ansible Working Group. To communicate with the maintainers, please
-make contact via one of the following methods:
+To communicate, we use:
 
-- IRC on [irc.libera.chat](https://libera.chat/) in the `#ansible-community` channel
-- [Issues](https://github.com/ansible-collections/rabbitmq/issues) on Github
+- The `#ansible-community` [Libera.Chat](https://libera.chat/) IRC channel.
+- [Issues](https://github.com/ansible-collections/rabbitmq/issues) on Github.
+
+We announce important development changes and releases through Ansible's [The Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn). If you are a collection developer, be sure you are subscribed.
+
+We take part in the global quarterly [Ansible Contributor Summit](https://github.com/ansible/community/wiki/Contributor-Summit) virtually or in-person. Track [The Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn) and join us.
+
+For more information about communication, refer to the [Ansible Communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
 
 ### Reference
 
