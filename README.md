@@ -62,7 +62,7 @@ We are actively accepting new contributors.
 
 All types of contributions are very welcome.
 
-You don't know how to start? Refer to our [contribution guide](https://github.com/ansible-collections/community.postgresql/blob/main/CONTRIBUTING.md)!
+You don't know how to start? Refer to our [contribution guide](https://github.com/ansible-collections/community.rabbitmq/blob/main/CONTRIBUTING.md)!
 
 The aspiration is to follow the following general guidelines:
 
@@ -78,7 +78,7 @@ The aspiration is to follow the following general guidelines:
 
 We use the following guidelines:
 
-* [CONTRIBUTING.md](https://github.com/ansible-collections/community.postgresql/blob/main/CONTRIBUTING.md)
+* [CONTRIBUTING.md](https://github.com/ansible-collections/community.rabbitmq/blob/main/CONTRIBUTING.md)
 * [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html)
 * [Ansible Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/index.html)
 * [Ansible Collection Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections)
