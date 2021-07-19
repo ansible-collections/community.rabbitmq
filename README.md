@@ -146,7 +146,7 @@ Basic instructions without release branches:
 5. Monitor the release job on the [Zuul Status Dashboard](https://dashboard.zuul.ansible.com/t/ansible/status).
 6. Verify that the new version is available on [Ansible Galaxy](https://galaxy.ansible.com/community/rabbitmq).
 
-See the [releasing guidelines](https://github.com/ansible/community-docs/blob/main/releasing_collections_without_release_branches.rst) to learn more.
+See the [Releasing guidelines](https://github.com/ansible/community-docs/blob/main/releasing_collections_without_release_branches.rst) to learn more.
 
 ## Tested with Ansible
 <!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
