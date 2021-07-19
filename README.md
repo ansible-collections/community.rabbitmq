@@ -172,7 +172,7 @@ TBD
 To communicate, we use:
 
 - The `#ansible-community` [Libera.Chat](https://libera.chat/) IRC channel.
-- [Issues](https://github.com/ansible-collections/rabbitmq/issues) on Github.
+- [Issues](https://github.com/ansible-collections/rabbitmq/issues) in this repository.
 
 We announce important development changes and releases through Ansible's [The Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn). If you are a collection developer, be sure you are subscribed.
 
