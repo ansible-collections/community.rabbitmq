@@ -133,7 +133,7 @@ ansible-test units --docker default -v --color --python 3.6
 
 ### Collection maintenance
 
-Maintainers of this collection follow the [maintainer guidelines](https://github.com/ansible/community-docs/blob/main/maintaining.rst).
+Maintainers of this collection follow the [Maintainer guidelines](https://github.com/ansible/community-docs/blob/main/maintaining.rst).
 
 ### Publishing New Version
 
