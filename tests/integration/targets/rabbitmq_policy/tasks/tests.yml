@@ -1,6 +1,6 @@
 - block:
   - set_fact:
-      vhost_name: /test
+      vhost_name: /policytest
       ha_policy_name: HA
 
   - name: Add host
@@ -18,7 +18,7 @@
       that:
         - result is changed
         - result is success
-        - '"false" in ctl_result.stdout'  # value for tracing, false is disabled
+        - '"false" in ctl_result.stdout'
 
   - name: Add host (idempotency)
     rabbitmq_vhost:
