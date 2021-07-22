@@ -1,0 +1,19 @@
+- block:
+  - set_fact:
+      parameter_name: maintenance_mode_status
+      parameter_node: rabbit
+
+  - name: Enable feature flag
+    rabbitmq_feature_flag:
+      name: "{{ parameter_name }}"
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check if feature_flag module was completed successfully
+    assert:
+      that:
+        - result is success
+
+  - name: Check if specified feature flag is enabled
+    shell: "rabbitmqctl -q list_feature_flags | grep {{ parameter_name }}"
+    register: ctl_result
