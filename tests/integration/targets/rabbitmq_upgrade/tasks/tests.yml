@@ -1,0 +1,91 @@
+- block:
+  - set_fact:
+      parameter_node: rabbit
+
+  - name: Drain node
+    rabbitmq_upgrade:
+      action: drain
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check if node was properly drained
+    assert:
+      that:
+        - result is success
+        - result is changed
+
+  - name: Ensure node is under maintenance
+    shell: "rabbitmq-diagnostics -n {{ parameter_node }} status | grep 'Is under maintenance?: true'"
+
+  - name: Drain node (idempotency)
+    rabbitmq_upgrade:
+      action: drain
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check idempotency
+    assert:
+      that:
+        - result is not changed
+
+  - name: Revive node
+    rabbitmq_upgrade:
+      action: revive
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check if node was properly revived
+    assert:
+      that:
+        - result is success
+        - result is changed
+
+  - name: Ensure node is under maintenance
+    shell: "rabbitmq-diagnostics -n {{ parameter_node }} status | grep 'Is under maintenance?: false'"
+
+  - name: Revive node (idempotency)
+    rabbitmq_upgrade:
+      action: revive
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check idempotency
+    assert:
+      that:
+        - result is not changed
+
+  - name: Execute await_online_quorum_plus_one
+    rabbitmq_upgrade:
+      action: await_online_quorum_plus_one
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check the result of await_online_quorum_plus_one
+    assert:
+      that:
+        - result is success
+        - result is changed
+
+  - name: Execute await_online_synchronized_mirror
+    rabbitmq_upgrade:
+      action: await_online_synchronized_mirror
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check the result of await_online_synchronized_mirror
+    assert:
+      that:
+        - result is success
+        - result is changed
+
+  - name: Execute post_upgrade
+    rabbitmq_upgrade:
+      action: post_upgrade
+      node: "{{ parameter_node }}"
+    register: result
+
+  - name: Check the result of post_upgrade
+    assert:
+      that:
+        - result is success
+        - result is changed
