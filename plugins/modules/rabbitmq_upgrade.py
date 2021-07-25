@@ -14,24 +14,25 @@ short_description: Execute rabbitmq-upgrade commands
 description:
   - Allows to execute rabbitmq-upgrade commands
 author: "Damian Dabrowski (@damiandabrowski5)"
+version_added: '1.1.0'
 options:
   action:
     description:
-      - Specify action to be executed
+      - Specify action to be executed.
     type: str
     required: true
     choices: ['await_online_quorum_plus_one','await_online_synchronized_mirror','post_upgrade','drain','revive']
   node:
     description:
-      - erlang node name of the target rabbit node
+      - Erlang node name of the target rabbit node.
     type: str
     required: false
     default: rabbit
 '''
 
 EXAMPLES = '''
-# Drain 'rabbit@node-1' node(i.e. put it into maintenance mode)
-- community.rabbitmq.rabbitmq_upgrade:
+- name: Drain 'rabbit@node-1' node(i.e. put it into maintenance mode)
+  community.rabbitmq.rabbitmq_upgrade:
     action: drain
     node: rabbit@node-1
 '''
