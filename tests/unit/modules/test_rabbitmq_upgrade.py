@@ -37,16 +37,17 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
                 'node': 'rabbit@node-1',
             })
             get_bin_path.return_value = '/rabbitmqctl'
-        
+
             def side_effect(*args, **kwargs):
                 if args[0] == 'rabbitmq-diagnostics':
-                    out = '{"active_plugins":["rabbitmq_management","amqp_client","rabbitmq_web_dispatch","cowboy","cowlib","rabbitmq_management_agent"],"is_under_maintenance":false}'
+                    out = '{"active_plugins": ["rabbitmq_management", "amqp_client", "rabbitmq_web_dispatch", "cowboy",'\
+                          '"cowlib", "rabbitmq_management_agent"], "is_under_maintenance": false}'
                 elif args[0] == 'rabbitmqctl':
                     out = 'name\tstate\nmaintenance_mode_status\tdisabled'
                 else:
                     out = ''
                 return out.splitlines()
-        
+
             _exec.side_effect = side_effect
             self.module.main()
 
@@ -62,7 +63,8 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
 
         def side_effect(*args, **kwargs):
             if args[0] == 'rabbitmq-diagnostics':
-                out = '{"active_plugins":["rabbitmq_management","amqp_client","rabbitmq_web_dispatch","cowboy","cowlib","rabbitmq_management_agent"],"is_under_maintenance":false}'
+                out = '{"active_plugins": ["rabbitmq_management", "amqp_client", "rabbitmq_web_dispatch", "cowboy",'\
+                      '"cowlib", "rabbitmq_management_agent"], "is_under_maintenance": false}'
             elif args[0] == 'rabbitmqctl':
                 out = 'name\tstate\nmaintenance_mode_status\tenabled'
             else:
@@ -87,7 +89,8 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
 
         def side_effect(*args, **kwargs):
             if args[0] == 'rabbitmq-diagnostics':
-                out = '{"active_plugins":["rabbitmq_management","amqp_client","rabbitmq_web_dispatch","cowboy","cowlib","rabbitmq_management_agent"],"is_under_maintenance":true}'
+                out = '{"active_plugins": ["rabbitmq_management", "amqp_client", "rabbitmq_web_dispatch", "cowboy",'\
+                      '"cowlib", "rabbitmq_management_agent"], "is_under_maintenance": true}'
             elif args[0] == 'rabbitmqctl':
                 out = 'name\tstate\nmaintenance_mode_status\tenabled'
             else:
@@ -112,7 +115,8 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
 
         def side_effect(*args, **kwargs):
             if args[0] == 'rabbitmq-diagnostics':
-                out = '{"active_plugins":["rabbitmq_management","amqp_client","rabbitmq_web_dispatch","cowboy","cowlib","rabbitmq_management_agent"],"is_under_maintenance":true}'
+                out = '{"active_plugins": ["rabbitmq_management", "amqp_client", "rabbitmq_web_dispatch", "cowboy",'\
+                      '"cowboy", "cowlib", "rabbitmq_management_agent"], "is_under_maintenance": true}'
             elif args[0] == 'rabbitmqctl':
                 out = 'name\tstate\nmaintenance_mode_status\tenabled'
             else:
@@ -137,7 +141,8 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
 
         def side_effect(*args, **kwargs):
             if args[0] == 'rabbitmq-diagnostics':
-                out = '{"active_plugins":["rabbitmq_management","amqp_client","rabbitmq_web_dispatch","cowboy","cowlib","rabbitmq_management_agent"],"is_under_maintenance":false}'
+                out = '{"active_plugins": ["rabbitmq_management", "amqp_client", "rabbitmq_web_dispatch", "cowboy",'\
+                      '"cowlib", "rabbitmq_management_agent"], "is_under_maintenance": false}'
             elif args[0] == 'rabbitmqctl':
                 out = 'name\tstate\nmaintenance_mode_status\tenabled'
             else:
@@ -194,5 +199,3 @@ class TestRabbitMQUpgradeModule(ModuleTestCase):
             self.module.main()
         except AnsibleExitJson as e:
             self._assert(e, 'changed', True)
-
-

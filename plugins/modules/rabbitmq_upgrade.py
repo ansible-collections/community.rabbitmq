@@ -39,7 +39,9 @@ EXAMPLES = '''
 import json
 from ansible.module_utils.basic import AnsibleModule
 
+
 class RabbitMqUpgrade(object):
+
     def __init__(self, module, action, node, result):
         self.module = module
         self.action = action
@@ -96,6 +98,7 @@ class RabbitMqUpgrade(object):
         self._exec('rabbitmq-upgrade', ['post_upgrade'])
         self.result['changed'] = True
 
+
 def main():
     arg_spec = dict(
         action=dict(
@@ -118,6 +121,6 @@ def main():
 
     module.exit_json(**result)
 
+
 if __name__ == '__main__':
     main()
-
