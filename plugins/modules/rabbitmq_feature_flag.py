@@ -12,25 +12,25 @@ DOCUMENTATION = '''
 module: rabbitmq_feature_flag
 short_description: Enables feature flag
 description:
-  - Allows to enable specified feature flag
+  - Allows to enable specified feature flag.
 author: "Damian Dabrowski (@damiandabrowski5)"
+version_added: '1.1.0'
 options:
   name:
     description:
-      - Feature flag name
+      - Feature flag name.
     type: str
     required: true
   node:
     description:
-      - erlang node name of the target rabbit node
+      - Erlang node name of the target rabbit node.
     type: str
-    required: false
     default: rabbit
 '''
 
 EXAMPLES = '''
-# Enable the 'maintenance_mode_status' feature flag on 'rabbit@node-1'
-- community.rabbitmq.rabbitmq_feature_flag:
+- name: Enable the 'maintenance_mode_status' feature flag on 'rabbit@node-1'
+  community.rabbitmq.rabbitmq_feature_flag:
     name: maintenance_mode_status
     node: rabbit@node-1
 '''
