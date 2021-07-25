@@ -31,13 +31,15 @@ options:
 EXAMPLES = '''
 # Enable the 'maintenance_mode_status' feature flag on 'rabbit@node-1'
 - community.rabbitmq.rabbitmq_feature_flag:
-    name: maintenance_mode_status 
+    name: maintenance_mode_status
     node: rabbit@node-1
 '''
 
 from ansible.module_utils.basic import AnsibleModule
 
+
 class RabbitMqFeatureFlag(object):
+
     def __init__(self, module, name, node):
         self.module = module
         self.name = name
@@ -66,6 +68,7 @@ class RabbitMqFeatureFlag(object):
     def enable(self):
         self._exec(['enable_feature_flag', self.name])
 
+
 def main():
     arg_spec = dict(
         name=dict(type='str', required=True),
@@ -90,6 +93,6 @@ def main():
 
     module.exit_json(**result)
 
+
 if __name__ == '__main__':
     main()
-

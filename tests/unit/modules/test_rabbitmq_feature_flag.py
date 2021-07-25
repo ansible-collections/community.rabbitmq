@@ -60,4 +60,3 @@ class TestRabbitMQFeatureFlagModule(ModuleTestCase):
                 self.module.main()
             except AnsibleExitJson as e:
                 self._assert(e, 'changed', False)
-
