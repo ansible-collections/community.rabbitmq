@@ -13,7 +13,7 @@ DOCUMENTATION = '''
 module: rabbitmq_user_limits
 short_description: Manage RabbitMQ user limits
 description:
-  - Manage the state of user limits in RabbitMQ.
+  - Manage the state of user limits in RabbitMQ. Supported since RabbitMQ version 3.8.10.
 author: Aitor Pazos (@aitorpazos)
 options:
   user:
