@@ -15,6 +15,7 @@ short_description: Manage RabbitMQ user limits
 description:
   - Manage the state of user limits in RabbitMQ. Supported since RabbitMQ version 3.8.10.
 author: Aitor Pazos (@aitorpazos)
+version_added: '1.1.0'
 options:
   user:
     description:
