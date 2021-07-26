@@ -198,7 +198,7 @@ class RabbitMqPolicy(object):
 
         try:
             tags = json.loads(policy_data[tags_fno])
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             tags = policy_data[tags_fno]
 
         priority = policy_data[priority_fno]
