@@ -12,9 +12,11 @@
         Pin: version 1:20.3.6
         Pin-Priority: 1000
 
-- name: Install https transport for apt
+- name: Install https transport for apt and sudo
   apt:
-    name: apt-transport-https
+    name:
+      - apt-transport-https
+      - sudo
     state: latest
     force: yes
 
