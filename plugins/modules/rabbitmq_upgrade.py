@@ -31,7 +31,7 @@ options:
 '''
 
 EXAMPLES = '''
-- name: Drain 'rabbit@node-1' node(i.e. put it into maintenance mode)
+- name: Drain 'rabbit@node-1' node (in other words, put it into maintenance mode)
   community.rabbitmq.rabbitmq_upgrade:
     action: drain
     node: rabbit@node-1
