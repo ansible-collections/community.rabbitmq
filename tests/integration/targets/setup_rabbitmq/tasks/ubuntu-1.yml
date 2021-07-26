@@ -14,12 +14,11 @@
 
 - name: Install https transport for apt and sudo
   apt:
-    name: "{{ item }}"
+    name:
+      - apt-transport-https
+      - sudo
     state: latest
     force: yes
-  loop:
-    - apt-transport-https
-    - sudo
 
 - name: Copy installation script
   copy:
