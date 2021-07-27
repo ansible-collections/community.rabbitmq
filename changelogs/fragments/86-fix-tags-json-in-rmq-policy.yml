@@ -1,3 +1,2 @@
 bugfixes:
-  - >
-    rabbitmq_policy - The `_policy_check` piece of the policy module (`policy_data`) is typically list based on a split of the variable `policy`. However `policy` in some cases does not contain data. The fix allows `tags` to attempt to load as json first but in the case of failure, assign `tags` without using the json loader.
+  - rabbitmq_policy - The ``_policy_check`` piece of the policy module (``policy_data``) is typically list based on a split of the variable ``policy``. However ``policy`` in some cases does not contain data. The fix allows ``tags`` to attempt to load as json first but in the case of failure, assign ``tags`` without using the json loader (https://github.com/ansible-collections/community.rabbitmq/pull/28).
