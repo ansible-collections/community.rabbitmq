@@ -95,9 +95,9 @@ class RabbitMqUserLimits(object):
 
     def _exec(self,
               args,
-              run_in_check_mode=False):
+              force_exec_in_check_mode=False):
 
-        if not self._module.check_mode or (self._module.check_mode and run_in_check_mode):
+        if not self._module.check_mode or (self._module.check_mode and force_exec_in_check_mode):
             cmd = [self._rabbitmqctl, '-q']
             if self._node is not None:
                 cmd.extend(['-n', self._node])

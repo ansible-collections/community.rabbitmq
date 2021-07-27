@@ -49,8 +49,8 @@ class RabbitMqUpgrade(object):
         self.node = node
         self.result = result
 
-    def _exec(self, binary, args, run_in_check_mode=False):
-        if not self.module.check_mode or (self.module.check_mode and run_in_check_mode):
+    def _exec(self, binary, args, force_exec_in_check_mode=False):
+        if not self.module.check_mode or (self.module.check_mode and force_exec_in_check_mode):
             cmd = [self.module.get_bin_path(binary, True)]
             rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
