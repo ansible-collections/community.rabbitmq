@@ -18,6 +18,27 @@ We follow the [Ansible Code of Conduct](https://docs.ansible.com/ansible/latest/
 
 If you encounter abusive behavior violating the [Ansible Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html), please refer to the [policy violations](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html#policy-violations) section of the Code of Conduct for information on how to raise a complaint.
 
+## Included content
+<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
+- Modules:
+  - `rabbitmq_binding`: Manage rabbitMQ bindings.
+  - `rabbitmq_exchange`: Manage rabbitMQ exchanges.
+  - `rabbitmq_feature_flag`: Enables feature flag.
+  - `rabbitmq_global_parameter`: Manage RabbitMQ global parameters.
+  - `rabbitmq_parameter`: Manage RabbitMQ parameters.
+  - `rabbitmq_plugin`: Manage RabbitMQ plugins.
+  - `rabbitmq_policy`: Manage the state of policies in RabbitMQ.
+  - `rabbitmq_publish`: Publish a message to a RabbitMQ queue.
+  - `rabbitmq_queue`: Manage rabbitMQ queues.
+  - `rabbitmq_upgrade`: Execute rabbitmq-upgrade commands.
+  - `rabbitmq_user_limits`: Manage RabbitMQ user limits.
+  - `rabbitmq_user`: Manage RabbitMQ users.
+  - `rabbitmq_vhost_limits`: Manage the state of virtual host limits in RabbitMQ.
+  - `rabbitmq_vhost`: Manage the state of a virtual host in RabbitMQ.
+
+- Lookup:
+  - `rabbitmq`: Retrieve messages from an AMQP/AMQPS RabbitMQ queue.
+
 ## Using this collection
 <!--Include some quick examples that cover the most common use cases for your collection content. -->
 
@@ -160,10 +181,6 @@ TBD
 
 ### Supported connections
 <!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
-TBD
-
-## Included content
-<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
 TBD
 
 ## More Information
