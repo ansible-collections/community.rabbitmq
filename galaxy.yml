@@ -1,6 +1,6 @@
 namespace: community
 name: rabbitmq
-version: 1.0.3
+version: 1.1.0
 readme: README.md
 authors:
   - Ansible (https://github.com/ansible)
@@ -10,6 +10,6 @@ license_file: COPYING
 tags:
   - messaging
 repository: https://github.com/ansible-collections/community.rabbitmq
-documentation: https://github.com/ansible-collections/community.rabbitmq/README.md
+documentation: https://docs.ansible.com/ansible/latest/collections/community/rabbitmq/
 homepage: https://github.com/ansible-collections/community.rabbitmq
 issues: https://github.com/ansible-collections/community.rabbitmq/issues
