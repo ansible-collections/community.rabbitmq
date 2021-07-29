@@ -4,15 +4,28 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
-v1.0.2
+
+v1.1.0
 ======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after release 1.0.3.
 
 Bugfixes
 --------
 
-- rabbitmq_user: fix parsing of user output when no tags are associated
-- rabbitmq_exchange: Add x-delayed-message as a valid exchange type
-- rabbitmq_global_parameter: Fix parsing of empty result of list_global_parameters with RabbitMQ 3.7 and ignore header with RabbitMQ 3.8
+- rabbitmq_policy - The ``_policy_check`` piece of the policy module (``policy_data``) is typically list based on a split of the variable ``policy``. However ``policy`` in some cases does not contain data. The fix allows ``tags`` to attempt to load as json first but in the case of failure, assign ``tags`` without using the json loader (https://github.com/ansible-collections/community.rabbitmq/pull/28).
+
+New Modules
+-----------
+
+- community.rabbitmq.rabbitmq_feature_flag - Enables feature flag
+- community.rabbitmq.rabbitmq_upgrade - Execute rabbitmq-upgrade commands
+- community.rabbitmq.rabbitmq_user_limits - Manage RabbitMQ user limits
 
 v1.0.0
 ======
