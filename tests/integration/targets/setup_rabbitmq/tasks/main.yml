@@ -8,7 +8,3 @@
         - '{{ ansible_facts.os_family | lower }}.yml'
       paths:
         - tasks
-
-# Was changed 16 June 2021 as CI did not work
-#- include: ubuntu-1.yml
-#  when: ansible_distribution == 'Ubuntu'
