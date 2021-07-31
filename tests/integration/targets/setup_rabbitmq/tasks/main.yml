@@ -4,8 +4,8 @@
   vars:
     params:
       files:
-        - '{{ ansible_facts.distribution }}.yml'
-        - '{{ ansible_facts.os_family }}.yml'
+        - '{{ ansible_facts.distribution | lower }}.yml'
+        - '{{ ansible_facts.os_family | lower }}.yml'
       paths:
         - tasks
 

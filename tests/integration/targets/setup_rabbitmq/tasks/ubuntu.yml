@@ -55,10 +55,6 @@
     state: present
     update_cache: yes
 
-- name: Install requests
-  pip:
-    name: requests
-
 - name: Install RabbitMQ Erlang dependencies
   apt:
     name:
