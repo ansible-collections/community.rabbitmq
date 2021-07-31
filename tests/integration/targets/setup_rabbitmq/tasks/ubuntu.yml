@@ -76,16 +76,17 @@
       - erlang-xmerl
     state: latest
 
-# configure first, or dpkg can fail starting service
-- name: Ensure TLS config
-  copy:
-    src: rabbitmq.conf
-    dest: /etc/rabbitmq/rabbitmq.conf
-
 - name: Install RabbitMQ Server
   apt:
     name: rabbitmq-server
     state: fixed
+    # policy.rc.d => do not start the service yet
+    policy_rc_d: 101
+
+- name: Ensure TLS config
+  copy:
+    src: rabbitmq.conf
+    dest: /etc/rabbitmq/rabbitmq.conf
 
 - name: Start RabbitMQ service
   service:
