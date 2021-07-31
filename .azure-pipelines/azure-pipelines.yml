@@ -93,6 +93,10 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          # $ansible_version/$script/$test => devel / linux / ubuntu2004/1
+          # shippable/linux.sh target=shippable/posix/group1
+          # ansible-test integration ... shippable/posix/group1 --docker ubuntu2004
+          # dir: integration/targets/
           testFormat: devel/linux/{0}/1
           targets:
             #- name: CentOS 6
@@ -137,6 +141,8 @@ stages:
             #  test: opensuse15
             - name: Ubuntu 18.04
               test: ubuntu1804
+            - name: Ubuntu 20.04
+              test: ubuntu2004
   - stage: Docker_2_10
     displayName: Docker 2.10
     dependsOn: []
@@ -161,6 +167,8 @@ stages:
             #  test: opensuse15
             - name: Ubuntu 18.04
               test: ubuntu1804
+            - name: Ubuntu 20.04
+              test: ubuntu2004
 #  - stage: Docker_2_9
 #    displayName: Docker 2.9
 #    dependsOn: []
