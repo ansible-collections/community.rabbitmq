@@ -101,8 +101,8 @@ stages:
           targets:
             #- name: CentOS 6
             #  test: centos6
-            - name: CentOS 7
-              test: centos7
+            #- name: CentOS 7
+            #  test: centos7
             #- name: CentOS 8
             #  test: centos8
             #- name: Fedora 33
@@ -127,8 +127,8 @@ stages:
           targets:
             #- name: CentOS 6
             #  test: centos6
-            - name: CentOS 7
-              test: centos7
+            #- name: CentOS 7
+            #  test: centos7
             #- name: CentOS 8
             #  test: centos8
             #- name: Fedora 32
@@ -153,8 +153,8 @@ stages:
           targets:
             #- name: CentOS 6
             #  test: centos6
-            - name: CentOS 7
-              test: centos7
+            #- name: CentOS 7
+            #  test: centos7
             #- name: CentOS 8
             #  test: centos8
             #- name: Fedora 31
