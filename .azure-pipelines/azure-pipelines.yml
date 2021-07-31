@@ -172,19 +172,19 @@ stages:
               test: ubuntu1804
             - name: Ubuntu 20.04
               test: ubuntu2004
-  - stage: Docker_2_9
-    displayName: Docker 2.9
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          testFormat: 2.9/linux/{0}/1
-          targets:
-            # NOTE: update integration roles to support platform before adding here.
-            - name: Ubuntu 18.04
-              test: ubuntu1804
-            - name: Ubuntu 20.04
-              test: ubuntu2004
+  #- stage: Docker_2_9
+  #  displayName: Docker 2.9
+  #  dependsOn: []
+  #  jobs:
+  #    - template: templates/matrix.yml
+  #      parameters:
+  #        testFormat: 2.9/linux/{0}/1
+  #        targets:
+  #          # NOTE: update integration roles to support platform before adding here.
+  #          - name: Ubuntu 18.04
+  #            test: ubuntu1804  # freezes in rabbitmq_setup
+  #          - name: Ubuntu 20.04
+  #            test: ubuntu2004  # error downloading docker image
 
 ### Remote
 #  - stage: Remote_devel
@@ -261,7 +261,7 @@ stages:
       - Docker_devel
       - Docker_2_11
       - Docker_2_10
-      - Docker_2_9
+      #- Docker_2_9
       #- Remote_devel
       #- Remote_2_11
       #- Remote_2_10
