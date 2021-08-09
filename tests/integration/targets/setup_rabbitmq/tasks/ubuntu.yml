@@ -58,6 +58,9 @@
 - name: Install RabbitMQ Erlang dependencies
   apt:
     name:
+      # Make sure libcrypto new enough for erlang
+      - libssl1.1
+      # Base
       - erlang-base
       # TLS
       - erlang-asn1
