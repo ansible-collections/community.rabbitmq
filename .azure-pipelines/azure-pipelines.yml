@@ -93,8 +93,13 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          # $ansible_version/$script/$test => devel / linux / ubuntu2004/1
+          # shippable/linux.sh target=shippable/posix/group1
+          # ansible-test integration ... shippable/posix/group1 --docker ubuntu2004
+          # dir: integration/targets/
           testFormat: devel/linux/{0}/1
           targets:
+            # NOTE: update integration roles to support platform before enabling here.
             #- name: CentOS 6
             #  test: centos6
             #- name: CentOS 7
@@ -121,6 +126,7 @@ stages:
         parameters:
           testFormat: 2.11/linux/{0}/1
           targets:
+            # NOTE: update integration roles to support platform before enabling here.
             #- name: CentOS 6
             #  test: centos6
             #- name: CentOS 7
@@ -137,6 +143,8 @@ stages:
             #  test: opensuse15
             - name: Ubuntu 18.04
               test: ubuntu1804
+            - name: Ubuntu 20.04
+              test: ubuntu2004
   - stage: Docker_2_10
     displayName: Docker 2.10
     dependsOn: []
@@ -145,6 +153,7 @@ stages:
         parameters:
           testFormat: 2.10/linux/{0}/1
           targets:
+            # NOTE: update integration roles to support platform before enabling here.
             #- name: CentOS 6
             #  test: centos6
             #- name: CentOS 7
@@ -161,16 +170,20 @@ stages:
             #  test: opensuse15
             - name: Ubuntu 18.04
               test: ubuntu1804
-#  - stage: Docker_2_9
-#    displayName: Docker 2.9
-#    dependsOn: []
-#    jobs:
-#      - template: templates/matrix.yml
-#        parameters:
-#          testFormat: 2.9/linux/{0}/1
-#          targets:
-#            - name: Ubuntu 18.04
-#              test: ubuntu1804
+            - name: Ubuntu 20.04
+              test: ubuntu2004
+  - stage: Docker_2_9
+    displayName: Docker 2.9
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          testFormat: 2.9/linux/{0}/1
+          targets:
+            # NOTE: update integration roles to support platform before adding here.
+            - name: Ubuntu 18.04
+              test: ubuntu1804  # freezes in rabbitmq_setup
+            # ansible-test 2.9 does not support 20.04 (image not included in its test-containers list)
 
 ### Remote
 #  - stage: Remote_devel
@@ -247,7 +260,7 @@ stages:
       - Docker_devel
       - Docker_2_11
       - Docker_2_10
-      #- Docker_2_9
+      - Docker_2_9
       #- Remote_devel
       #- Remote_2_11
       #- Remote_2_10
