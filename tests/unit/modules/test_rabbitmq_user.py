@@ -152,12 +152,12 @@ class TestRabbitMQUserModule(ModuleTestCase):
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_same_topic_permissions_not_changing(self,
-                                           has_tags_modifications,
-                                           _get_permissions,
-                                           _get_topic_permissions,
-                                           _check_version,
-                                           _exec,
-                                           get_bin_path):
+                                                 has_tags_modifications,
+                                                 _get_permissions,
+                                                 _get_topic_permissions,
+                                                 _check_version,
+                                                 _exec,
+                                                 get_bin_path):
         set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
@@ -296,12 +296,12 @@ class TestRabbitMQUserModule(ModuleTestCase):
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_topic_permissions_are_fixed(self,
-                                   has_tags_modifications,
-                                   _get_permissions,
-                                   _get_topic_permissions,
-                                   _check_version,
-                                   _exec,
-                                   get_bin_path):
+                                         has_tags_modifications,
+                                         _get_permissions,
+                                         _get_topic_permissions,
+                                         _check_version,
+                                         _exec,
+                                         get_bin_path):
         """Test changes in topic permissions are fixed.
 
         Ensure that topic permissions that do not need to be changed are not, topic permissions with differences are
@@ -359,12 +359,12 @@ class TestRabbitMQUserModule(ModuleTestCase):
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.has_tags_modifications')
     def test_topic_permissions_defaults(self,
-                                   has_tags_modifications,
-                                   _get_permissions,
-                                   _get_topic_permissions,
-                                   _check_version,
-                                   _exec,
-                                   get_bin_path):
+                                        has_tags_modifications,
+                                        _get_permissions,
+                                        _get_topic_permissions,
+                                        _check_version,
+                                        _exec,
+                                        get_bin_path):
         """Test that the topic permissions defaults are set."""
         set_module_args({
             'user': 'someuser',
