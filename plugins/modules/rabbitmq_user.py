@@ -87,7 +87,7 @@ options:
     type: list
     elements: dict
     default: []
-    version_added: '1.1.0'
+    version_added: '1.2.0'
   force:
     description:
       - Deletes and recreates the user.
@@ -481,7 +481,7 @@ def main():
 
     if permissions:
         vhosts = [permission.get('vhost', '/') for permission in permissions]
-        if any([vhost_count > 1 for vhost_count in count(vhosts).values()]):
+        if any(vhost_count > 1 for vhost_count in count(vhosts).values()):
             module.fail_json(msg="Error parsing vhost permissions: You can't "
                                  "have two permission dicts for the same vhost")
         bulk_permissions = True
@@ -500,7 +500,7 @@ def main():
             (permission.get('vhost', '/'), permission.get('exchange'))
             for permission in topic_permissions
         ]
-        if any([ve_count > 1 for ve_count in count(vhost_exchanges).values()]):
+        if any(ve_count > 1 for ve_count in count(vhost_exchanges).values()):
             module.fail_json(msg="Error parsing vhost topic_permissions: You can't "
                                  "have two topic permission dicts for the same vhost "
                                  "and the same exchange")
