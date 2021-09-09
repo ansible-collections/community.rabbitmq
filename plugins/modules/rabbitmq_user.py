@@ -81,10 +81,13 @@ options:
     description:
       - A list of dicts, each dict contains vhost, exchange, read_priv and write_priv,
         and represents a topic permission rule for that vhost.
-      - By default vhost is / and exchange is amq.topic.
+      - By default vhost is C(/) and exchange is C(amq.topic).
+      - Supported since RabbitMQ 3.7.0. If RabbitMQ is older and topic_permissions are
+        set, the module will fail.
     type: list
     elements: dict
     default: []
+    version_added: '1.1.0'
   force:
     description:
       - Deletes and recreates the user.
@@ -106,7 +109,7 @@ options:
 '''
 
 EXAMPLES = '''
-# Add user to server and assign full access control on / vhost.
+# name: Add user to server and assign full access control on / vhost.
 # The user might have permission rules for other vhost but you don't care.
 - community.rabbitmq.rabbitmq_user:
     user: joe
@@ -117,7 +120,7 @@ EXAMPLES = '''
     write_priv: .*
     state: present
 
-# Add user to server and assign full access control on / vhost.
+# name: Add user to server and assign full access control on / vhost.
 # The user doesn't have permission rules for other vhosts
 - community.rabbitmq.rabbitmq_user:
     user: joe
@@ -129,7 +132,7 @@ EXAMPLES = '''
         write_priv: .*
     state: present
 
-# Add user to server and assign some topic permissions on / vhost.
+# name: Add user to server and assign some topic permissions on / vhost.
 # The user doesn't have topic permission rules for other vhosts
 - community.rabbitmq.rabbitmq_user:
     user: joe
@@ -138,7 +141,7 @@ EXAMPLES = '''
       - vhost: /
         exchange: amq.topic
         read_priv: .*
-        write_priv: 'prod\.logging\..*'
+        write_priv: 'prod\\.logging\\..*'
     state: present
 '''
 
