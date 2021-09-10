@@ -408,7 +408,7 @@ def main():
 
     if permissions:
         vhosts = [permission.get('vhost', '/') for permission in permissions]
-        if any([vhost_count > 1 for vhost_count in count(vhosts).values()]):
+        if any(vhost_count > 1 for vhost_count in count(vhosts).values()):
             module.fail_json(msg="Error parsing vhost permissions: You can't "
                                  "have two permission dicts for the same vhost")
         bulk_permissions = True
