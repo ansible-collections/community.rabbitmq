@@ -77,6 +77,17 @@ options:
       - This option will be ignored when permissions option is used.
     type: str
     default: '^$'
+  topic_permissions:
+    description:
+      - A list of dicts, each dict contains vhost, exchange, read_priv and write_priv,
+        and represents a topic permission rule for that vhost.
+      - By default vhost is C(/) and exchange is C(amq.topic).
+      - Supported since RabbitMQ 3.7.0. If RabbitMQ is older and topic_permissions are
+        set, the module will fail.
+    type: list
+    elements: dict
+    default: []
+    version_added: '1.2.0'
   force:
     description:
       - Deletes and recreates the user.
@@ -98,7 +109,7 @@ options:
 '''
 
 EXAMPLES = '''
-# Add user to server and assign full access control on / vhost.
+# name: Add user to server and assign full access control on / vhost.
 # The user might have permission rules for other vhost but you don't care.
 - community.rabbitmq.rabbitmq_user:
     user: joe
@@ -109,7 +120,7 @@ EXAMPLES = '''
     write_priv: .*
     state: present
 
-# Add user to server and assign full access control on / vhost.
+# name: Add user to server and assign full access control on / vhost.
 # The user doesn't have permission rules for other vhosts
 - community.rabbitmq.rabbitmq_user:
     user: joe
@@ -119,6 +130,18 @@ EXAMPLES = '''
         configure_priv: .*
         read_priv: .*
         write_priv: .*
+    state: present
+
+# name: Add user to server and assign some topic permissions on / vhost.
+# The user doesn't have topic permission rules for other vhosts
+- community.rabbitmq.rabbitmq_user:
+    user: joe
+    password: changeme
+    topic_permissions:
+      - vhost: /
+        exchange: amq.topic
+        read_priv: .*
+        write_priv: 'prod\\.logging\\..*'
     state: present
 '''
 
@@ -154,6 +177,11 @@ def as_permission_dict(vhost_permission_list):
                  in normalized_permissions(vhost_permission_list)])
 
 
+def as_topic_permission_dict(topic_permission_list):
+    return dict([((perm['vhost'], perm['exchange']), perm) for perm
+                 in topic_permission_list])
+
+
 def only(vhost, vhost_permissions):
     return {vhost: vhost_permissions.get(vhost, {})}
 
@@ -164,17 +192,19 @@ def first(iterable):
 
 class RabbitMqUser(object):
     def __init__(self, module, username, password, tags, permissions,
-                 node, bulk_permissions=False):
+                 topic_permissions, node, bulk_permissions=False):
         self.module = module
         self.username = username
         self.password = password or ''
         self.node = node
         self.tags = list() if not tags else tags.replace(' ', '').split(',')
         self.permissions = as_permission_dict(permissions)
+        self.topic_permissions = as_topic_permission_dict(topic_permissions)
         self.bulk_permissions = bulk_permissions
 
         self.existing_tags = None
         self.existing_permissions = dict()
+        self.existing_topic_permissions = dict()
         self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
         self._version = self._check_version()
 
@@ -280,7 +310,8 @@ class RabbitMqUser(object):
     def get(self):
         """Retrieves the list of registered users from the node.
 
-        If the user is already present, the node will also be queried for the user's permissions.
+        If the user is already present, the node will also be queried for the user's permissions and topic
+        permissions.
         If the version of the node is >= 3.7.6 the JSON formatter will be used, otherwise the plaintext will be
         parsed.
         """
@@ -303,6 +334,7 @@ class RabbitMqUser(object):
 
         self.existing_tags = users.get(self.username, list())
         self.existing_permissions = self._get_permissions() if self.username in users else dict()
+        self.existing_topic_permissions = self._get_topic_permissions() if self.username in users else dict()
         return self.username in users
 
     def _get_permissions(self):
@@ -323,6 +355,20 @@ class RabbitMqUser(object):
             return as_permission_dict(permissions)
         else:
             return only(first(self.permissions.keys()), as_permission_dict(permissions))
+
+    def _get_topic_permissions(self):
+        """Get topic permissions of the user from RabbitMQ."""
+        if self._version < distutils.version.StrictVersion('3.7.0'):
+            return dict()
+        if self._version >= distutils.version.StrictVersion('3.7.6'):
+            permissions = json.loads(self._exec(['list_user_topic_permissions', self.username, '--formatter', 'json']))
+        else:
+            output = self._exec(['list_user_topic_permissions', self.username]).strip().split('\n')
+            perms_out = [perm.split('\t') for perm in output if perm.strip()]
+            permissions = list()
+            for vhost, exchange, write, read in perms_out:
+                permissions.append(dict(vhost=vhost, exchange=exchange, write=write, read=read))
+        return as_topic_permission_dict(permissions)
 
     def check_password(self):
         """Return `True` if the user can authenticate successfully."""
@@ -366,11 +412,36 @@ class RabbitMqUser(object):
             self._exec(cmd.split(' '))
         self.existing_permissions = self._get_permissions()
 
+    def set_topic_permissions(self):
+        permissions_to_add = list()
+        for vhost_exchange, permission_dict in self.topic_permissions.items():
+            if permission_dict != self.existing_topic_permissions.get(vhost_exchange, {}):
+                permissions_to_add.append(permission_dict)
+
+        permissions_to_clear = list()
+        for vhost_exchange in self.existing_topic_permissions.keys():
+            if vhost_exchange not in self.topic_permissions:
+                permissions_to_clear.append(vhost_exchange)
+
+        for vhost_exchange in permissions_to_clear:
+            vhost, exchange = vhost_exchange
+            cmd = ('clear_topic_permissions -p {vhost} {username} {exchange}'
+                   .format(username=self.username, vhost=vhost, exchange=exchange))
+            self._exec(cmd.split(' '))
+        for permissions in permissions_to_add:
+            cmd = ('set_topic_permissions -p {vhost} {username} {exchange} {write} {read}'
+                   .format(username=self.username, **permissions))
+            self._exec(cmd.split(' '))
+        self.existing_topic_permissions = self._get_topic_permissions()
+
     def has_tags_modifications(self):
         return set(self.tags) != set(self.existing_tags)
 
     def has_permissions_modifications(self):
         return self.existing_permissions != self.permissions
+
+    def has_topic_permissions_modifications(self):
+        return self.existing_topic_permissions != self.topic_permissions
 
 
 def main():
@@ -383,6 +454,7 @@ def main():
         configure_priv=dict(default='^$'),
         write_priv=dict(default='^$'),
         read_priv=dict(default='^$'),
+        topic_permissions=dict(default=list(), type='list', elements='dict'),
         force=dict(default='no', type='bool'),
         state=dict(default='present', choices=['present', 'absent']),
         node=dict(default='rabbit'),
@@ -401,6 +473,7 @@ def main():
     configure_priv = module.params['configure_priv']
     write_priv = module.params['write_priv']
     read_priv = module.params['read_priv']
+    topic_permissions = module.params['topic_permissions']
     force = module.params['force']
     state = module.params['state']
     node = module.params['node']
@@ -422,13 +495,33 @@ def main():
         permissions.append(perm)
         bulk_permissions = False
 
+    if topic_permissions:
+        vhost_exchanges = [
+            (permission.get('vhost', '/'), permission.get('exchange'))
+            for permission in topic_permissions
+        ]
+        if any(ve_count > 1 for ve_count in count(vhost_exchanges).values()):
+            module.fail_json(msg="Error parsing vhost topic_permissions: You can't "
+                                 "have two topic permission dicts for the same vhost "
+                                 "and the same exchange")
+
     for permission in permissions:
         if not permission['vhost']:
             module.fail_json(msg="Error parsing vhost permissions: You can't"
                                  "have an empty vhost when setting permissions")
 
+    for permission in topic_permissions:
+        permission.setdefault('vhost', '/')
+        permission.setdefault('exchange', 'amq.topic')
+        # Normalize the arguments
+        for perm_name in ("read", "write"):
+            suffixed_perm_name = "{perm_name}_priv".format(perm_name=perm_name)
+            if suffixed_perm_name in permission:
+                permission[perm_name] = permission.pop(suffixed_perm_name)
+
     rabbitmq_user = RabbitMqUser(module, username, password, tags, permissions,
-                                 node, bulk_permissions=bulk_permissions)
+                                 topic_permissions, node,
+                                 bulk_permissions=bulk_permissions)
 
     result = dict(changed=False, user=username, state=state)
     if rabbitmq_user.get():
@@ -453,10 +546,15 @@ def main():
             if rabbitmq_user.has_permissions_modifications():
                 rabbitmq_user.set_permissions()
                 result['changed'] = True
+
+            if rabbitmq_user.has_topic_permissions_modifications():
+                rabbitmq_user.set_topic_permissions()
+                result['changed'] = True
     elif state == 'present':
         rabbitmq_user.add()
         rabbitmq_user.set_tags()
         rabbitmq_user.set_permissions()
+        rabbitmq_user.set_topic_permissions()
         result['changed'] = True
 
     module.exit_json(**result)

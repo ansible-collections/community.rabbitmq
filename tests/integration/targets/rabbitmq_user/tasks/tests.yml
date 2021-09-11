@@ -44,6 +44,42 @@
         that:
           - add_user.changed == false
 
+- name: Test change user topic permissions
+  block:
+    - name: Add user with topic permissions
+      rabbitmq_user:
+        user: joe
+        password: changeme
+        topic_permissions:
+          - vhost: /
+            exchange: amq.topic
+            read_priv: .*
+            write_priv: .*
+      register: add_user
+
+    - name: Check that changing topic permissions succeeds with a change
+      assert:
+        that:
+          - add_user.changed == true
+
+- name: Test change user topic permissions idempotence
+  block:
+    - name: Add user with topic permissions
+      rabbitmq_user:
+        user: joe
+        password: changeme
+        topic_permissions:
+          - vhost: /
+            exchange: amq.topic
+            read_priv: .*
+            write_priv: .*
+      register: add_user
+
+    - name: Check that changing topic permissions succeeds without a change
+      assert:
+        that:
+          - add_user.changed == false
+
 - name: Test add user tags
   block:
     - name: Add user with tags
