@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_user
 short_description: Manage RabbitMQ users
@@ -108,10 +108,11 @@ options:
     choices: ['on_create', 'always']
 '''
 
-EXAMPLES = '''
-# name: Add user to server and assign full access control on / vhost.
-# The user might have permission rules for other vhost but you don't care.
-- community.rabbitmq.rabbitmq_user:
+EXAMPLES = r'''
+- name: |-
+    Add user to server and assign full access control on / vhost.
+    The user might have permission rules for other vhost but you don't care.
+  community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
     vhost: /
@@ -120,9 +121,10 @@ EXAMPLES = '''
     write_priv: .*
     state: present
 
-# name: Add user to server and assign full access control on / vhost.
-# The user doesn't have permission rules for other vhosts
-- community.rabbitmq.rabbitmq_user:
+- name: |-
+    Add user to server and assign full access control on / vhost.
+    The user doesn't have permission rules for other vhosts
+  community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
     permissions:
@@ -132,9 +134,10 @@ EXAMPLES = '''
         write_priv: .*
     state: present
 
-# name: Add user to server and assign some topic permissions on / vhost.
-# The user doesn't have topic permission rules for other vhosts
-- community.rabbitmq.rabbitmq_user:
+- name: |-
+    Add user to server and assign some topic permissions on / vhost.
+    The user doesn't have topic permission rules for other vhosts
+  community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
     topic_permissions:

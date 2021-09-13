@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_parameter
 short_description: Manage RabbitMQ parameters
@@ -48,9 +48,9 @@ options:
     choices: [ 'present', 'absent']
 '''
 
-EXAMPLES = """
-# Set the federation parameter 'local_username' to a value of 'guest' (in quotes)
-- community.rabbitmq.rabbitmq_parameter:
+EXAMPLES = r"""
+- name: Set the federation parameter 'local_username' to a value of 'guest' (in quotes)
+  community.rabbitmq.rabbitmq_parameter:
     component: federation
     name: local-username
     value: '"guest"'

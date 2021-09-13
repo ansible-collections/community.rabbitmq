@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_exchange
 author: Manuel Sousa (@manuel-sousa)
@@ -67,13 +67,13 @@ extends_documentation_fragment:
 
 '''
 
-EXAMPLES = '''
-# Create direct exchange
-- community.rabbitmq.rabbitmq_exchange:
+EXAMPLES = r'''
+- name: Create direct exchange
+  community.rabbitmq.rabbitmq_exchange:
     name: directExchange
 
-# Create topic exchange on vhost
-- community.rabbitmq.rabbitmq_exchange:
+- name: Create topic exchange on vhost
+  community.rabbitmq.rabbitmq_exchange:
     name: topicExchange
     type: topic
     vhost: myVhost
