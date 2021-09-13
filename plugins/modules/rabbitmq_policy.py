@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_policy
 short_description: Manage the state of policies in RabbitMQ
@@ -64,7 +64,7 @@ options:
     choices: [present, absent]
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: ensure the default vhost contains the HA policy via a dict
   community.rabbitmq.rabbitmq_policy:
     name: HA

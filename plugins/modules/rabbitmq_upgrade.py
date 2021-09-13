@@ -7,7 +7,7 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_upgrade
 short_description: Execute rabbitmq-upgrade commands
@@ -30,7 +30,7 @@ options:
     default: rabbit
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Drain 'rabbit@node-1' node (in other words, put it into maintenance mode)
   community.rabbitmq.rabbitmq_upgrade:
     action: drain

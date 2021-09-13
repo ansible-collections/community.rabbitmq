@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_publish
 short_description: Publish a message to a RabbitMQ queue.
@@ -124,7 +124,7 @@ notes:
 author: "John Imison (@Im0)"
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Publish a message to a queue with headers
   community.rabbitmq.rabbitmq_publish:
     url: "amqp://guest:guest@192.168.0.32:5672/%2F"
@@ -159,7 +159,7 @@ EXAMPLES = '''
 
 '''
 
-RETURN = '''
+RETURN = r'''
 result:
   description:
     - Contains the status I(msg), content type I(content_type) and the queue name I(queue).

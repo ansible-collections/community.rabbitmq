@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_binding
 author: Manuel Sousa (@manuel-sousa)
@@ -59,7 +59,7 @@ extends_documentation_fragment:
 
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Bind myQueue to directExchange with routing key info
   community.rabbitmq.rabbitmq_binding:
     name: directExchange

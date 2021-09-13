@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_user_limits
 short_description: Manage RabbitMQ user limits
@@ -52,7 +52,7 @@ notes:
   - Supports C(check_mode).
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Limit both of the max number of connections and channels on the user 'guest'.
   community.rabbitmq.rabbitmq_user_limits:
     user: guest
@@ -73,7 +73,7 @@ EXAMPLES = '''
     state: absent
 '''
 
-RETURN = ''' # '''
+RETURN = r''' # '''
 
 import json
 import re

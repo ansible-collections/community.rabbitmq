@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_vhost_limits
 author: Hiroyuki Matsuo (@h-matsuo)
@@ -51,7 +51,7 @@ options:
         default: /
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Limit both of the max number of connections and queues on the vhost '/'.
   community.rabbitmq.rabbitmq_vhost_limits:
     vhost: /
@@ -73,7 +73,7 @@ EXAMPLES = '''
     state: absent
 '''
 
-RETURN = ''' # '''
+RETURN = r''' # '''
 
 
 import json

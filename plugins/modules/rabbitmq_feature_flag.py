@@ -7,7 +7,7 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_feature_flag
 short_description: Enables feature flag
@@ -28,7 +28,7 @@ options:
     default: rabbit
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Enable the 'maintenance_mode_status' feature flag on 'rabbit@node-1'
   community.rabbitmq.rabbitmq_feature_flag:
     name: maintenance_mode_status

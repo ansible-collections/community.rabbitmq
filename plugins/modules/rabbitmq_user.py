@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_user
 short_description: Manage RabbitMQ users
@@ -108,7 +108,7 @@ options:
     choices: ['on_create', 'always']
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: |-
     Add user to server and assign full access control on / vhost.
     The user might have permission rules for other vhost but you don't care.

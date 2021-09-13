@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_queue
 author: Manuel Sousa (@manuel-sousa)
@@ -80,7 +80,7 @@ extends_documentation_fragment:
 
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Create a queue
   community.rabbitmq.rabbitmq_queue:
     name: myQueue

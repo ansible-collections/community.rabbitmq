@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_plugin
 short_description: Manage RabbitMQ plugins
@@ -47,7 +47,7 @@ options:
     type: str
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Enables the rabbitmq_management plugin
   community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management
@@ -76,7 +76,7 @@ EXAMPLES = '''
     broker_state: offline
 '''
 
-RETURN = '''
+RETURN = r'''
 enabled:
   description: list of plugins enabled during task run
   returned: always

@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_global_parameter
 short_description: Manage RabbitMQ global parameters
@@ -44,7 +44,7 @@ options:
     choices: [ 'present', 'absent']
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Set the global parameter 'cluster_name' to a value of 'mq-cluster' (in quotes)
   community.rabbitmq.rabbitmq_global_parameter:
     name: cluster_name
@@ -52,7 +52,7 @@ EXAMPLES = '''
     state: present
 '''
 
-RETURN = '''
+RETURN = r'''
 name:
     description: name of the global parameter being set
     returned: success

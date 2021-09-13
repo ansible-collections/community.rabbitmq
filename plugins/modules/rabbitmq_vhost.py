@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_vhost
 short_description: Manage the state of a virtual host in RabbitMQ
@@ -41,7 +41,7 @@ options:
     choices: [present, absent]
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Ensure that the vhost /test exists.
   community.rabbitmq.rabbitmq_vhost:
     name: /test

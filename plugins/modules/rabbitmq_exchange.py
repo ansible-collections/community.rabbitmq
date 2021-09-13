@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: rabbitmq_exchange
 author: Manuel Sousa (@manuel-sousa)
@@ -67,7 +67,7 @@ extends_documentation_fragment:
 
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - name: Create direct exchange
   community.rabbitmq.rabbitmq_exchange:
     name: directExchange
