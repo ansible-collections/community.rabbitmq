@@ -42,8 +42,8 @@ options:
 '''
 
 EXAMPLES = '''
-# Ensure that the vhost /test exists.
-- community.rabbitmq.rabbitmq_vhost:
+- name: Ensure that the vhost /test exists.
+  community.rabbitmq.rabbitmq_vhost:
     name: /test
     state: present
 '''

@@ -60,15 +60,15 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = '''
-# Bind myQueue to directExchange with routing key info
-- community.rabbitmq.rabbitmq_binding:
+- name: Bind myQueue to directExchange with routing key info
+  community.rabbitmq.rabbitmq_binding:
     name: directExchange
     destination: myQueue
     type: queue
     routing_key: info
 
-# Bind directExchange to topicExchange with routing key *.info
-- community.rabbitmq.rabbitmq_binding:
+- name: Bind directExchange to topicExchange with routing key *.info
+  community.rabbitmq.rabbitmq_binding:
     name: topicExchange
     destination: topicExchange
     type: exchange

@@ -81,12 +81,12 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = '''
-# Create a queue
-- community.rabbitmq.rabbitmq_queue:
+- name: Create a queue
+  community.rabbitmq.rabbitmq_queue:
     name: myQueue
 
-# Create a queue on remote host
-- community.rabbitmq.rabbitmq_queue:
+- name: Create a queue on remote host
+  community.rabbitmq.rabbitmq_queue:
     name: myRemoteQueue
     login_user: user
     login_password: secret

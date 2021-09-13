@@ -68,12 +68,12 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = '''
-# Create direct exchange
-- community.rabbitmq.rabbitmq_exchange:
+- name: Create direct exchange
+  community.rabbitmq.rabbitmq_exchange:
     name: directExchange
 
-# Create topic exchange on vhost
-- community.rabbitmq.rabbitmq_exchange:
+- name: Create topic exchange on vhost
+  community.rabbitmq.rabbitmq_exchange:
     name: topicExchange
     type: topic
     vhost: myVhost

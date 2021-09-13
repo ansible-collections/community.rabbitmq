@@ -49,8 +49,8 @@ options:
 '''
 
 EXAMPLES = """
-# Set the federation parameter 'local_username' to a value of 'guest' (in quotes)
-- community.rabbitmq.rabbitmq_parameter:
+- name: Set the federation parameter 'local_username' to a value of 'guest' (in quotes)
+  community.rabbitmq.rabbitmq_parameter:
     component: federation
     name: local-username
     value: '"guest"'
