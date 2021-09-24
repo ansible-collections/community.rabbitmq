@@ -45,6 +45,10 @@ options:
     description:
       - Specify a custom install prefix to a Rabbit.
     type: str
+  node:
+    description:
+      - Specify the RabbitMQ node.
+    type: str
 '''
 
 EXAMPLES = r'''
@@ -74,6 +78,12 @@ EXAMPLES = r'''
     names: rabbitmq_peer_discovery_aws_plugin
     state: enabled
     broker_state: offline
+
+- name: Enables the rabbitmq_management plugin
+  community.rabbitmq.rabbitmq_plugin:
+    names: rabbitmq_management
+    node: rabbit@nodename
+    state: enabled
 '''
 
 RETURN = r'''
@@ -114,7 +124,11 @@ class RabbitMqPlugins(object):
     def _exec(self, args, force_exec_in_check_mode=False):
         if not self.module.check_mode or (self.module.check_mode and force_exec_in_check_mode):
             cmd = [self._rabbitmq_plugins]
-            rc, out, err = self.module.run_command(cmd + args, check_rc=True)
+            node = module.params['node']
+            if node is not None:
+                rc, out, err = self.module.run_command(cmd + ['-n', node] + args, check_rc=True)
+            else:
+                rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
         return list()
 
@@ -141,7 +155,8 @@ def main():
         new_only=dict(default='no', type='bool'),
         state=dict(default='enabled', choices=['enabled', 'disabled']),
         broker_state=dict(default='online', choices=['online', 'offline']),
-        prefix=dict(required=False, default=None)
+        prefix=dict(required=False, default=None),
+        node=dict(required=False, default=None)
     )
     module = AnsibleModule(
         argument_spec=arg_spec,
