@@ -21,6 +21,10 @@
     state: present
     force: yes
 
+- name: Install pika
+  pip:
+    name: pika
+
 - name: Add RabbitMQ main release signing key
   apt_key:
     keyserver: "hkps://keys.openpgp.org"
