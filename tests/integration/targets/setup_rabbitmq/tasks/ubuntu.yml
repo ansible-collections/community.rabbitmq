@@ -24,6 +24,7 @@
 - name: Install pika
   pip:
     name: pika
+    version: 0.9.8
 
 - name: Add RabbitMQ main release signing key
   apt_key:
