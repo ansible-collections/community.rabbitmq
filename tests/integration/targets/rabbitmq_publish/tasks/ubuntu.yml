@@ -2,6 +2,7 @@
   pip:
     name: requests,pika<1.0.0
     state: present
+  delegate_to: localhost
 
 - name: RabbitMQ basic publish test
   rabbitmq_publish:
@@ -10,6 +11,7 @@
     body: "Hello world from ansible module rabbitmq_publish"
     content_type: "text/plain"
   register: rabbit_basic_output1
+  delegate_to: localhost
 
 - assert:
     that:
@@ -26,6 +28,7 @@
     body: "RANDOM QUEUE POST"
     content_type: "text/plain"
   register: rabbit_random_queue_output
+  delegate_to: localhost
 
 - assert:
     that:
@@ -38,6 +41,7 @@
   copy:
     src: "{{ role_path }}/files/image.gif"
     dest: "{{ remote_tmp_dir }}/image.gif"
+  delegate_to: localhost
 
 - name: Publish binary to a queue
   rabbitmq_publish:
@@ -45,6 +49,7 @@
     queue: publish_test
     src: "{{ remote_tmp_dir }}/image.gif"
   register: rabbitmq_publish_file
+  delegate_to: localhost
 
 - assert:
     that:
@@ -60,6 +65,7 @@
     body: blah
   register: rabbit_basic_fail_output1
   ignore_errors: yes
+  delegate_to: localhost
 
 - assert:
     that:
@@ -73,6 +79,7 @@
     src: 'aaaaaaajax-loader.gif'
   register: file_missing_fail
   ignore_errors: yes
+  delegate_to: localhost
 
 - assert:
     that:
@@ -90,6 +97,7 @@
     queue: publish_test
     body: Testing with proto/host/port/username/password/vhost
   register: host_port_output
+  delegate_to: localhost
 
 - assert:
     that:
@@ -106,6 +114,7 @@
     body: Testing with proto/host/port/username/password/vhost
   ignore_errors: yes
   register: host_port_missing_proto_output
+  delegate_to: localhost
 
 - assert:
     that:
@@ -125,6 +134,7 @@
     body: Testing with proto/host/port/username/password/vhost
   ignore_errors: yes
   register: host_and_url_output
+  delegate_to: localhost
 
 - assert:
     that:
@@ -141,6 +151,7 @@
       secondHeader: Value2
   register: test_headers1
   ignore_errors: yes
+  delegate_to: localhost
 
 - name: Publish headers with file
   rabbitmq_publish:
@@ -152,10 +163,12 @@
       secondHeader: Value2
   register: test_headers2
   ignore_errors: yes
+  delegate_to: localhost
 
 - name: Collect all messages off the publish queue
   set_fact:
     messages: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2F', queue='publish_test') }}"
+  delegate_to: localhost
 
 - name: Check contents of published messages
   assert:
