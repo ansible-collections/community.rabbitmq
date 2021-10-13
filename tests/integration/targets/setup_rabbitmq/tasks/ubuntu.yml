@@ -24,10 +24,11 @@
 - name: Install pika
   pip:
     name: pika
-    version: 0.13.1
-    #version: 0.5.2 Doesn't work
-    #version: 0.9.8 Doesn't work
-    #version: 1.2.0 Doesn't work
+    version: 1.1.0  # Works
+    #version: 0.13.1  # Works
+    #version: 1.2.0  # Doesn't work
+    #version: 0.9.8  # Doesn't work
+    #version: 0.5.2  # Doesn't work
 
 #- name: Add RabbitMQ main release signing key
 #  apt_key:
