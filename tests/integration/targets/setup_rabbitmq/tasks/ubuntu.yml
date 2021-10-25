@@ -23,7 +23,7 @@
 
 - name: Add RabbitMQ main release signing key
   apt_key:
-    keyserver: "hkps://keys.openpgp.org"
+    keyserver: "keyserver.ubuntu.com"
     id: "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
     state: present
   # The key for RPM release signing is different than this one.
