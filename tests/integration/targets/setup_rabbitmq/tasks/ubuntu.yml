@@ -21,11 +21,11 @@
     state: present
     force: yes
 
-#- name: Add RabbitMQ main release signing key
-#  apt_key:
-#    keyserver: "hkps://keys.openpgp.org"
-#    id: "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
-#    state: present
+- name: Add RabbitMQ main release signing key
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+    state: present
   # The key for RPM release signing is different than this one.
   # These URIs each have the same *RPM* signing key:
   #   "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
@@ -78,7 +78,6 @@
       - erlang-tools
       - erlang-xmerl
     state: latest
-    allow_unauthenticated: yes
 
 - name: Install RabbitMQ Server
   apt:
@@ -86,7 +85,6 @@
     state: fixed
     # policy.rc.d => do not start the service yet
     policy_rc_d: 101
-    allow_unauthenticated: yes
 
 - name: Ensure TLS config
   copy:
