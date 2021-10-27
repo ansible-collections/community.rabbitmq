@@ -130,6 +130,20 @@
       that:
         - result is not changed
 
+  - name: Using custom node should fail [online]
+    rabbitmq_plugin:
+      name: "{{ plugin_name }}"
+      state: enabled
+      new_only: True
+      node: bunny
+    register: result
+    ignore_errors: yes
+
+  - assert:
+      that:
+        - "result is failed"
+        - "result.cmd == '/usr/sbin/rabbitmq-plugins -n bunny enable --online rabbitmq_top'"
+
   always:
     - name: Disable plugin
       rabbitmq_plugin:
