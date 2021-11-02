@@ -31,7 +31,7 @@ options:
     default: "no"
   node:
     description:
-      - erlang node name of the rabbit we wish to configure
+      - Erlang node name of the rabbit we wish to configure.
     type: str
     default: rabbit
   state:
@@ -79,6 +79,12 @@ EXAMPLES = r'''
     names: rabbitmq_peer_discovery_aws_plugin
     state: enabled
     broker_state: offline
+
+- name: Enables plugin with custom node name
+  community.rabbitmq.rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+    node: bunny
 '''
 
 RETURN = r'''
