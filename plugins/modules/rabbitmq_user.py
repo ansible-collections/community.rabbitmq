@@ -148,7 +148,7 @@ EXAMPLES = r'''
     state: present
 '''
 
-import distutils.version
+import ansible_collections.community.rabbitmq.plugins.module_utils.version as Version
 import json
 import re
 
@@ -244,13 +244,13 @@ class RabbitMqUser(object):
         try:
             status_json = json.loads(output)
             if 'rabbitmq_version' in status_json:
-                return distutils.version.StrictVersion(status_json['rabbitmq_version'])
+                return Version.StrictVersion(status_json['rabbitmq_version'])
             for application in status_json.get('running_applications', list()):
                 if application[0] == 'rabbit':
                     if isinstance(application[1][0], int):
-                        return distutils.version.StrictVersion(int_list_to_str(application[2]))
+                        return Version.StrictVersion(int_list_to_str(application[2]))
                     else:
-                        return distutils.version.StrictVersion(application[1])
+                        return Version.StrictVersion(application[1])
             return self._fail(msg="Could not find RabbitMQ version of `rabbitmqctl status` command.",
                               stop_execution=fail_on_error)
         except ValueError as e:
@@ -277,7 +277,7 @@ class RabbitMqUser(object):
                                   "`rabbitmqctl status` command: {output}.".format(output=output),
                               stop_execution=fail_on_error)
         try:
-            return distutils.version.StrictVersion(reg_ex_res.group(1))
+            return Version.StrictVersion(reg_ex_res.group(1))
         except ValueError as e:
             return self._fail(msg="Could not parse the version of the RabbitMQ server: {exc}.".format(exc=repr(e)),
                               stop_execution=fail_on_error)
@@ -318,7 +318,7 @@ class RabbitMqUser(object):
         If the version of the node is >= 3.7.6 the JSON formatter will be used, otherwise the plaintext will be
         parsed.
         """
-        if self._version >= distutils.version.StrictVersion('3.7.6'):
+        if self._version >= Version.StrictVersion('3.7.6'):
             users = dict([(user_entry['user'], user_entry['tags'])
                           for user_entry in json.loads(self._exec(['list_users', '--formatter', 'json']))])
         else:
@@ -342,7 +342,7 @@ class RabbitMqUser(object):
 
     def _get_permissions(self):
         """Get permissions of the user from RabbitMQ."""
-        if self._version >= distutils.version.StrictVersion('3.7.6'):
+        if self._version >= Version.StrictVersion('3.7.6'):
             permissions = json.loads(self._exec(['list_user_permissions', self.username, '--formatter', 'json']))
         else:
             output = self._exec(['list_user_permissions', self.username]).strip().split('\n')
@@ -361,9 +361,9 @@ class RabbitMqUser(object):
 
     def _get_topic_permissions(self):
         """Get topic permissions of the user from RabbitMQ."""
-        if self._version < distutils.version.StrictVersion('3.7.0'):
+        if self._version < Version.StrictVersion('3.7.0'):
             return dict()
-        if self._version >= distutils.version.StrictVersion('3.7.6'):
+        if self._version >= Version.StrictVersion('3.7.6'):
             permissions = json.loads(self._exec(['list_user_topic_permissions', self.username, '--formatter', 'json']))
         else:
             output = self._exec(['list_user_topic_permissions', self.username]).strip().split('\n')

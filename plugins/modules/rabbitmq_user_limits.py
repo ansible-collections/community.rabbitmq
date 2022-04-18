@@ -77,7 +77,7 @@ RETURN = r''' # '''
 
 import json
 import re
-from distutils.version import LooseVersion as Version
+from ansible_collections.community.rabbitmq.plugins.module_utils.version import LooseVersion as Version
 from ansible.module_utils.basic import AnsibleModule
 
 
