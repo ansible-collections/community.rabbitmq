@@ -5,8 +5,8 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = '''
-    lookup: rabbitmq
-    author: John Imison <@Im0>
+    name: rabbitmq
+    author: John Imison (@Im0)
     short_description: Retrieve messages from an AMQP/AMQPS RabbitMQ queue.
     description:
         - This lookup uses a basic get to retrieve all, or a limited number C(count), messages from a RabbitMQ queue.
