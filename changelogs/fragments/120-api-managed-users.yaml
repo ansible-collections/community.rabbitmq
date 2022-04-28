@@ -1,0 +1,2 @@
+minor_changes:
+  - rabbitmq_user - add support to user manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/76)

@@ -5,8 +5,8 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
-__metaclass__ = type
 
+__metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
@@ -30,7 +30,8 @@ options:
     type: str
   tags:
     description:
-      - User tags specified as comma delimited
+      - User tags specified as comma delimited.
+      - The suggested tags to use are management, policymaker, monitoring and administrator.
     type: str
   permissions:
     description:
@@ -103,9 +104,36 @@ options:
     description:
       - C(on_create) will only set the password for newly created users.  C(always) will update passwords if they differ.
     type: str
-    required: false
     default: on_create
     choices: ['on_create', 'always']
+  login_protocol:
+    description:
+      - Specify which TCP/IP protocol will be used.
+    type: str
+    default: http
+    choices: ['http', 'https']
+    version_added: '1.3.0'
+  login_host:
+    description:
+      - Hostname of API.
+    type: str
+    version_added: '1.3.0'
+  login_port:
+    description:
+      - login_port of access from API.
+    type: str
+    default: '15672'
+    version_added: '1.3.0'
+  login_user:
+    description:
+      - Administrator's username the management API.
+    type: str
+    version_added: '1.3.0'
+  login_password:
+    description:
+      - Login password of the management API.
+    type: str
+    version_added: '1.3.0'
 '''
 
 EXAMPLES = r'''
@@ -146,13 +174,66 @@ EXAMPLES = r'''
         read_priv: .*
         write_priv: 'prod\\.logging\\..*'
     state: present
+
+- name: |-
+    Add or Update a user using the API
+  community.rabbitmq.rabbitmq_user:
+    user: joe
+    password: changeme
+    tags: monitoring
+    login_protocol: https
+    login_host: localhost
+    login_port: 15672
+    login_user: admin
+    login_password: changeadmin
+    permissions:
+          - vhost: /
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+    topic_permissions:
+      - vhost: /
+        exchange: amq.topic
+        read_priv: .*
+        write_priv: 'prod\\.logging\\..*'
+    state: present
+
+
+- name: |-
+    Remove a user using the API
+  community.rabbitmq.rabbitmq_user:
+    user: joe
+    password: changeme
+    tags: monitoring
+    login_protocol: https
+    login_host: localhost
+    login_port: 15672
+    login_user: admin
+    login_password: changeadmin
+    state: absent
+
 '''
 
-import ansible_collections.community.rabbitmq.plugins.module_utils.version as Version
-import json
-import re
+import ansible_collections.community.rabbitmq.plugins.module_utils.version as Version  # noqa: E402
+import json  # noqa: E402
+import re  # noqa: E402
+import binascii  # noqa: E402
+import hashlib  # noqa: E402
 
-from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.six.moves.urllib import parse
+
+import traceback
+
+REQUESTS_IMP_ERR = None
+try:
+    import requests
+
+    HAS_REQUESTS = True
+except ImportError:
+    REQUESTS_IMP_ERR = traceback.format_exc()
+    HAS_REQUESTS = False
+
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # noqa: E402
 from ansible.module_utils.common.collections import count
 
 
@@ -193,9 +274,24 @@ def first(iterable):
     return next(iter(iterable))
 
 
+def treat_permissions_for_api(permissions):
+    return {
+        "configure": permissions.get('configure') if permissions.get('configure') else '^$',
+        "write": permissions.get('write') if permissions.get('write') else '^$',
+        "read": permissions.get('read') if permissions.get('read') else '^$'
+    }
+
+
+def treat_topic_permissions_for_api(permissions):
+    return {"exchange": permissions.get('exchange'), "write": permissions.get('write'),
+            "read": permissions.get('read')}
+
+
 class RabbitMqUser(object):
     def __init__(self, module, username, password, tags, permissions,
-                 topic_permissions, node, bulk_permissions=False):
+                 topic_permissions, node, bulk_permissions=False,
+                 login_protocol=None, login_host=None, login_port=None,
+                 login_user=None, login_password=None):
         self.module = module
         self.username = username
         self.password = password or ''
@@ -204,12 +300,21 @@ class RabbitMqUser(object):
         self.permissions = as_permission_dict(permissions)
         self.topic_permissions = as_topic_permission_dict(topic_permissions)
         self.bulk_permissions = bulk_permissions
+        self.login_protocol = login_protocol
+        self.login_host = login_host
+        self.login_port = login_port
+        self.login_user = login_user
+        self.login_password = login_password
 
         self.existing_tags = None
         self.existing_permissions = dict()
         self.existing_topic_permissions = dict()
-        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
-        self._version = self._check_version()
+        if self.login_host is not None:
+            self._rabbitmqctl = module.get_bin_path('rabbitmqctl', False)
+            self._version = None
+        else:
+            self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+            self._version = self._check_version()
 
     def _check_version(self):
         """Get the version of the RabbitMQ server."""
@@ -233,6 +338,7 @@ class RabbitMqUser(object):
         version of `rabbitmqctl` we are using, so we will try to use the JSON formatter and see
         what happens. In some versions of
         """
+
         def int_list_to_str(ints):
             return ''.join([chr(i) for i in ints])
 
@@ -318,22 +424,39 @@ class RabbitMqUser(object):
         If the version of the node is >= 3.7.6 the JSON formatter will be used, otherwise the plaintext will be
         parsed.
         """
-        if self._version >= Version.StrictVersion('3.7.6'):
-            users = dict([(user_entry['user'], user_entry['tags'])
-                          for user_entry in json.loads(self._exec(['list_users', '--formatter', 'json']))])
+        users = dict()
+        if self.login_host is not None:
+            response = self.request_users_api('GET')
+            if response.status_code == 200:
+                if isinstance(response.json(), list):
+                    users = dict([(user_entry['name'], user_entry['tags']) for user_entry in response.json()])
+                else:
+                    users = {response.json()['name']: response.json()['tags']}
+            elif response.status_code == 404:
+                return None
+            else:
+                self.module.fail_json(
+                    msg="Error getting the user",
+                    status=response.status_code,
+                    details=response.text
+                )
         else:
-            users = self._exec(['list_users'])
+            if self._version >= Version.StrictVersion('3.7.6'):
+                users = dict([(user_entry['user'], user_entry['tags'])
+                              for user_entry in json.loads(self._exec(['list_users', '--formatter', 'json']))])
+            else:
+                users = self._exec(['list_users'])
 
-            def process_tags(tags):
-                if not tags:
-                    return list()
-                return tags.replace('[', '').replace(']', '').replace(' ', '').strip('\t').split(',')
+                def process_tags(tags):
+                    if not tags:
+                        return list()
+                    return tags.replace('[', '').replace(']', '').replace(' ', '').strip('\t').split(',')
 
-            users_and_tags = [user_entry.split('\t') for user_entry in users.strip().split('\n')]
+                users_and_tags = [user_entry.split('\t') for user_entry in users.strip().split('\n')]
 
-            users = dict()
-            for user_parts in users_and_tags:
-                users[user_parts[0]] = process_tags(user_parts[1]) if len(user_parts) > 1 else []
+                users = dict()
+                for user_parts in users_and_tags:
+                    users[user_parts[0]] = process_tags(user_parts[1]) if len(user_parts) > 1 else []
 
         self.existing_tags = users.get(self.username, list())
         self.existing_permissions = self._get_permissions() if self.username in users else dict()
@@ -342,17 +465,48 @@ class RabbitMqUser(object):
 
     def _get_permissions(self):
         """Get permissions of the user from RabbitMQ."""
-        if self._version >= Version.StrictVersion('3.7.6'):
-            permissions = json.loads(self._exec(['list_user_permissions', self.username, '--formatter', 'json']))
-        else:
-            output = self._exec(['list_user_permissions', self.username]).strip().split('\n')
-            perms_out = [perm.split('\t') for perm in output if perm.strip()]
-            # Filter out headers from the output of the command in case they are still present
-            perms_out = [perm for perm in perms_out if perm != ["vhost", "configure", "write", "read"]]
+        if self.login_host is not None:
+            try:
+                response = requests.get(self.get_permissions_api_url_builder(self.username),
+                                        auth=(self.login_user,
+                                              self.login_password))
+            except requests.exceptions.RequestException as exception:
+                msg = ("Error trying to request topic permissions "
+                       "of the user %s info in rabbitmq.") % (self.username)
+                self.module.fail_json(
+                    msg=msg,
+                    exception=exception,
+                )
 
-            permissions = list()
-            for vhost, configure, write, read in perms_out:
-                permissions.append(dict(vhost=vhost, configure=configure, write=write, read=read))
+            if response.ok or (response.status_code == 204):
+                permissions = list()
+                for permission in response.json():
+                    permissions.append({
+                        "vhost": permission.get('vhost'),
+                        "configure": permission.get('configure'),
+                        "write": permission.get('write'),
+                        "read": permission.get('read')
+                    })
+            elif response.status_code == 404:
+                return None
+            else:
+                self.module.fail_json(
+                    msg="Error getting the user",
+                    status=response.status_code,
+                    details=response.text
+                )
+        else:
+            if self._version >= Version.StrictVersion('3.7.6'):
+                permissions = json.loads(self._exec(['list_user_permissions', self.username, '--formatter', 'json']))
+            else:
+                output = self._exec(['list_user_permissions', self.username]).strip().split('\n')
+                perms_out = [perm.split('\t') for perm in output if perm.strip()]
+                # Filter out headers from the output of the command in case they are still present
+                perms_out = [perm for perm in perms_out if perm != ["vhost", "configure", "write", "read"]]
+
+                permissions = list()
+                for vhost, configure, write, read in perms_out:
+                    permissions.append(dict(vhost=vhost, configure=configure, write=write, read=read))
 
         if self.bulk_permissions:
             return as_permission_dict(permissions)
@@ -361,58 +515,166 @@ class RabbitMqUser(object):
 
     def _get_topic_permissions(self):
         """Get topic permissions of the user from RabbitMQ."""
-        if self._version < Version.StrictVersion('3.7.0'):
-            return dict()
-        if self._version >= Version.StrictVersion('3.7.6'):
-            permissions = json.loads(self._exec(['list_user_topic_permissions', self.username, '--formatter', 'json']))
+        if self.login_host is not None:
+            try:
+                response = requests.get(self.get_topic_permissions_api_url_builder(self.username),
+                                        auth=(self.login_user,
+                                              self.login_password))
+            except requests.exceptions.RequestException as exception:
+                msg = ("Error trying to request permissions "
+                       "of the user %s info in rabbitmq.") % (self.username)
+                self.module.fail_json(
+                    msg=msg,
+                    exception=exception,
+                )
+
+            if response.ok or (response.status_code == 204):
+                permissions = list()
+                for permission in response.json():
+                    permissions.append({
+                        "vhost": permission.get('vhost'),
+                        "exchange": permission.get('exchange'),
+                        "write": permission.get('write'),
+                        "read": permission.get('read')
+                    })
+                return as_topic_permission_dict(permissions)
+            elif response.status_code == 404:
+                return None
+            else:
+                self.module.fail_json(
+                    msg="Error getting the user",
+                    status=response.status_code,
+                    details=response.text
+                )
         else:
-            output = self._exec(['list_user_topic_permissions', self.username]).strip().split('\n')
-            perms_out = [perm.split('\t') for perm in output if perm.strip()]
-            permissions = list()
-            for vhost, exchange, write, read in perms_out:
-                permissions.append(dict(vhost=vhost, exchange=exchange, write=write, read=read))
-        return as_topic_permission_dict(permissions)
+            if self._version < Version.StrictVersion('3.7.0'):
+                return dict()
+            if self._version >= Version.StrictVersion('3.7.6'):
+                permissions = json.loads(
+                    self._exec(['list_user_topic_permissions', self.username, '--formatter', 'json']))
+            else:
+                output = self._exec(['list_user_topic_permissions', self.username]).strip().split('\n')
+                perms_out = [perm.split('\t') for perm in output if perm.strip()]
+                permissions = list()
+                for vhost, exchange, write, read in perms_out:
+                    permissions.append(dict(vhost=vhost, exchange=exchange, write=write, read=read))
+            return as_topic_permission_dict(permissions)
 
     def check_password(self):
         """Return `True` if the user can authenticate successfully."""
-        rc, out, err = self._exec(['authenticate_user', self.username, self.password], check_rc=False)
-        return rc == 0
+        if self.login_host is not None:
+            url = "%s://%s:%s/api/whoami" % (
+                self.login_protocol,
+                self.login_host,
+                self.login_port)
+            try:
+                response = requests.get(url, auth=(self.login_user, self.login_password))
+            except requests.exceptions.RequestException as exception:
+                msg = ("Error trying to request permissions "
+                       "of the user %s info in rabbitmq.") % (self.username)
+                self.module.fail_json(
+                    msg=msg,
+                    exception=exception,
+                )
+
+            if response.ok or response.json().get('reason') == "Not management user":
+                return True
+            else:
+                return False
+        else:
+            rc, out, err = self._exec(['authenticate_user', self.username, self.password], check_rc=False)
+            return rc == 0
 
     def add(self):
-        self._exec(['add_user', self.username, self.password or ''])
-        if not self.password:
-            self._exec(['clear_password', self.username])
+        if self.login_host is not None:
+            data = {"password": self.password, "tags": self.treat_tags_for_api() or ""}
+            response = self.request_users_api('PUT', data)
+
+            if not response.ok or (response.status_code == 204):
+                msg = ("Error trying to create user %s in rabbitmq. "
+                       "Status code '%s'.") % (self.username, response.status_code)
+                self.module.fail_json(msg=msg)
+        else:
+            self._exec(['add_user', self.username, self.password or ''])
+            if not self.password:
+                self._exec(['clear_password', self.username])
 
     def delete(self):
-        self._exec(['delete_user', self.username])
+        if self.login_host is not None:
+            response = self.request_users_api('DELETE')
+            if response.status_code != 204:
+                msg = ("Error trying to remove user %s in rabbitmq. "
+                       "Status code '%s'.") % (self.username, response.status_code)
+                self.module.fail_json(msg=msg)
+        else:
+            self._exec(['delete_user', self.username])
 
     def change_password(self):
-        if self.password:
-            self._exec(['change_password', self.username, self.password])
+        if self.login_host is not None:
+            data = {"password": self.password or "", "tags": self.tags or ""}
+            response = self.request_users_api('PUT', data)
+
+            if not response.ok or (response.status_code == 204):
+                msg = ("Error trying to set tags for the user %s in rabbitmq. "
+                       "Status code '%s'.") % (self.username, response.status_code)
+                self.module.fail_json(msg=msg)
+            else:
+                self.module.fail_json(
+                    msg="Error setting tags for the user",
+                    status=response.status_code,
+                    details=response.text
+                )
         else:
-            self._exec(['clear_password', self.username])
+            if self.password:
+                self._exec(['change_password', self.username, self.password])
+            else:
+                self._exec(['clear_password', self.username])
 
     def set_tags(self):
-        self._exec(['set_user_tags', self.username] + self.tags)
+        if self.login_host is not None:
+            data = {"password": self.password, "tags": self.treat_tags_for_api() or ""}
+            response = self.request_users_api('PUT', data)
+
+            if not response.status_code == 204:
+                msg = ("Error trying to set tags for the user %s in rabbitmq. "
+                       "Status code '%s'.") % (self.username, response.status_code)
+                self.module.fail_json(msg=msg)
+
+        else:
+            self._exec(['set_user_tags', self.username] + self.tags)
 
     def set_permissions(self):
         permissions_to_add = list()
         for vhost, permission_dict in self.permissions.items():
             if permission_dict != self.existing_permissions.get(vhost, {}):
                 permissions_to_add.append(permission_dict)
-
         permissions_to_clear = list()
         for vhost in self.existing_permissions.keys():
             if vhost not in self.permissions:
                 permissions_to_clear.append(vhost)
 
         for vhost in permissions_to_clear:
-            cmd = 'clear_permissions -p {vhost} {username}'.format(username=self.username, vhost=vhost)
-            self._exec(cmd.split(' '))
+            if self.login_host is not None:
+                response = self.request_permissions_api('DELETE', vhost)
+                if response.status_code != 204:
+                    msg = ("Error trying to remove permission from user %s in rabbitmq. "
+                           "Status code '%s'.") % (self.username, response.status_code)
+                    self.module.fail_json(msg=msg)
+            else:
+                cmd = 'clear_permissions -p {vhost} {username}'.format(username=self.username, vhost=vhost)
+                self._exec(cmd.split(' '))
         for permissions in permissions_to_add:
-            cmd = ('set_permissions -p {vhost} {username} {configure} {write} {read}'
-                   .format(username=self.username, **permissions))
-            self._exec(cmd.split(' '))
+            if self.login_host is not None:
+                response = self.request_permissions_api('PUT', permissions.get('vhost'),
+                                                        data=treat_permissions_for_api(permissions))
+                if response.status_code not in (201, 204):
+                    msg = ("Error trying to add permission to user %s in rabbitmq. "
+                           "Status code '%s'.") % (self.username, response.status_code)
+                    self.module.fail_json(msg=msg)
+            else:
+                cmd = ('set_permissions -p {vhost} {username} {configure} {write} {read}'
+                       .format(username=self.username, **permissions))
+                self._exec(cmd.split(' '))
         self.existing_permissions = self._get_permissions()
 
     def set_topic_permissions(self):
@@ -428,13 +690,28 @@ class RabbitMqUser(object):
 
         for vhost_exchange in permissions_to_clear:
             vhost, exchange = vhost_exchange
-            cmd = ('clear_topic_permissions -p {vhost} {username} {exchange}'
-                   .format(username=self.username, vhost=vhost, exchange=exchange))
-            self._exec(cmd.split(' '))
+            if self.login_host is not None:
+                response = self.request_topic_permissions_api('DELETE', vhost)
+                if response.status_code != 204:
+                    msg = ("Error trying to remove topic permission from user %s in rabbitmq. "
+                           "Status code '%s'.") % (self.username, response.status_code)
+                    self.module.fail_json(msg=msg)
+            else:
+                cmd = ('clear_topic_permissions -p {vhost} {username} {exchange}'
+                       .format(username=self.username, vhost=vhost, exchange=exchange))
+                self._exec(cmd.split(' '))
         for permissions in permissions_to_add:
-            cmd = ('set_topic_permissions -p {vhost} {username} {exchange} {write} {read}'
-                   .format(username=self.username, **permissions))
-            self._exec(cmd.split(' '))
+            if self.login_host is not None:
+                response = self.request_topic_permissions_api('PUT', permissions.get('vhost'),
+                                                              data=treat_topic_permissions_for_api(permissions))
+                if response.status_code not in (201, 204):
+                    msg = ("Error trying to add topic permission to user %s in rabbitmq. "
+                           "Status code '%s'.") % (self.username, response.status_code)
+                    self.module.fail_json(msg=msg)
+            else:
+                cmd = ('set_topic_permissions -p {vhost} {username} {exchange} {write} {read}'
+                       .format(username=self.username, **permissions))
+                self._exec(cmd.split(' '))
         self.existing_topic_permissions = self._get_topic_permissions()
 
     def has_tags_modifications(self):
@@ -445,6 +722,91 @@ class RabbitMqUser(object):
 
     def has_topic_permissions_modifications(self):
         return self.existing_topic_permissions != self.topic_permissions
+
+    def users_api_url_builder(self, username):
+        return "%s://%s:%s/api/users/%s" % (
+            self.login_protocol,
+            self.login_host,
+            self.login_port,
+            parse.quote(username, ""),
+        )
+
+    def get_permissions_api_url_builder(self, username):
+        return "%s://%s:%s/api/users/%s/permissions" % (
+            self.login_protocol,
+            self.login_host,
+            self.login_port,
+            username,
+        )
+
+    def get_topic_permissions_api_url_builder(self, username):
+        return "%s://%s:%s/api/users/%s/topic-permissions" % (
+            self.login_protocol,
+            self.login_host,
+            self.login_port,
+            username,
+        )
+
+    def permissions_api_url_builder(self, username, vhost):
+        if vhost is None or vhost == "/":
+            vhost = "%2F"
+        return "%s://%s:%s/api/permissions/%s/%s" % (
+            self.login_protocol,
+            self.login_host,
+            self.login_port,
+            vhost,
+            username,
+        )
+
+    def topic_permissions_api_url_builder(self, username, vhost):
+        if vhost is None or vhost == "/":
+            vhost = "%2F"
+        return "%s://%s:%s/api/topic-permissions/%s/%s" % (
+            self.login_protocol,
+            self.login_host,
+            self.login_port,
+            vhost,
+            username,
+        )
+
+    def treat_tags_for_api(self):
+        return ','.join(tag for tag in self.tags)
+
+    def request_users_api(self, method, data=None):
+        try:
+            response = requests.request(method, self.users_api_url_builder(self.username),
+                                        auth=(self.login_user, self.login_password), json=data)
+        except requests.exceptions.RequestException as exception:
+            msg = "Error in HTTP request (method %s) for user %s in rabbitmq." % (
+                method.lower(),
+                self.username,
+            )
+            self.module.fail_json(msg=msg, exception=exception)
+        return response
+
+    def request_permissions_api(self, method, vhost=None, data=None):
+        try:
+            response = requests.request(method, self.permissions_api_url_builder(self.username, vhost),
+                                        auth=(self.login_user, self.login_password), json=data)
+        except requests.exceptions.RequestException as exception:
+            msg = "Error in HTTP request (method %s) for user's permission %s in rabbitmq." % (
+                method.lower(),
+                self.username,
+            )
+            self.module.fail_json(msg=msg, exception=exception)
+        return response
+
+    def request_topic_permissions_api(self, method, vhost=None, data=None):
+        try:
+            response = requests.request(method, self.topic_permissions_api_url_builder(self.username, vhost),
+                                        auth=(self.login_user, self.login_password), json=data)
+        except requests.exceptions.RequestException as exception:
+            msg = "Error in HTTP request (method %s) for topic permission for user %s in rabbitmq." % (
+                method.lower(),
+                self.username,
+            )
+            self.module.fail_json(msg=msg, exception=exception)
+        return response
 
 
 def main():
@@ -461,7 +823,12 @@ def main():
         force=dict(default='no', type='bool'),
         state=dict(default='present', choices=['present', 'absent']),
         node=dict(default='rabbit'),
-        update_password=dict(default='on_create', choices=['on_create', 'always'], no_log=False)
+        update_password=dict(default='on_create', choices=['on_create', 'always'], no_log=False),
+        login_protocol=dict(type="str", default="http", choices=["http", "https"]),
+        login_host=dict(type="str"),
+        login_port=dict(type="str", default="15672"),
+        login_user=dict(type="str", no_log=True),
+        login_password=dict(type="str", no_log=True)
     )
     module = AnsibleModule(
         argument_spec=arg_spec,
@@ -481,6 +848,11 @@ def main():
     state = module.params['state']
     node = module.params['node']
     update_password = module.params['update_password']
+    login_protocol = module.params['login_protocol']
+    login_host = module.params['login_host']
+    login_port = module.params['login_port']
+    login_user = module.params['login_user']
+    login_password = module.params['login_password']
 
     if permissions:
         vhosts = [permission.get('vhost', '/') for permission in permissions]
@@ -524,7 +896,9 @@ def main():
 
     rabbitmq_user = RabbitMqUser(module, username, password, tags, permissions,
                                  topic_permissions, node,
-                                 bulk_permissions=bulk_permissions)
+                                 bulk_permissions=bulk_permissions, login_protocol=login_protocol,
+                                 login_host=login_host, login_port=login_port, login_user=login_user,
+                                 login_password=login_password)
 
     result = dict(changed=False, user=username, state=state)
     if rabbitmq_user.get():
