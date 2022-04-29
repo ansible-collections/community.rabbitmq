@@ -3,8 +3,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import ansible_collections.community.rabbitmq.plugins.module_utils.version as version
-
+from ansible_collections.community.rabbitmq.plugins.module_utils import version
 from ansible_collections.community.rabbitmq.plugins.modules import rabbitmq_user
 from ansible.module_utils import six
 from itertools import chain
