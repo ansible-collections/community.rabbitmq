@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import distutils.version
+import ansible_collections.community.rabbitmq.plugins.module_utils.version as version
 
 from ansible_collections.community.rabbitmq.plugins.modules import rabbitmq_user
 from ansible.module_utils import six
@@ -58,7 +58,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             'state': 'present',
             'permissions': [{'vhost': '/'}, {'vhost': '/'}],
         })
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         get_bin_path.return_value = '/rabbitmqctl'
         try:
             self.module.main()
@@ -76,7 +76,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             'state': 'present',
             'topic_permissions': [{'vhost': '/', 'exchange': 'amq.topic'}, {'vhost': '/', 'exchange': 'amq.topic'}],
         })
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         get_bin_path.return_value = '/rabbitmqctl'
         try:
             self.module.main()
@@ -106,7 +106,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             'update_password': 'always',
         })
         get.return_value = True
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         get_bin_path.return_value = '/rabbitmqctl'
         check_password.return_value = True
         has_tags_modifications.return_value = False
@@ -136,7 +136,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         })
         _get_permissions.return_value = {'/': {'read': '.*', 'write': '.*', 'configure': '.*', 'vhost': '/'}}
         _exec.return_value = 'someuser\t[]'
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         get_bin_path.return_value = '/rabbitmqctl'
         has_tags_modifications.return_value = False
         try:
@@ -167,7 +167,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         _get_permissions.return_value = {'/': {'configure': '^$', 'read': '^$', 'write': '^$', 'vhost': '/'}}
         _get_topic_permissions.return_value = {('/', 'amq.topic'): {'read': '.*', 'write': '.*', 'vhost': '/', 'exchange': 'amq.topic'}}
         _exec.return_value = 'someuser\t[]'
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         get_bin_path.return_value = '/rabbitmqctl'
         has_tags_modifications.return_value = False
         try:
@@ -196,7 +196,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             last_call_args = flatten(module.run_command.call_args_list[-1][0])
             self.assertTrue('-q' in last_call_args)
             self.assertTrue('--formatter' not in last_call_args)
-            self.assertEqual(user_controller._version, distutils.version.StrictVersion(version_num))
+            self.assertEqual(user_controller._version, version.StrictVersion(version_num))
             module.run_command.reset_mock()
 
         versions = ['3.7.6', '3.7.7', '3.7.8', '3.7.9', '3.7.10', '3.7.11', '3.7.12', '3.7.13', '3.7.14', '3.7.15',
@@ -211,7 +211,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             module.run_command.side_effect = side_effect
             user_controller = rabbitmq_user.RabbitMqUser(module, 'someuser', 'somepassword', list(), list(), list(), 'rabbit')
             self.assertEqual(1, module.run_command.call_count)
-            self.assertEqual(user_controller._version, distutils.version.StrictVersion(version_num))
+            self.assertEqual(user_controller._version, version.StrictVersion(version_num))
             module.run_command.reset_mock()
 
         versions = ['3.8.0', '3.8.1', '3.8.2']
@@ -225,7 +225,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             module.run_command.side_effect = side_effect
             user_controller = rabbitmq_user.RabbitMqUser(module, 'someuser', 'somepassword', list(), list(), list(), 'rabbit')
             self.assertEqual(1, module.run_command.call_count)
-            self.assertEqual(user_controller._version, distutils.version.StrictVersion(version_num))
+            self.assertEqual(user_controller._version, version.StrictVersion(version_num))
             module.run_command.reset_mock()
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
@@ -256,7 +256,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         })
         get_bin_path.return_value = '/rabbitmqctl'
         has_tags_modifications.return_value = False
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         _get_permissions.return_value = {
             '/wrong_vhost': {'vhost': '/wrong_vhost', 'configure': '', 'write': '', 'read': ''},
             '/ok': {'vhost': '/ok', 'configure': '^$', 'write': '^$', 'read': '^$'}
@@ -318,7 +318,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         })
         get_bin_path.return_value = '/rabbitmqctl'
         has_tags_modifications.return_value = False
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         _get_permissions.return_value = {}
         _get_topic_permissions.return_value = {
             ('/wrong_vhost', 'amq.topic'): {'vhost': '/wrong_vhost', 'exchange': 'amq.topic', 'write': '', 'read': ''},
@@ -376,7 +376,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         })
         get_bin_path.return_value = '/rabbitmqctl'
         has_tags_modifications.return_value = False
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         _get_permissions.return_value = {}
         _get_topic_permissions.return_value = {}
 
@@ -414,7 +414,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             'tags': 'tag1,tags2',
         })
         get_bin_path.return_value = '/rabbitmqctl'
-        _check_version.return_value = distutils.version.StrictVersion('3.6.10')
+        _check_version.return_value = version.StrictVersion('3.6.10')
         _get_permissions.return_value = {'/': {'vhost': '/', 'configure': '^$', 'write': '^$', 'read': '^$'}}
 
         def side_effect(args):
@@ -471,7 +471,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
             [{'vhost': '/', 'exchange': 'amq.topic', 'write': '^$', 'read': '^$'}],
             'rabbit', bulk_permissions=True)
         self.assertTrue(user_controller.get())
-        self.assertTrue(user_controller._version, distutils.version.StrictVersion('3.8.1'))
+        self.assertTrue(user_controller._version, version.StrictVersion('3.8.1'))
         self.assertTrue(user_controller.existing_tags, ["administrator", "management"])
         self.assertTrue(user_controller.existing_permissions == {
             '/test': {'vhost': '/test', 'configure': '^$', 'write': '^$', 'read': '^$'},
@@ -492,7 +492,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         """
         module.get_bin_path.return_value = '/rabbitmqctl'
         module.check_mode = False
-        _check_version.return_value = distutils.version.StrictVersion('3.8.0')
+        _check_version.return_value = version.StrictVersion('3.8.0')
 
         def side_effect(args):
             self.assertTrue('--formatter' in args, args)
