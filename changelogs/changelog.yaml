@@ -46,3 +46,22 @@ releases:
       name: rabbitmq_user_limits
       namespace: ''
     release_date: '2021-07-29'
+  1.2.0:
+    changes:
+      bugfixes:
+      - Collection core functions - use vendored version of ``distutils.version``
+        instead of the deprecated Python standard library ``distutils``.
+      minor_changes:
+      - rabbitmq_user - add support for `topic authorization <https://www.rabbitmq.com/access-control.html#topic-authorisation>`_
+        (featured in RabbitMQ 3.7.0) (https://github.com/ansible-collections/community.rabbitmq/pull/73).
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous 1.1.0 release.'
+    fragments:
+    - 0-copy_ignore_txt.yml
+    - 1.2.0.yml
+    - 115-use_vendored_looseversion.yml
+    - 73-topic-authorization.yml
+    release_date: '2022-05-12'
