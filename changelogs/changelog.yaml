@@ -58,10 +58,23 @@ releases:
 
         This changelog contains all changes to the modules and plugins in this collection
 
-        that have been made after the previous 1.1.0 release.'
+        that have been made after the 1.1.0 release.'
     fragments:
     - 0-copy_ignore_txt.yml
     - 1.2.0.yml
     - 115-use_vendored_looseversion.yml
     - 73-topic-authorization.yml
     release_date: '2022-05-12'
+  1.2.1:
+    changes:
+      bugfixes:
+      - Include ``PSF-license.txt`` file for ``plugins/module_utils/_version.py``.
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the 1.2.0 release.'
+    fragments:
+    - 1.2.1.yml
+    - psf-license.yml
+    release_date: '2022-05-16'

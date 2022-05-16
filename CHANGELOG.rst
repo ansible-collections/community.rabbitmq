@@ -5,6 +5,21 @@ Community.Rabbitmq Release Notes
 .. contents:: Topics
 
 
+v1.2.1
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the 1.2.0 release.
+
+Bugfixes
+--------
+
+- Include ``PSF-license.txt`` file for ``plugins/module_utils/_version.py``.
+
 v1.2.0
 ======
 
@@ -13,7 +28,7 @@ Release Summary
 
 This is the minor release of the ``community.rabbitmq`` collection.
 This changelog contains all changes to the modules and plugins in this collection
-that have been made after release 1.1.0.
+that have been made after the 1.1.0 release.
 
 Minor Changes
 -------------
