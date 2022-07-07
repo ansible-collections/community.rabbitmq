@@ -1,0 +1,2 @@
+bugfixes:
+- user module - set supports_check_mode flag to False, as the module does not actually support check mode.
