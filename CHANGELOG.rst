@@ -5,6 +5,21 @@ Community.Rabbitmq Release Notes
 .. contents:: Topics
 
 
+v1.2.2
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the 1.2.1 release.
+
+Bugfixes
+--------
+
+- user module - set supports_check_mode flag to False, as the module does not actually support check mode.
+
 v1.2.1
 ======
 
