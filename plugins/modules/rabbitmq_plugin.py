@@ -29,6 +29,11 @@ options:
       - Does not disable plugins that are not in the names list.
     type: bool
     default: "no"
+  node:
+    description:
+      - Erlang node name of the rabbit we wish to configure.
+    type: str
+    default: rabbit
   state:
     description:
       - Specify if plugins are to be enabled or disabled.
@@ -74,6 +79,12 @@ EXAMPLES = r'''
     names: rabbitmq_peer_discovery_aws_plugin
     state: enabled
     broker_state: offline
+
+- name: Enables plugin with custom node name
+  community.rabbitmq.rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+    node: bunny
 '''
 
 RETURN = r'''
@@ -114,6 +125,8 @@ class RabbitMqPlugins(object):
     def _exec(self, args, force_exec_in_check_mode=False):
         if not self.module.check_mode or (self.module.check_mode and force_exec_in_check_mode):
             cmd = [self._rabbitmq_plugins]
+            if self.module.params['node']:
+                cmd.extend(['-n', self.module.params['node']])
             rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
         return list()
@@ -139,6 +152,7 @@ def main():
     arg_spec = dict(
         names=dict(required=True, aliases=['name']),
         new_only=dict(default='no', type='bool'),
+        node=dict(default='rabbit'),
         state=dict(default='enabled', choices=['enabled', 'disabled']),
         broker_state=dict(default='online', choices=['online', 'offline']),
         prefix=dict(required=False, default=None)
