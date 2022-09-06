@@ -28,7 +28,7 @@ options:
       - Only enable missing plugins.
       - Does not disable plugins that are not in the names list.
     type: bool
-    default: "no"
+    default: false
   state:
     description:
       - Specify if plugins are to be enabled or disabled.
@@ -67,7 +67,7 @@ EXAMPLES = r'''
   community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_management,rabbitmq_management_visualiser,rabbitmq_shovel,rabbitmq_shovel_management
     state: enabled
-    new_only: 'yes'
+    new_only: true
 
 - name: Enables the rabbitmq_peer_discovery_aws plugin without requiring a broker connection.
   community.rabbitmq.rabbitmq_plugin:

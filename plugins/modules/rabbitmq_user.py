@@ -92,7 +92,7 @@ options:
     description:
       - Deletes and recreates the user.
     type: bool
-    default: 'no'
+    default: false
   state:
     description:
       - Specify if user is to be added or removed

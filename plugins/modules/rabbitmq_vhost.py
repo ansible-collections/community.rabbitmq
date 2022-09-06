@@ -31,7 +31,7 @@ options:
     description:
       - Enable/disable tracing for a vhost
     type: bool
-    default: 'no'
+    default: false
     aliases: [trace]
   state:
     description:
