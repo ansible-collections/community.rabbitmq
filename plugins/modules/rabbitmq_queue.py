@@ -34,12 +34,12 @@ options:
         description:
             - whether queue is durable or not
         type: bool
-        default: 'yes'
+        default: true
     auto_delete:
         description:
             - if the queue should delete itself after all queues/queues unbound from it
         type: bool
-        default: 'no'
+        default: false
     message_ttl:
         description:
             - How long a message can live in queue before it is discarded (milliseconds)

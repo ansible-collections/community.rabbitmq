@@ -35,7 +35,7 @@ options:
             - whether exchange is durable or not
         type: bool
         required: false
-        default: yes
+        default: true
     exchange_type:
         description:
             - type for the exchange
@@ -49,13 +49,13 @@ options:
             - if the exchange should delete itself after all queues/exchanges unbound from it
         type: bool
         required: false
-        default: no
+        default: false
     internal:
         description:
             - exchange is available only for other exchanges
         type: bool
         required: false
-        default: no
+        default: false
     arguments:
         description:
             - extra arguments for exchange. If defined this argument is a key/value dictionary
