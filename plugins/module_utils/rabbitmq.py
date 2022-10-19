@@ -222,7 +222,7 @@ class RabbitClient():
             if self.routing_key is None:
                 args['routing_key'] = self.exchange
 
-        #self.module.fail_json(msg="%s %s %s" % (to_native(self.queue), to_native(self.exchange), to_native(self.routing_key)))
+        # self.module.fail_json(msg="%s %s %s" % (to_native(self.queue), to_native(self.exchange), to_native(self.routing_key)))
         try:
             self.conn_channel.basic_publish(**args)
             return True
