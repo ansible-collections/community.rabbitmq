@@ -49,10 +49,12 @@ options:
   queue:
     description:
       - The queue to publish a message to.  If no queue is specified, RabbitMQ will return a random queue name.
+      - A C(queue) cannot be provided if an C(exchange) is specified.
     type: str
   exchange:
     description:
       - The exchange to publish a message to.
+      - An C(exchange) cannot be provided if a C(queue) is specified.
     type: str
   routing_key:
     description:
@@ -125,6 +127,21 @@ author: "John Imison (@Im0)"
 '''
 
 EXAMPLES = r'''
+- name: Publish to an exchange
+  community.rabbitmq.rabbitmq_publish:
+    exchange: exchange1
+    url: "amqp://guest:guest@192.168.0.32:5672/%2F"
+    body: "Hello exchange from ansible module rabbitmq_publish"
+    content_type: "text/plain"
+
+- name: Publish to an exchange with routing_key
+  community.rabbitmq.rabbitmq_publish:
+    exchange: exchange1
+    routing_key: queue1
+    url: "amqp://guest:guest@192.168.0.32:5672/%2F"
+    body: "Hello queue via exchange routing_key from ansible module rabbitmq_publish"
+    content_type: "text/plain"
+
 - name: Publish a message to a queue with headers
   community.rabbitmq.rabbitmq_publish:
     url: "amqp://guest:guest@192.168.0.32:5672/%2F"
@@ -133,7 +150,6 @@ EXAMPLES = r'''
     content_type: "text/plain"
     headers:
       myHeader: myHeaderValue
-
 
 - name: Publish a file to a queue
   community.rabbitmq.rabbitmq_publish:
@@ -184,7 +200,7 @@ from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import
 def main():
     argument_spec = RabbitClient.rabbitmq_argument_spec()
     argument_spec.update(
-        exchange=dict(type='str', default=''),
+        exchange=dict(type='str'),
         routing_key=dict(type='str', required=False, no_log=False),
         body=dict(type='str', required=False),
         src=dict(aliases=['file'], type='path', required=False),
@@ -199,7 +215,7 @@ def main():
     )
     module = AnsibleModule(
         argument_spec=argument_spec,
-        mutually_exclusive=[['body', 'src']],
+        mutually_exclusive=[['body', 'src'], ['queue', 'exchange']],
         required_together=[['cafile', 'certfile', 'keyfile']],
         supports_check_mode=False
     )
