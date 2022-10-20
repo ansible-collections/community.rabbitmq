@@ -228,13 +228,12 @@ def main():
         rabbitmq.close_connection()
         if (rabbitmq.queue is not None):
             module.exit_json(changed=True, result={"msg": "Successfully published to queue %s" % rabbitmq.queue,
-                                               "queue": rabbitmq.queue,
-                                               "content_type": rabbitmq.content_type})
+                             "queue": rabbitmq.queue, "content_type": rabbitmq.content_type}
+                             )
         elif (rabbitmq.exchange is not None):
             module.exit_json(changed=True, result={"msg": "Successfully published to exchange %s" % rabbitmq.exchange,
-                                               "routing_key": rabbitmq.routing_key,
-                                               "exchange": rabbitmq.exchange,
-                                               "content_type": rabbitmq.content_type})
+                             "routing_key": rabbitmq.routing_key, "exchange": rabbitmq.exchange, "content_type": rabbitmq.content_type}
+                             )
 
     else:
         rabbitmq.close_connection()
