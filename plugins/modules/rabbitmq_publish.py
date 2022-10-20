@@ -178,7 +178,9 @@ EXAMPLES = r'''
 RETURN = r'''
 result:
   description:
-    - Contains the status I(msg), content type I(content_type) and the queue name I(queue).
+    - If posted to an exchange, the result contains the status I(msg), content type I(content_type) the exchange name I(exchange)
+    - and the routing key I(routing_key).
+    - If posted to a queue, the result contains the status I(msg), content type I(content_type) and the queue name I(queue).
   returned: success
   type: dict
   sample: |
@@ -224,12 +226,22 @@ def main():
 
     if rabbitmq.basic_publish():
         rabbitmq.close_connection()
-        module.exit_json(changed=True, result={"msg": "Successfully published to queue %s" % rabbitmq.queue,
+        if (rabbitmq.queue is not None):
+            module.exit_json(changed=True, result={"msg": "Successfully published to queue %s" % rabbitmq.queue,
                                                "queue": rabbitmq.queue,
                                                "content_type": rabbitmq.content_type})
+        elif (rabbitmq.exchange is not None):
+            module.exit_json(changed=True, result={"msg": "Successfully published to exchange %s" % rabbitmq.exchange,
+                                               "routing_key": rabbitmq.routing_key,
+                                               "exchange": rabbitmq.exchange,
+                                               "content_type": rabbitmq.content_type})
+
     else:
         rabbitmq.close_connection()
-        module.fail_json(changed=False, msg="Unsuccessful publishing to queue %s" % rabbitmq.queue)
+        if (rabbitmq.queue is not None):
+            module.fail_json(changed=False, msg="Unsuccessful publishing to queue %s" % rabbitmq.queue)
+        elif (rabbitmq.exchange is not None):
+            module.fail_json(changed=False, msg="Unsuccessful publishing to exchange %s" % rabbitmq.exchange)
 
 
 if __name__ == '__main__':
