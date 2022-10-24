@@ -6,7 +6,7 @@
 
 - name: RabbitMQ basic publish test
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'publish_test'
     body: "Hello world from ansible module rabbitmq_publish"
     content_type: "text/plain"
@@ -24,7 +24,7 @@
 # Testing random queue
 - name: Publish to random queue
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     body: "RANDOM QUEUE POST"
     content_type: "text/plain"
   register: rabbit_random_queue_output
@@ -45,7 +45,7 @@
 
 - name: Publish binary to a queue
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: publish_test
     src: "{{ remote_tmp_dir }}/image.gif"
   register: rabbitmq_publish_file
@@ -59,7 +59,7 @@
 
 - name: Raise error for src and body defined
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'publish_test'
     src: "{{ remote_tmp_dir }}/image.gif"
     body: blah
@@ -74,7 +74,7 @@
 
 - name: Publish a file that does not exist
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'publish_test'
     src: 'aaaaaaajax-loader.gif'
   register: file_missing_fail
@@ -123,7 +123,7 @@
 
 - name: Publish with proto/host/port/user and url
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     proto: amqp
     host: localhost
     port: 5672
@@ -143,7 +143,7 @@
 
 - name: Publish headers to queue
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'publish_test'
     body: blah
     headers:
@@ -155,7 +155,7 @@
 
 - name: Publish headers with file
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'publish_test'
     src: "{{ remote_tmp_dir }}/image.gif"
     headers:
@@ -167,7 +167,7 @@
 
 - name: Collect all messages off the publish queue
   set_fact:
-    messages: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2F', queue='publish_test') }}"
+    messages: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@127.0.0.1:5672/%2F', queue='publish_test') }}"
   delegate_to: localhost
 
 - name: Check contents of published messages
@@ -186,7 +186,7 @@
 
 - name: Check that queue and exchange are mutually exclusive
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     queue: 'fail_queue'
     exchange: 'fail_exchange'
     body: "Queue and exchange mutually exclusive should fail"
@@ -231,7 +231,7 @@
 
 - name: RabbitMQ basic exchange publish test
   rabbitmq_publish:
-    url: "amqp://guest:guest@localhost:5672/%2F"
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
     exchange: 'pub_test_exchange'
     body: "Hello world pub_test_exchange exchange from ansible module rabbitmq_publish"
     content_type: "text/plain"
@@ -249,7 +249,7 @@
 
 - name: Retrieve messages from pub_test_exchange_queue
   set_fact:
-    rabbitmq_exchange_msg: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2f/pub_test_exchange_queue', queue='pub_test_exchange_queue') }}"
+    rabbitmq_exchange_msg: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@127.0.0.1:5672/%2f/pub_test_exchange_queue', queue='pub_test_exchange_queue') }}"
   ignore_errors: yes
   register: rabbitmq_pub_test_exchange_queue
   delegate_to: localhost
