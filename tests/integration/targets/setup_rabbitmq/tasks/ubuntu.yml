@@ -55,11 +55,16 @@
     state: present
     update_cache: yes
 
+# Ubuntu > 22.04 uses libssl version > 3
+- name: Select version of libbssl to use
+  set_fact:
+    ssl_ver: "{{ 'libssl3' if ansible_distribution_major_version == '22' else 'libssl1.1' }}"
+
 - name: Install RabbitMQ Erlang dependencies
   apt:
     name:
       # Make sure libcrypto new enough for erlang
-      - libssl1.1
+      - "{{ ssl_ver }}"
       # Base
       - erlang-base
       # TLS
