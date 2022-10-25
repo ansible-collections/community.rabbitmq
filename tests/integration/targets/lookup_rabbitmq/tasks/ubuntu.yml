@@ -124,7 +124,7 @@
 - assert:
     that:
       - "rabbitmq_vhost_error is failed"
-      - "'NOT_ALLOWED' in rabbitmq_vhost_error.msg"
+      - ("'NOT_ALLOWED' in rabbitmq_vhost_error.msg") or ("'Connection issue' in rabbitmq_vhost_error.msg")
 
 # Tidy up
 - name: Uninstall pika and requests
