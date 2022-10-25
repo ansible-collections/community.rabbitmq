@@ -1,6 +1,6 @@
 - name: Test failure without pika installed
   set_fact:
-    rabbit_missing_pika: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@192.168.250.1:5672/%2F', queue='hello', count=3) }}"
+    rabbit_missing_pika: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2F', queue='hello', count=3) }}"
   ignore_errors: yes
   register: rabbitmq_missing_pika_error
   delegate_to: localhost
@@ -11,13 +11,13 @@
 
 - name: Install pika and requests
   pip:
-    name: pika<1.0.0,requests
+    name: pika==1.3.0,requests
     state: latest
   delegate_to: localhost
 
 - name: Test that giving an incorrect amqp protocol in URL will error
   set_fact:
-    rabbitmq_test_protocol: "{{ lookup('community.rabbitmq.rabbitmq', url='zzzamqp://guest:guest@192.168.250.1:5672/%2F', queue='hello', count=3) }}"
+    rabbitmq_test_protocol: "{{ lookup('community.rabbitmq.rabbitmq', url='zzzamqp://guest:guest@localhost:5672/%2F', queue='hello', count=3) }}"
   ignore_errors: yes
   register: rabbitmq_protocol_error
   delegate_to: localhost
@@ -53,7 +53,7 @@
 
 - name: Test missing queue will error
   set_fact:
-    rabbitmq_queue_protocol: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@192.168.250.1:5672/%2F') }}"
+    rabbitmq_queue_protocol: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@localhost:5672/%2F') }}"
   ignore_errors: yes
   register: rabbitmq_queue_error
   delegate_to: localhost
