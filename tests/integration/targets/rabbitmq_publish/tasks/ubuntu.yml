@@ -1,6 +1,6 @@
 - name: Install requests and pika
   pip:
-    name: requests,pika<1.3.0
+    name: requests,pika==1.3.0
     state: present
   delegate_to: localhost
 
