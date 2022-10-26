@@ -11,7 +11,7 @@
 
 - name: Install pika and requests
   pip:
-    name: pika<1.3.0,requests
+    name: pika==1.3.0,requests
     state: latest
   delegate_to: localhost
 
