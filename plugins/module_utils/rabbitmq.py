@@ -57,6 +57,8 @@ class RabbitClient():
         self.port = self.params['port']
         self.vhost = self.params['vhost']
         self.queue = self.params['queue']
+        self.exchange = self.params['exchange']
+        self.routing_key = self.params['routing_key']
         self.headers = self.params['headers']
         self.cafile = self.params['cafile']
         self.certfile = self.params['certfile']
@@ -160,8 +162,6 @@ class RabbitClient():
         if self.params.get("body") is not None:
             args = dict(
                 body=self.params.get("body"),
-                exchange=self.params.get("exchange"),
-                routing_key=self.params.get("routing_key"),
                 properties=pika.BasicProperties(content_type=self.content_type, delivery_mode=1, headers=self.headers))
 
         # If src (file) is defined and content_type is left as default, do a mime lookup on the file
@@ -173,8 +173,6 @@ class RabbitClient():
 
             args = dict(
                 body=self._read_file(self.params.get("src")),
-                exchange=self.params.get("exchange"),
-                routing_key=self.params.get("routing_key"),
                 properties=pika.BasicProperties(content_type=self.content_type,
                                                 delivery_mode=1,
                                                 headers=self.headers
@@ -182,22 +180,21 @@ class RabbitClient():
         elif self.params.get("src") is not None:
             args = dict(
                 body=self._read_file(self.params.get("src")),
-                exchange=self.params.get("exchange"),
-                routing_key=self.params.get("routing_key"),
                 properties=pika.BasicProperties(content_type=self.content_type,
                                                 delivery_mode=1,
                                                 headers=self.headers
                                                 ))
 
         try:
-            # If queue is not defined, RabbitMQ will return the queue name of the automatically generated queue.
-            if self.queue is None:
-                result = self.conn_channel.queue_declare(durable=self.params.get("durable"),
+            # If queue and exchange is not defined post to random queue, RabbitMQ will return the queue name of the automatically generated queue.
+            if self.queue is None and self.exchange is None:
+                result = self.conn_channel.queue_declare(queue='',
+                                                         durable=self.params.get("durable"),
                                                          exclusive=self.params.get("exclusive"),
                                                          auto_delete=self.params.get("auto_delete"))
                 self.conn_channel.confirm_delivery()
                 self.queue = result.method.queue
-            else:
+            elif self.queue is not None and self.exchange is None:
                 self.conn_channel.queue_declare(queue=self.queue,
                                                 durable=self.params.get("durable"),
                                                 exclusive=self.params.get("exclusive"),
@@ -207,12 +204,25 @@ class RabbitClient():
             self.module.fail_json(msg="Queue declare issue: %s" % to_native(e))
 
         # https://github.com/ansible/ansible/blob/devel/lib/ansible/module_utils/cloudstack.py#L150
-        if args['routing_key'] is None:
+        # If routing key is not defined, but, the queue is... we will use the queue name as routing_key.
+        if self.routing_key is not None:
+            args['routing_key'] = self.routing_key
+        elif self.routing_key is None and self.queue is not None:
             args['routing_key'] = self.queue
+        elif self.routing_key is None and self.exchange is not None:
+            args['routing_key'] = self.exchange
+        else:
+            args['routing_key'] = ''
 
-        if args['exchange'] is None:
+        # If exchange is not specified use the default/nameless exchange
+        if self.exchange is None:
             args['exchange'] = ''
+        else:
+            args['exchange'] = self.exchange
+            if self.routing_key is None:
+                args['routing_key'] = self.exchange
 
+        # self.module.fail_json(msg="%s %s %s" % (to_native(self.queue), to_native(self.exchange), to_native(self.routing_key)))
         try:
             self.conn_channel.basic_publish(**args)
             return True
