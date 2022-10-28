@@ -1,0 +1,33 @@
+---
+# Note: these tests are just for the 3 plugin exchange types.  Additional
+# rabbitmq_exchange tests occur within some of the other module tests.
+
+- name: Fail creating an x-random exchange type
+  community.rabbitmq.rabbitmq_exchange:
+    name: test_x_random_exchange
+    exchange_type: "x-random"
+  register: fail_x_random_exchange
+  ignore_errors: true
+
+- name: Ensure x_random exchange failed when plugin not enabled
+  assert:
+    that:
+      - fail_x_random_exchange is failed
+      - "'You may need to enable the' in fail_x_random_exchange.msg"
+
+- name: Enable x-random exchange plugin
+  community.rabbitmq.rabbitmq_plugin:
+    names: rabbitmq_random_exchange
+    new_only: yes
+    state: enabled
+
+- name: Succeed creating an x-random exchange type
+  community.rabbitmq.rabbitmq_exchange:
+    name: test_x_random_exchange
+    exchange_type: "x-random"
+  register: success_x_random_exchange
+
+- name: Ensure x_random exchange success when plugin enabled
+  assert:
+    that:
+      - success_x_random_exchange is not failed
