@@ -39,8 +39,8 @@ options:
     exchange_type:
         description:
             - Type for the exchange.
-            - If using I(x-random), I(x-consistent-hash) or I(x-recent-history) the respective plugin on the RabbitMQ server
-            - must be enabled.
+            - If using I(x-delayed-message), I(x-random), I(x-consistent-hash) or I(x-recent-history) the respective plugin on
+            - the RabbitMQ server must be enabled.
         type: str
         required: false
         choices: [ "fanout", "direct", "headers", "topic", "x-delayed-message", "x-random", "x-consistent-hash", "x-recent-history" ]
@@ -130,6 +130,7 @@ def main():
     # exchange plugin type to plugin name mapping
     exchange_plugins = {'x-consistent-hash': 'rabbitmq_consistent_hash_exchange',
                         'x-random': 'rabbitmq_random_exchange',
+                        'x-delayed-message': 'rabbitmq_delayed_message_exchange',
                         'x-recent-history': 'rabbitmq_recent_history_exchange'}
     result = dict(changed=False, name=module.params['name'])
 
@@ -201,12 +202,20 @@ def main():
         else:
             rjson = r.json()
             if (rjson['reason'].startswith('unknown exchange type')):
-                module.fail_json(
-                    msg=("Error creating exchange. You may need to enable the '%s' plugin for exchange type %s" %
-                         (exchange_plugins[module.params['exchange_type']], module.params['exchange_type'])),
-                    status=r.status_code,
-                    details=r.text
-                )
+                try:
+                    module.fail_json(
+                        msg=("Error creating exchange. You may need to enable the '%s' plugin for exchange type %s" %
+                             (exchange_plugins[module.params['exchange_type']], module.params['exchange_type'])),
+                        status=r.status_code,
+                        details=r.text
+                    )
+                except KeyError:
+                    module.fail_json(
+                        msg=("Error creating exchange. You may need to enable a plugin for exchange type %s" %
+                             module.params['exchange_type']),
+                        status=r.status_code,
+                        details=r.text
+                    )
             else:
                 module.fail_json(
                     msg="Error creating exchange",

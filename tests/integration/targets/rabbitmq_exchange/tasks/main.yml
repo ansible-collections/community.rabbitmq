@@ -1,7 +1,5 @@
----
 # Note: these tests are just for the 3 plugin exchange types.  Additional
 # rabbitmq_exchange tests occur within some of the other module tests.
-
 - name: Fail creating an x-random exchange type
   community.rabbitmq.rabbitmq_exchange:
     name: test_x_random_exchange
