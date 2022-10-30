@@ -13,52 +13,54 @@ DOCUMENTATION = r'''
 module: rabbitmq_exchange
 author: Manuel Sousa (@manuel-sousa)
 
-short_description: Manage rabbitMQ exchanges
+short_description: Manage rabbitMQ exchange
 description:
   - This module uses rabbitMQ Rest API to create/delete exchanges
 requirements: [ "requests >= 1.0.0" ]
 options:
     name:
         description:
-            - Name of the exchange to create
+            - Name of the exchange to create.
         type: str
         required: true
     state:
         description:
-            - Whether the exchange should be present or absent
+            - Whether the exchange should be present or absent.
         type: str
         choices: [ "present", "absent" ]
         required: false
         default: present
     durable:
         description:
-            - whether exchange is durable or not
+            - Whether exchange is durable or not.
         type: bool
         required: false
         default: true
     exchange_type:
         description:
-            - type for the exchange
+            - Type for the exchange.
+            - If using I(x-delayed-message), I(x-random), I(x-consistent-hash) or I(x-recent-history) the respective plugin on
+            - the RabbitMQ server must be enabled.
         type: str
         required: false
-        choices: [ "fanout", "direct", "headers", "topic", "x-delayed-message" ]
+        choices: [ "fanout", "direct", "headers", "topic", "x-delayed-message", "x-random", "x-consistent-hash", "x-recent-history" ]
         aliases: [ "type" ]
         default: direct
     auto_delete:
         description:
-            - if the exchange should delete itself after all queues/exchanges unbound from it
+            - If the exchange should delete itself after all queues/exchanges unbound from it.
         type: bool
         required: false
         default: false
     internal:
         description:
-            - exchange is available only for other exchanges
+            - Exchange is available only for other exchanges.
         type: bool
         required: false
         default: false
     arguments:
         description:
-            - extra arguments for exchange. If defined this argument is a key/value dictionary
+            - Extra arguments for exchange. If defined this argument is a key/value dictionary.
         type: dict
         required: false
         default: {}
@@ -106,7 +108,8 @@ def main():
             auto_delete=dict(default=False, type='bool'),
             internal=dict(default=False, type='bool'),
             exchange_type=dict(default='direct', aliases=['type'],
-                               choices=['fanout', 'direct', 'headers', 'topic', 'x-delayed-message'],
+                               choices=['fanout', 'direct', 'headers', 'topic', 'x-delayed-message',
+                                        'x-random', 'x-consistent-hash', 'x-recent-history'],
                                type='str'),
             arguments=dict(default=dict(), type='dict')
         )
@@ -124,6 +127,11 @@ def main():
     if not HAS_REQUESTS:
         module.fail_json(msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR)
 
+    # exchange plugin type to plugin name mapping
+    exchange_plugins = {'x-consistent-hash': 'rabbitmq_consistent_hash_exchange',
+                        'x-random': 'rabbitmq_random_exchange',
+                        'x-delayed-message': 'rabbitmq_delayed_message_exchange',
+                        'x-recent-history': 'rabbitmq_recent_history_exchange'}
     result = dict(changed=False, name=module.params['name'])
 
     # Check if exchange already exists
@@ -192,11 +200,28 @@ def main():
             result['changed'] = True
             module.exit_json(**result)
         else:
-            module.fail_json(
-                msg="Error creating exchange",
-                status=r.status_code,
-                details=r.text
-            )
+            rjson = r.json()
+            if (rjson['reason'].startswith('unknown exchange type')):
+                try:
+                    module.fail_json(
+                        msg=("Error creating exchange. You may need to enable the '%s' plugin for exchange type %s" %
+                             (exchange_plugins[module.params['exchange_type']], module.params['exchange_type'])),
+                        status=r.status_code,
+                        details=r.text
+                    )
+                except KeyError:
+                    module.fail_json(
+                        msg=("Error creating exchange. You may need to enable a plugin for exchange type %s" %
+                             module.params['exchange_type']),
+                        status=r.status_code,
+                        details=r.text
+                    )
+            else:
+                module.fail_json(
+                    msg="Error creating exchange",
+                    status=r.status_code,
+                    details=r.text
+                )
 
     else:
         module.exit_json(
