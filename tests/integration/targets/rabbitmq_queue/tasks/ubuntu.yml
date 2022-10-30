@@ -1,0 +1,31 @@
+- name: Install requests and pika
+  pip:
+    name: requests
+    state: present
+  delegate_to: localhost
+
+- name: Create RabbitMQ stream
+  community.rabbitmq.rabbitmq_queue:
+    name: test-x/test-y
+    arguments:
+      x-queue-type: stream
+      x-max-age: 24h
+  register: testqueue
+
+- name: Assert that queue with special characters was created
+  assert:
+    that:
+      - "testqueue is changed"
+
+- name: Create RabbitMQ stream
+  community.rabbitmq.rabbitmq_queue:
+    name: test-x/test-y
+    arguments:
+      x-queue-type: stream
+      x-max-age: 24h
+  register: testqueue
+
+- name: Assert that queue creation is idempotent
+  assert:
+    that:
+      - "testqueue is not changed"

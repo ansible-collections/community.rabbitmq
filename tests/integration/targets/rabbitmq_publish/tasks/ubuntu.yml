@@ -4,6 +4,13 @@
     state: present
   delegate_to: localhost
 
+- setup:
+  register: allfacts
+
+
+- debug:
+    var: allfacts
+
 - name: RabbitMQ basic publish test
   rabbitmq_publish:
     url: "amqp://guest:guest@127.0.0.1:5672/%2F"
