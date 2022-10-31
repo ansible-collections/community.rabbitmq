@@ -1,0 +1,91 @@
+---
+# https://stackoverflow.com/questions/25193161/chfn-pam-system-error-intermittently-in-docker-hub-builds/25267015
+- name: Disable chfn
+  file:
+    path: /usr/bin/chfn
+    src: /bin/true
+    state: link
+    force: yes
+
+# main document...
+# https://www.rabbitmq.com/install-rpm.html
+# https://github.com/rabbitmq/erlang-rpm
+#
+# https://cloudsmith.io/~rabbitmq/repos/rabbitmq-erlang/setup/#formats-rpm
+
+- name: Install required keys
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ item }}"
+  loop:
+    - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
+    - "https://packagecloud.io/rabbitmq/erlang/gpgkey"
+    - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
+
+- name: Add erlang repo
+  ansible.builtin.yum_repository:
+    name: rabbitmq_erlang
+    description: RabbitMQ erlang
+    baseurl: https://packagecloud.io/rabbitmq/erlang/el/8/$basearch
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey:
+      - https://packagecloud.io/rabbitmq/erlang/gpgkey
+      - https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+    sslverify: true
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    metadata_expire: 300
+
+- name: Add rabbitmq repo
+  ansible.builtin.yum_repository:
+    name: rabbitmq_server
+    description: RabbitMQ server
+    baseurl: https://packagecloud.io/rabbitmq/rabbitmq-server/el/8/$basearch
+    gpgcheck: false
+    repo_gpgcheck: true
+    gpgkey:
+      - https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+      - https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+    sslverify: true
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    metadata_expire: 300
+
+- name: Install dependencies
+  ansible.builtin.yum:
+    name:
+      - socat
+      - logrotate
+    update_cache: true
+
+- name: Install erlang
+  ansible.builtin.yum:
+    name: erlang
+    enablerepo: "rabbitmq_erlang,rabbitmq_server"
+
+- name: Install rabbitmq server
+  ansible.builtin.yum:
+    name: rabbitmq-server
+    enablerepo: "rabbitmq_erlang,rabbitmq_server"
+
+
+# Copy configuration into place
+# Start daemon - systemctl start rabbitmq-server
+
+- name: Ensure TLS config
+  copy:
+    src: rabbitmq.conf
+    dest: /etc/rabbitmq/rabbitmq.conf
+
+- name: Start RabbitMQ service
+  ansible.builtin.systemd:
+    name: rabbitmq-server
+    state: started
+
+- name: Enable management
+  command: rabbitmq-plugins enable --online rabbitmq_management
+
+- name: Install requests
+  pip:
+    name: requests
+    state: present
+  delegate_to: localhost
