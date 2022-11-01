@@ -1,0 +1,274 @@
+- name: Install requests and pika
+  pip:
+    name: requests,pika==1.3.0
+    state: present
+  delegate_to: localhost
+
+- name: RabbitMQ basic publish test
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'publish_test'
+    body: "Hello world from ansible module rabbitmq_publish"
+    content_type: "text/plain"
+  register: rabbit_basic_output1
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "rabbit_basic_output1 is not failed"
+      - "'publish_test' in rabbit_basic_output1.result.msg"
+      - "'publish_test' in rabbit_basic_output1.result.queue"
+      - "'text/plain' in rabbit_basic_output1.result.content_type"
+
+
+# Testing random queue
+- name: Publish to random queue
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    body: "RANDOM QUEUE POST"
+    content_type: "text/plain"
+  register: rabbit_random_queue_output
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "rabbit_random_queue_output is not failed"
+      - "'amq.gen' in rabbit_random_queue_output.result.msg"
+      - "'amq.gen' in rabbit_random_queue_output.result.queue"
+      - "'text/plain' in rabbit_random_queue_output.result.content_type"
+
+- name: Copy binary to remote
+  copy:
+    src: "{{ role_path }}/files/image.gif"
+    dest: "{{ remote_tmp_dir }}/image.gif"
+  delegate_to: localhost
+
+- name: Publish binary to a queue
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: publish_test
+    src: "{{ remote_tmp_dir }}/image.gif"
+  register: rabbitmq_publish_file
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "rabbitmq_publish_file is not failed"
+      - "'publish_test' in rabbitmq_publish_file.result.queue"
+      - "'image/gif' in rabbitmq_publish_file.result.content_type"
+
+- name: Raise error for src and body defined
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'publish_test'
+    src: "{{ remote_tmp_dir }}/image.gif"
+    body: blah
+  register: rabbit_basic_fail_output1
+  ignore_errors: yes
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "rabbit_basic_fail_output1 is failed"
+      - "'parameters are mutually exclusive' in rabbit_basic_fail_output1.msg"
+
+- name: Publish a file that does not exist
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'publish_test'
+    src: 'aaaaaaajax-loader.gif'
+  register: file_missing_fail
+  ignore_errors: yes
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "file_missing_fail is failed"
+      - "'Unable to open file' in file_missing_fail.msg"
+
+- name: Publish with proto/host/port/user/pass
+  rabbitmq_publish:
+    proto: amqp
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    vhost: '%2F'
+    queue: publish_test
+    body: Testing with proto/host/port/username/password/vhost
+  register: host_port_output
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "host_port_output is not failed"
+
+- name: Publish with host/port/user but missing proto
+  rabbitmq_publish:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    vhost: '%2F'
+    queue: publish_test
+    body: Testing with proto/host/port/username/password/vhost
+  ignore_errors: yes
+  register: host_port_missing_proto_output
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "host_port_missing_proto_output is failed"
+      - "'Connection parameters must be passed via' in host_port_missing_proto_output.msg"
+
+- name: Publish with proto/host/port/user and url
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    proto: amqp
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    vhost: '%2F'
+    queue: publish_test
+    body: Testing with proto/host/port/username/password/vhost
+  ignore_errors: yes
+  register: host_and_url_output
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "host_and_url_output is failed"
+      - "'cannot be specified at the same time' in host_and_url_output.msg"
+
+- name: Publish headers to queue
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'publish_test'
+    body: blah
+    headers:
+      myHeader: Value1
+      secondHeader: Value2
+  register: test_headers1
+  ignore_errors: yes
+  delegate_to: localhost
+
+- name: Publish headers with file
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'publish_test'
+    src: "{{ remote_tmp_dir }}/image.gif"
+    headers:
+      myHeader: Value1
+      secondHeader: Value2
+  register: test_headers2
+  ignore_errors: yes
+  delegate_to: localhost
+
+- name: Collect all messages off the publish queue
+  set_fact:
+    messages: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@127.0.0.1:5672/%2F', queue='publish_test') }}"
+  delegate_to: localhost
+
+- name: Check contents of published messages
+  assert:
+    that:
+      - messages|length == 5
+      - "'Hello world from ansible module rabbitmq_publish' in messages[0]['msg']"
+      - "'text/plain' in messages[0]['content_type']"
+      - "'image/gif' in messages[1]['content_type']"
+      - "'image.gif' in messages[1]['headers']['filename']"
+      - "'Testing with proto/host/port/username/password/vhost' in messages[2]['msg']"
+#      - messages[3]['headers']['myHeader'] is defined
+#      - messages[4]['headers']['filename'] is defined
+#      - messages[4]['headers']['secondHeader'] is defined
+#
+
+- name: Check that queue and exchange are mutually exclusive
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    queue: 'fail_queue'
+    exchange: 'fail_exchange'
+    body: "Queue and exchange mutually exclusive should fail"
+    content_type: "text/plain"
+  register: rabbit_mutually_exclusive
+  delegate_to: localhost
+  ignore_errors: true
+
+- assert:
+    that:
+      - "rabbit_basic_fail_output1 is failed"
+      - "'parameters are mutually exclusive' in rabbit_mutually_exclusive.msg"
+
+# Publish to exchange testing
+# - Create an exchange (pub_test_exchange) and a queue (pub_test_exchange_queue)
+# - Bind exchange and queue
+# - Send message to exchange
+# - Check message arrived in queue
+
+- name: Add test requisites
+  block:
+    - name: Add exchange
+      rabbitmq_exchange:
+        name: "pub_test_exchange"
+        type: fanout
+
+    - name: Add queue
+      rabbitmq_queue:
+        name: pub_test_exchange_queue
+
+    - name: Add binding
+      rabbitmq_binding:
+        source: pub_test_exchange
+        destination: pub_test_exchange_queue
+        type: queue
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: RabbitMQ basic exchange publish test
+  rabbitmq_publish:
+    url: "amqp://guest:guest@127.0.0.1:5672/%2F"
+    exchange: 'pub_test_exchange'
+    body: "Hello world pub_test_exchange exchange from ansible module rabbitmq_publish"
+    content_type: "text/plain"
+  register: rabbit_exchange_output1
+  delegate_to: localhost
+
+- assert:
+    that:
+      - "rabbit_exchange_output1 is not failed"
+      - "'pub_test_exchange' in rabbit_exchange_output1.result.msg"
+
+- name: Wait 2 seconds to make sure message has been delivered
+  pause:
+    seconds: 2
+
+- name: Retrieve messages from pub_test_exchange_queue
+  set_fact:
+    rabbitmq_exchange_msg: "{{ lookup('community.rabbitmq.rabbitmq', url='amqp://guest:guest@127.0.0.1:5672/%2f/pub_test_exchange_queue', queue='pub_test_exchange_queue') }}"
+  ignore_errors: yes
+  register: rabbitmq_pub_test_exchange_queue
+  delegate_to: localhost
+
+- name: Debug out rabbitmq_pub_test_exchange_queue task result
+  debug:
+    var: rabbitmq_pub_test_exchange_queue
+
+- name: Debug out the set_fact rabbitmq_exchange_msg
+  debug:
+    var: rabbitmq_exchange_msg
+
+- name: Ensure one message was received
+  assert:
+    that:
+      - "rabbitmq_pub_test_exchange_queue is not failed"
+      - rabbitmq_exchange_msg | length == 1
+
+- name: Ensure first message contains a string
+  assert:
+    that:
+      - "'pub_test_exchange exchange' in rabbitmq_exchange_msg[0].msg"
