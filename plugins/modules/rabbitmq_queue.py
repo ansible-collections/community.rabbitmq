@@ -21,46 +21,46 @@ requirements: [ "requests >= 1.0.0" ]
 options:
     name:
         description:
-            - Name of the queue
+            - Name of the queue.
         type: str
         required: true
     state:
         description:
-            - Whether the queue should be present or absent
+            - Whether the queue should be present or absent.
         type: str
         choices: [ "present", "absent" ]
         default: present
     durable:
         description:
-            - whether queue is durable or not
+            - whether queue is durable or not.
         type: bool
         default: true
     auto_delete:
         description:
-            - if the queue should delete itself after all queues/queues unbound from it
+            - if the queue should delete itself after all queues/queues unbound from it.
         type: bool
         default: false
     message_ttl:
         description:
-            - How long a message can live in queue before it is discarded (milliseconds)
+            - How long a message can live in queue before it is discarded (milliseconds).
         type: int
     auto_expires:
         description:
-            - How long a queue can be unused before it is automatically deleted (milliseconds)
+            - How long a queue can be unused before it is automatically deleted (milliseconds).
         type: int
     max_length:
         description:
-            - How many messages can the queue contain before it starts rejecting
+            - How many messages can the queue contain before it starts rejecting.
         type: int
     dead_letter_exchange:
         description:
             - Optional name of an exchange to which messages will be republished if they
-            - are rejected or expire
+            - are rejected or expire.
         type: str
     dead_letter_routing_key:
         description:
             - Optional replacement routing key to use when a message is dead-lettered.
-            - Original routing key will be used if unset
+            - Original routing key will be used if unset.
         type: str
     max_priority:
         description:
@@ -91,6 +91,15 @@ EXAMPLES = r'''
     login_user: user
     login_password: secret
     login_host: remote.example.org
+
+# You may specify different types of queues using the arguments parameter.
+- name: Create RabbitMQ stream
+  become: yes
+  community.rabbitmq.rabbitmq_queue:
+    name: test-x
+    arguments:
+      x-queue-type: stream
+      x-max-age: 24h
 '''
 
 import json
@@ -156,7 +165,7 @@ def main():
         module.params['login_host'],
         module.params['login_port'],
         urllib_parse.quote(module.params['vhost'], ''),
-        module.params['name']
+        urllib_parse.quote(module.params['name'], '')
     )
 
     if not HAS_REQUESTS:
