@@ -156,6 +156,8 @@ stages:
             #  test: ubuntu1804
             - name: Ubuntu 22.04
               test: ubuntu2204
+            - name: Fedora 35
+              test: fedora35
             # Currently 20.04 is causing devel to fail.  This maybe due to Ubuntu 20.04 running python
             # 3.8, however, ansible-test requires 3.9+.  This means ansible test spins up a controller
             # and target container which is probably why rabbitmq_publish is not able to connect to
@@ -192,6 +194,8 @@ stages:
             #  test: ubuntu1804
             - name: Ubuntu 20.04
               test: ubuntu2004
+            - name: Fedora 35
+              test: fedora35
 
   - stage: Docker_2_12
     displayName: Docker 2.12
@@ -205,6 +209,8 @@ stages:
             #  test: ubuntu1804
             - name: Ubuntu 20.04
               test: ubuntu2004
+            - name: Fedora 35
+              test: fedora35
 
   - stage: Docker_2_11
     displayName: Docker 2.11
@@ -231,6 +237,8 @@ stages:
               test: ubuntu1804
             - name: Ubuntu 20.04
               test: ubuntu2004
+            - name: Fedora 35
+              test: fedora35
 
   - stage: Docker_2_10
     displayName: Docker 2.10
@@ -257,6 +265,8 @@ stages:
               test: ubuntu1804
             - name: Ubuntu 20.04
               test: ubuntu2004
+            - name: Fedora 35
+              test: fedora35
 
   - stage: Docker_2_9
     displayName: Docker 2.9

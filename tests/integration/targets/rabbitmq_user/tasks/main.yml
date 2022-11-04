@@ -8,3 +8,13 @@
   - import_tasks: tests.yml
     environment:
       RABBITMQ_NODENAME: test
+
+
+- when: ansible_distribution == 'Fedora'
+  block:
+
+  - import_tasks: tests.yml
+
+  - import_tasks: tests.yml
+    environment:
+      RABBITMQ_NODENAME: test

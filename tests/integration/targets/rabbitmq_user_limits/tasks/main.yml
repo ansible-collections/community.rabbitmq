@@ -1,5 +1,9 @@
 # Rabbitmq lookup
-- include: ubuntu.yml
+- import_tasks: ubuntu.yml
   when: 
     - ansible_distribution == 'Ubuntu'
     - ansible_distribution_release != 'trusty'
+
+- import_tasks: ubuntu.yml
+  when: 
+    - ansible_distribution == 'Fedora'
