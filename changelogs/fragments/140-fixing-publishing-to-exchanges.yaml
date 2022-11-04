@@ -1,2 +1,0 @@
-minor_changes:
-  - rabbitmq_plugin - fixing issue with publishing to exchanges and adding exchange documentation examples. Publishing to an exchange or queue is now mutually exclusive.

@@ -5,6 +5,29 @@ Community.Rabbitmq Release Notes
 .. contents:: Topics
 
 
+v1.2.3
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the 1.2.2 release.
+
+
+Minor Changes
+-------------
+
+- rabbitmq_exchange - adding ability to specify exchange types that are enabled via plugins. I(x-random), I(x-consistent-hash) and I(x-recent-history) (https://github.com/ansible-collections/community.rabbitmq/pull/142).
+- rabbitmq_publish - fixing issue with publishing to exchanges and adding exchange documentation examples. Publishing to an exchange or queue is now mutually exclusive (https://github.com/ansible-collections/community.rabbitmq/pull/140).
+
+Bugfixes
+--------
+
+- rabbitmq_queue - fixing an issue where a special character in the queue name would result in an API error (https://github.com/ansible-collections/community.rabbitmq/issues/114).
+- Various CI fixes (https://github.com/ansible-collections/community.rabbitmq/pull/139 & https://github.com/ansible-collections/community.rabbitmq/pull/141).
+
 v1.2.2
 ======
 

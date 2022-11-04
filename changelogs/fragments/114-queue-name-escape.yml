@@ -1,2 +1,0 @@
-bugfixes:
-  - rabbitmq_queue - fixing an issue where a special character in the queue name would result in an API error (https://github.com/ansible-collections/community.rabbitmq/issues/114).

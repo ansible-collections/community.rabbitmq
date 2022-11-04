@@ -1,3 +1,0 @@
----
-minor_changes:
-  - rabbitmq_exchange - adding ability to specify exchange types that are enabled via plugins. I(x-random), I(x-consistent-hash) and I(x-recent-history)
