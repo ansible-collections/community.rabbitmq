@@ -9,6 +9,9 @@
       new_only: True
     register: result
 
+  - debug:
+      var: result
+
   - name: Get rabbitmq-plugins output
     shell: "rabbitmq-plugins list | grep {{ plugin_name }}"
     register: cli_result
@@ -22,12 +25,18 @@
         - result.disabled == []
         - '"[E" in cli_result.stdout'
 
+  - debug:
+      var: cli_result
+
   - name: Enable plugin [online] (idempotency)
     rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: enabled
       new_only: True
     register: result
+
+  - debug:
+      var: result
 
   - name: Check idempotency
     assert:
@@ -39,6 +48,9 @@
       name: "{{ plugin_name }}"
       state: disabled
     register: result
+
+  - debug:
+      var: result
 
   - name: Get rabbitmq-plugins output
     shell: "rabbitmq-plugins list | grep {{ plugin_name }}"
@@ -53,6 +65,9 @@
         - '"{{ plugin_name }}" in result.disabled'
         - '"[E" not in cli_result.stdout'
 
+  - debug:
+      var: cli_result
+
   - name: Disable plugin [online] (idempotency)
     rabbitmq_plugin:
       name: "{{ plugin_name }}"
@@ -63,6 +78,9 @@
     assert:
       that:
         - result is not changed
+
+  - debug:
+      var: result
 
   - name: Enable plugin [offline]
     rabbitmq_plugin:
@@ -85,6 +103,9 @@
         - result.disabled == []
         - '"[E" in cli_result.stdout'
 
+  - debug:
+      var: cli_result
+
   - name: Enable plugin [offline] (idempotency)
     rabbitmq_plugin:
       name: "{{ plugin_name }}"
@@ -97,6 +118,9 @@
     assert:
       that:
         - result is not changed
+
+  - debug:
+      var: result
 
   - name: Disable plugin [offline]
     rabbitmq_plugin:
