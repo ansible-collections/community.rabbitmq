@@ -21,7 +21,6 @@ PIKA_IMP_ERR = None
 try:
     import pika
     import pika.exceptions
-    from pika import spec
     HAS_PIKA = True
 except ImportError:
     PIKA_IMP_ERR = traceback.format_exc()

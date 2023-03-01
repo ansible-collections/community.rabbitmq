@@ -98,14 +98,13 @@ RETURN = """
 
 import json
 
-from ansible.errors import AnsibleError, AnsibleParserError
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible.module_utils._text import to_native, to_text
 from ansible.utils.display import Display
 
 try:
     import pika
-    from pika import spec
     HAS_PIKA = True
 except ImportError:
     HAS_PIKA = False

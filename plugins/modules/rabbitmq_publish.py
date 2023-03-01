@@ -187,15 +187,7 @@ result:
     'result': { 'content_type': 'text/plain', 'msg': 'Successfully published to queue test', 'queue': 'test' }
 '''
 
-try:
-    import pika
-    HAS_PIKA = True
-except ImportError:
-    HAS_PIKA = False
-
-
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils._text import to_native, to_text
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import RabbitClient
 
 
