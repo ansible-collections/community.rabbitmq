@@ -55,6 +55,21 @@ EXAMPLES = r"""
     name: local-username
     value: '"guest"'
     state: present
+
+- name: Create or update a shovel
+  vars:
+    payload:
+      src-protocol: "amqp091"
+      src-uri: "amqp://"
+      src-queue: "src-queue"
+      dest-protocol: "amqp091"
+      dest-uri: "amqp://guest:guest@example.com"
+      dest-queue: "dest-queue"
+  community.rabbitmq.rabbitmq_parameter:
+    component: shovel
+    name: "shovel-name"
+    value: "{{ payload | to_json }}"
+    state: present
 """
 import json
 from ansible.module_utils.basic import AnsibleModule
