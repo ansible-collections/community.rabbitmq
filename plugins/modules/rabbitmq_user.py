@@ -510,7 +510,7 @@ def main():
 
     for permission in permissions:
         if not permission['vhost']:
-            module.fail_json(msg="Error parsing vhost permissions: You can't"
+            module.fail_json(msg="Error parsing vhost permissions: You can't "
                                  "have an empty vhost when setting permissions")
 
     for permission in topic_permissions:
