@@ -54,6 +54,18 @@ stages:
             - name: Units
               test: 'devel/units/1'
 
+  - stage: Ansible_2_16
+    displayName: Sanity & Units 2.16
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          targets:
+            - name: Sanity
+              test: '2.16/sanity/1'
+            - name: Units
+              test: '2.16/units/1'
+
   - stage: Ansible_2_15
     displayName: Sanity & Units 2.15
     dependsOn: []
@@ -77,30 +89,6 @@ stages:
               test: '2.14/sanity/1'
             - name: Units
               test: '2.14/units/1'
-
-  - stage: Ansible_2_13
-    displayName: Sanity & Units 2.13
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          targets:
-            - name: Sanity
-              test: '2.13/sanity/1'
-            - name: Units
-              test: '2.13/units/1'
-
-  - stage: Ansible_2_12
-    displayName: Sanity & Units 2.12
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          targets:
-            - name: Sanity
-              test: '2.12/sanity/1'
-            - name: Units
-              test: '2.12/units/1'
 
 ### Docker
   - stage: Docker_devel
@@ -139,6 +127,17 @@ stages:
             #- name: Ubuntu 20.04
             #  test: ubuntu2004
 
+  - stage: Docker_2_16
+    displayName: Docker 2.16
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          testFormat: 2.16/linux/{0}/1
+          targets:
+            - name: Ubuntu 22.04
+              test: ubuntu2204
+
   - stage: Docker_2_15
     displayName: Docker 2.15
     dependsOn: []
@@ -173,32 +172,6 @@ stages:
             #- name: Ubuntu 20.04
             #  test: ubuntu2004
 
-  - stage: Docker_2_13
-    displayName: Docker 2.13
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          testFormat: 2.13/linux/{0}/1
-          targets:
-            #- name: Ubuntu 18.04
-            #  test: ubuntu1804
-            - name: Ubuntu 20.04
-              test: ubuntu2004
-
-  - stage: Docker_2_12
-    displayName: Docker 2.12
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          testFormat: 2.12/linux/{0}/1
-          targets:
-            #- name: Ubuntu 18.04
-            #  test: ubuntu1804
-            - name: Ubuntu 20.04
-              test: ubuntu2004
-
 ### Remote
 #  - stage: Remote_devel
 #    displayName: Remote devel
@@ -223,13 +196,9 @@ stages:
       - Ansible_devel
       - Ansible_2_15
       - Ansible_2_14
-      - Ansible_2_13
-      - Ansible_2_12
       - Docker_devel
       - Docker_2_15
       - Docker_2_14
-      - Docker_2_13
-      - Docker_2_12
       #- Remote_devel
     jobs:
       - template: templates/coverage.yml
