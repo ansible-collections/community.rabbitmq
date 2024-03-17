@@ -115,12 +115,11 @@ class RabbitMqBinding(object):
         self.base_url = '{0}://{1}:{2}/api/bindings'.format(self.login_protocol,
                                                             self.login_host,
                                                             self.login_port)
-        self.url = '{0}/{1}/e/{2}/{3}/{4}/{5}'.format(self.base_url,
-                                                      urllib_parse.quote(self.vhost, safe=''),
-                                                      urllib_parse.quote(self.name, safe=''),
-                                                      self.destination_type,
-                                                      urllib_parse.quote(self.destination, safe=''),
-                                                      self.props)
+        self.url = '{0}/{1}/e/{2}/{3}/{4}'.format(self.base_url,
+                                                  urllib_parse.quote(self.vhost, safe=''),
+                                                  urllib_parse.quote(self.name, safe=''),
+                                                  self.destination_type,
+                                                  urllib_parse.quote(self.destination, safe=''))
         self.result = {
             'changed': False,
             'name': self.module.params['name'],
@@ -171,7 +170,10 @@ class RabbitMqBinding(object):
         """
         :return:
         """
-        return self.http_check_states.get(self.api_result.status_code, False)
+        for binding in self.api_result.json():
+            if binding["arguments"] == self.arguments and binding["routing_key"] == self.routing_key:
+                return True
+        return False
 
     def check_mode(self):
         """
