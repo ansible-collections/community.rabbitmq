@@ -4,6 +4,20 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
+v1.3.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the 1.2.3 release.
+
+Minor Changes
+-------------
+
+- rabbitmq_user - add support to user manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/76)
 
 v1.2.3
 ======
@@ -15,7 +29,6 @@ This is the minor release of the ``community.rabbitmq`` collection.
 This changelog contains all changes to the modules and plugins in this collection
 that have been made after the 1.2.2 release.
 
-
 Minor Changes
 -------------
 
@@ -25,8 +38,8 @@ Minor Changes
 Bugfixes
 --------
 
-- rabbitmq_queue - fixing an issue where a special character in the queue name would result in an API error (https://github.com/ansible-collections/community.rabbitmq/issues/114).
 - Various CI fixes (https://github.com/ansible-collections/community.rabbitmq/pull/139 & https://github.com/ansible-collections/community.rabbitmq/pull/141).
+- rabbitmq_queue - fixing an issue where a special character in the queue name would result in an API error (https://github.com/ansible-collections/community.rabbitmq/issues/114).
 
 v1.2.2
 ======
