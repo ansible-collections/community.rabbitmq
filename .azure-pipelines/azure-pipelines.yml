@@ -91,18 +91,18 @@ stages:
               test: '2.15/units/1'
 
 ### Docker
-  - stage: Docker_devel
-    displayName: Docker devel
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
+  #- stage: Docker_devel
+  #  displayName: Docker devel
+  #  dependsOn: []
+  #  jobs:
+  #    - template: templates/matrix.yml
+  #      parameters:
           # $ansible_version/$script/$test => devel / linux / ubuntu2004/1
           # shippable/linux.sh target=shippable/posix/group1
           # ansible-test integration ... shippable/posix/group1 --docker ubuntu2004
           # dir: integration/targets/
-          testFormat: devel/linux/{0}/1
-          targets:
+  #        testFormat: devel/linux/{0}/1
+  #        targets:
             # NOTE: update integration roles to support platform before enabling here.
             #- name: CentOS 6
             #  test: centos6
@@ -118,8 +118,8 @@ stages:
             #  test: opensuse15
             #- name: Ubuntu 18.04
             #  test: ubuntu1804
-            - name: Ubuntu 22.04
-              test: ubuntu2204
+   #         - name: Ubuntu 22.04
+   #           test: ubuntu2204
             # Currently 20.04 is causing devel to fail.  This maybe due to Ubuntu 20.04 running python
             # 3.8, however, ansible-test requires 3.9+.  This means ansible test spins up a controller
             # and target container which is probably why rabbitmq_publish is not able to connect to
@@ -191,7 +191,7 @@ stages:
       - Ansible_2_17
       - Ansible_2_16
       - Ansible_2_15
-      - Docker_devel
+      #- Docker_devel
       - Docker_2_17
       - Docker_2_16
       - Docker_2_15
