@@ -28,10 +28,11 @@ options:
     default: /
   apply_to:
     description:
-      - What the policy applies to. Requires RabbitMQ 3.2.0 or later.
+      - What the policy applies to. Requires RabbitMQ 3.2.0 or later. For classic_queues,
+        quorum_queues and streams RabbitMQ 3.12 or later is required
     type: str
     default: all
-    choices: [all, exchanges, queues]
+    choices: [all, exchanges, queues, classic_queues, quorum_queues, streams]
   pattern:
     description:
       - A regex of queues to apply the policy to. Required when
@@ -221,7 +222,7 @@ def main():
         name=dict(required=True),
         vhost=dict(default='/'),
         pattern=dict(required=False, default=None),
-        apply_to=dict(default='all', choices=['all', 'exchanges', 'queues']),
+        apply_to=dict(default='all', choices=['all', 'exchanges', 'queues', 'classic_queues', 'quorum_queues', 'streams']),
         tags=dict(type='dict', required=False, default=None),
         priority=dict(default='0'),
         node=dict(default='rabbit'),
