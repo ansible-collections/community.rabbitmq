@@ -181,7 +181,7 @@
       - "'Testing with proto/host/port/username/password/vhost' in messages[2]['msg']"
       - messages[4]['headers']['myHeader'] is defined
       - messages[4]['headers']['secondHeader'] is defined
-      - "'Value2' in messages[4]['secondHeader']"
+      - "'Value2' in messages[4]['headers']['secondHeader']"
 
 
 - name: Check that queue and exchange are mutually exclusive
