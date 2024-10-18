@@ -179,8 +179,9 @@
       - "'image/gif' in messages[1]['content_type']"
       - "'image.gif' in messages[1]['headers']['filename']"
       - "'Testing with proto/host/port/username/password/vhost' in messages[2]['msg']"
-      - messages[1]['headers']['myHeader'] is defined
-      - messages[1]['headers']['secondHeader'] is defined
+      - messages[4]['headers']['myHeader'] is defined
+      - messages[4]['headers']['secondHeader'] is defined
+      # - messages[1]
 
 
 - name: Check that queue and exchange are mutually exclusive
