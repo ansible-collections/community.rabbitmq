@@ -37,20 +37,20 @@
     state: present
   loop:
     # Cloudsmith: modern Erlang repository
-    - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key"
+    - "https://ppa1.rabbitmq.com/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key"
     # Cloudsmith: RabbitMQ repository
-    - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key"
+    - "https://ppa1.rabbitmq.com/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key"
 
 - name: Add RabbitMQ Erlang repository
   apt_repository:
-    repo: "deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu {{ ansible_facts.distribution_release }} main"
+    repo: "deb https://ppa1.rabbitmq.com/public/rabbitmq/rabbitmq-erlang/deb/ubuntu {{ ansible_facts.distribution_release }} main"
     filename: 'rabbitmq-erlang'
     state: present
     update_cache: yes
 
 - name: Add RabbitMQ Server repository
   apt_repository:
-    repo: "deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu {{ ansible_facts.distribution_release }} main"
+    repo: "deb https://ppa1.rabbitmq.com/public/rabbitmq/rabbitmq-server/deb/ubuntu {{ ansible_facts.distribution_release }} main"
     filename: 'rabbitmq-server'
     state: present
     update_cache: yes
