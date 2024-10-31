@@ -54,6 +54,18 @@ stages:
             - name: Units
               test: 'devel/units/1'
 
+  - stage: Ansible_2_18
+    displayName: Sanity & Units 2.18
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          targets:
+            - name: Sanity
+              test: '2.18/sanity/1'
+            - name: Units
+              test: '2.18/units/1'
+
   - stage: Ansible_2_17
     displayName: Sanity & Units 2.17
     dependsOn: []
@@ -166,28 +178,11 @@ stages:
             #- name: Ubuntu 20.04
             #  test: ubuntu2004
 
-### Remote
-#  - stage: Remote_devel
-#    displayName: Remote devel
-#    dependsOn: []
-#    jobs:
-#      - template: templates/matrix.yml
-#        parameters:
-#          testFormat: devel/{0}/1
-#          targets:
-#            - name: RHEL 7.9
-#              test: rhel/7.9
-#            - name: RHEL 8.3
-#              test: rhel/8.3
-#            - name: FreeBSD 11.4
-#              test: freebsd/11.4
-#            - name: FreeBSD 12.2
-#              test: freebsd/12.2
-
   - stage: Summary
     condition: succeededOrFailed()
     dependsOn:
       - Ansible_devel
+      - Ansible_2_18
       - Ansible_2_17
       - Ansible_2_16
       - Ansible_2_15
@@ -195,6 +190,5 @@ stages:
       - Docker_2_17
       - Docker_2_16
       - Docker_2_15
-      #- Remote_devel
     jobs:
       - template: templates/coverage.yml
