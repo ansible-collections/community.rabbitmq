@@ -179,10 +179,10 @@
       - "'image/gif' in messages[1]['content_type']"
       - "'image.gif' in messages[1]['headers']['filename']"
       - "'Testing with proto/host/port/username/password/vhost' in messages[2]['msg']"
-#      - messages[3]['headers']['myHeader'] is defined
-#      - messages[4]['headers']['filename'] is defined
-#      - messages[4]['headers']['secondHeader'] is defined
-#
+      - messages[4]['headers']['myHeader'] is defined
+      - messages[4]['headers']['secondHeader'] is defined
+      - "'Value2' in messages[4]['headers']['secondHeader']"
+
 
 - name: Check that queue and exchange are mutually exclusive
   rabbitmq_publish:
