@@ -8,7 +8,7 @@
       state: present
     register: result
 
-  - name: Check that the host was created successfuly
+  - name: Check that the host was created successfully
     shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
     register: ctl_result
 
@@ -17,7 +17,7 @@
       that:
         - result is changed
         - result is success
-        - '"false" in ctl_result.stdout'  # value for tracing, false is disabled
+        - '"/policytest\tfalse" in ctl_result.stdout'  # value for tracing, false is disabled
 
   - name: Add host (idempotency)
     rabbitmq_vhost:
