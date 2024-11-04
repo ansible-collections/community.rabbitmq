@@ -131,30 +131,32 @@
         - result is success
         - result is changed
 
-  - name: Execute await_online_synchronized_mirror (check mode)
-    rabbitmq_upgrade:
-      action: await_online_synchronized_mirror
-      node: "{{ parameter_node }}"
-    register: result
-    check_mode: yes
+  # FIXME: DIsabling rabbitmq_upgrade tests because v4 does not support the
+  # await_online_synchronized_mirror command
+  # - name: Execute await_online_synchronized_mirror (check mode)
+  #   rabbitmq_upgrade:
+  #     action: await_online_synchronized_mirror
+  #     node: "{{ parameter_node }}"
+  #   register: result
+  #   check_mode: yes
 
-  - name: Check the result of await_online_synchronized_mirror (check mode)
-    assert:
-      that:
-        - result is success
-        - result is changed
+  # - name: Check the result of await_online_synchronized_mirror (check mode)
+  #   assert:
+  #     that:
+  #       - result is success
+  #       - result is changed
 
-  - name: Execute await_online_synchronized_mirror
-    rabbitmq_upgrade:
-      action: await_online_synchronized_mirror
-      node: "{{ parameter_node }}"
-    register: result
+  # - name: Execute await_online_synchronized_mirror
+  #   rabbitmq_upgrade:
+  #     action: await_online_synchronized_mirror
+  #     node: "{{ parameter_node }}"
+  #   register: result
 
-  - name: Check the result of await_online_synchronized_mirror
-    assert:
-      that:
-        - result is success
-        - result is changed
+  # - name: Check the result of await_online_synchronized_mirror
+  #   assert:
+  #     that:
+  #       - result is success
+  #       - result is changed
 
   - name: Execute post_upgrade (check_mode)
     rabbitmq_upgrade:
