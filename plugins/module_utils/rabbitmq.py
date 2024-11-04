@@ -190,14 +190,16 @@ class RabbitClient():
                 result = self.conn_channel.queue_declare(queue='',
                                                          durable=self.params.get("durable"),
                                                          exclusive=self.params.get("exclusive"),
-                                                         auto_delete=self.params.get("auto_delete"))
+                                                         auto_delete=self.params.get("auto_delete"),
+                                                         arguments=self.params.get("headers"))
                 self.conn_channel.confirm_delivery()
                 self.queue = result.method.queue
             elif self.queue is not None and self.exchange is None:
                 self.conn_channel.queue_declare(queue=self.queue,
                                                 durable=self.params.get("durable"),
                                                 exclusive=self.params.get("exclusive"),
-                                                auto_delete=self.params.get("auto_delete"))
+                                                auto_delete=self.params.get("auto_delete"),
+                                                arguments=self.params.get("headers"))
                 self.conn_channel.confirm_delivery()
         except Exception as e:
             self.module.fail_json(msg="Queue declare issue: %s" % to_native(e))
