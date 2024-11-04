@@ -31,15 +31,15 @@
       that:
         - result is not changed
 
-  - name: Add an HA Policy
+  - name: Add an policy
     rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
       tags:
-        ha-mode: all
-        ha-sync-mode: automatic
-        ha-sync-batch-size: 10000
+        message-ttl: 100
+        expires: 100
+        max-length: 100
       vhost: "{{ vhost_name }}"
     register: add_policy
 
@@ -49,15 +49,15 @@
         - add_policy is changed
         - add_policy is success
 
-  - name: Add an HA Policy (idempotency)
+  - name: Add an policy (idempotency)
     rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
       tags:
-        ha-mode: all
-        ha-sync-mode: automatic
-        ha-sync-batch-size: 10000
+        message-ttl: 100
+        expires: 100
+        max-length: 100
       vhost: "{{ vhost_name }}"
     register: add_policy
 
