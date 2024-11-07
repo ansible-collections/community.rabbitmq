@@ -66,7 +66,7 @@ class RabbitMqUpgrade(object):
         return False
 
     def is_maint_flag_enabled(self):
-        feature_flags = self._exec('rabbitmqctl', ['list_feature_flags', '-q'], True)
+        feature_flags = self._exec('rabbitmqctl', ['list_feature_flags', '-q', '-n', self.node], True)
         for param_item in feature_flags:
             name, state = param_item.split('\t')
             if name == 'maintenance_mode_status' and state == 'enabled':
