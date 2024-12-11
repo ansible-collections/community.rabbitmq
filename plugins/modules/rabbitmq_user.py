@@ -175,8 +175,7 @@ EXAMPLES = r'''
         write_priv: 'prod\\.logging\\..*'
     state: present
 
-- name: |-
-    Add or Update a user using the API
+- name: Add or Update a user using the API
   community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
@@ -199,8 +198,7 @@ EXAMPLES = r'''
     state: present
 
 
-- name: |-
-    Remove a user using the API
+- name: Remove a user using the API
   community.rabbitmq.rabbitmq_user:
     user: joe
     password: changeme
