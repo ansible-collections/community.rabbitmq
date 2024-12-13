@@ -908,7 +908,7 @@ def main():
                 rabbitmq_user.get()
                 result['changed'] = True
             elif update_password == 'always':
-                if not rabbitmq_user.check_password():
+                if rabbitmq_user.check_password():
                     rabbitmq_user.change_password()
                     result['changed'] = True
 
