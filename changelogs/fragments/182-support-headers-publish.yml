@@ -1,2 +1,0 @@
-bugfixes:
-  - rabbitmq_publish - fix support for publishing headers as a part of a message (https://github.com/ansible-collections/community.rabbitmq/pull/182)
