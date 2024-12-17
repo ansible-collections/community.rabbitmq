@@ -130,3 +130,22 @@ releases:
     - 1.3.0.yml
     - 120-api-managed-users.yaml
     release_date: '2024-03-31'
+  1.4.0:
+    changes:
+      bugfixes:
+      - rabbitmq_publish - fix support for publishing headers as a part of a message
+        (https://github.com/ansible-collections/community.rabbitmq/pull/182)
+      minor_changes:
+      - rabbitmq_policy - adjust the `apply_to` parameter to also accept the new options
+        `classic_queues`, `quorum_queues` and `streams` which are supported since
+        rabbitmq 3.12
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release.'
+    fragments:
+    - 1.4.0.yml
+    - 177-adjust-apply_to-parameter-to-support-additional-types.yml
+    - 182-support-headers-publish.yml
+    release_date: '2024-12-17'

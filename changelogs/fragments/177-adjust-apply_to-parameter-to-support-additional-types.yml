@@ -1,2 +1,0 @@
-minor_changes:
-  - rabbitmq_policy - adjust the `apply_to` parameter to also accept the new options `classic_queues`, `quorum_queues` and `streams` which are supported since rabbitmq 3.12
