@@ -90,18 +90,6 @@ stages:
             - name: Units
               test: '2.16/units/1'
 
-  - stage: Ansible_2_15
-    displayName: Sanity & Units 2.15
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          targets:
-            - name: Sanity
-              test: '2.15/sanity/1'
-            - name: Units
-              test: '2.15/units/1'
-
 ### Docker
   #- stage: Docker_devel
   #  displayName: Docker devel
@@ -161,23 +149,6 @@ stages:
             - name: Ubuntu 22.04
               test: ubuntu2204
 
-  - stage: Docker_2_15
-    displayName: Docker 2.15
-    dependsOn: []
-    jobs:
-      - template: templates/matrix.yml
-        parameters:
-          testFormat: 2.15/linux/{0}/1
-          targets:
-            - name: Ubuntu 22.04
-              test: ubuntu2204
-            # Currently 20.04 is causing devel to fail.  This maybe due to Ubuntu 20.04 running python
-            # 3.8, however, ansible-test requires 3.9+.  This means ansible test spins up a controller
-            # and target container which is probably why rabbitmq_publish is not able to connect to
-            # rabbitmq on localhost.
-            #- name: Ubuntu 20.04
-            #  test: ubuntu2004
-
   - stage: Summary
     condition: succeededOrFailed()
     dependsOn:
@@ -185,10 +156,8 @@ stages:
       - Ansible_2_18
       - Ansible_2_17
       - Ansible_2_16
-      - Ansible_2_15
       #- Docker_devel
       - Docker_2_17
       - Docker_2_16
-      - Docker_2_15
     jobs:
       - template: templates/coverage.yml
