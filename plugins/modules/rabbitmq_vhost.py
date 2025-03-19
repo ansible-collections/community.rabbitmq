@@ -5,9 +5,10 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: rabbitmq_vhost
 short_description: Manage the state of a virtual host in RabbitMQ
@@ -52,7 +53,6 @@ options:
       description:
           - RabbitMQ host for connection.
       type: str
-      default: localhost
   login_port:
       description:
           - RabbitMQ management API port.
@@ -79,9 +79,9 @@ options:
           - Private key matching the client certificate.
       type: path
       aliases: [ key ]
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Ensure that the vhost /test exists.
   community.rabbitmq.rabbitmq_vhost:
     name: /test
@@ -94,14 +94,16 @@ EXAMPLES = r'''
     login_host: localhost
     login_user: admin
     login_password: changeadmin
-'''
+"""
 
 import traceback
 from ansible.module_utils.six.moves.urllib import parse
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 
 REQUESTS_IMP_ERR = None
 try:
     import requests
+
     HAS_REQUESTS = True
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
@@ -111,11 +113,21 @@ from ansible.module_utils.basic import AnsibleModule
 
 
 class RabbitMqVhost(object):
-    def __init__(self, module, name, tracing, node, 
-                 login_user, login_password, login_host, login_port, 
-                 login_protocol, 
-                 ca_cert, client_cert, client_key
-                ):
+    def __init__(
+        self,
+        module,
+        name,
+        tracing,
+        node,
+        login_user,
+        login_password,
+        login_host,
+        login_port,
+        login_protocol,
+        ca_cert,
+        client_cert,
+        client_key,
+    ):
         self.module = module
         self.name = name
         self.tracing = tracing
@@ -130,11 +142,13 @@ class RabbitMqVhost(object):
         self.key = client_key
 
         self._tracing = False
-        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+        self._rabbitmqctl = module.get_bin_path("rabbitmqctl", True)
 
     def _exec(self, args, force_exec_in_check_mode=False):
-        if not self.module.check_mode or (self.module.check_mode and force_exec_in_check_mode):
-            cmd = [self._rabbitmqctl, '-q', '-n', self.node]
+        if not self.module.check_mode or (
+            self.module.check_mode and force_exec_in_check_mode
+        ):
+            cmd = [self._rabbitmqctl, "-q", "-n", self.node]
             rc, out, err = self.module.run_command(cmd + args, check_rc=True)
             return out.splitlines()
         return list()
@@ -152,16 +166,16 @@ class RabbitMqVhost(object):
                 self.module.fail_json(
                     msg="Error getting the vhost",
                     status=response.status_code,
-                    details=response.text
+                    details=response.text,
                 )
         else:
-            vhosts = self._exec(['list_vhosts', 'name', 'tracing'], True)
+            vhosts = self._exec(["list_vhosts", "name", "tracing"], True)
 
             for vhost in vhosts:
-                if '\t' not in vhost:
+                if "\t" not in vhost:
                     continue
 
-                name, tracing = vhost.split('\t')
+                name, tracing = vhost.split("\t")
                 if name == self.name:
                     self._tracing = self.module.boolean(tracing)
                     return True
@@ -172,22 +186,24 @@ class RabbitMqVhost(object):
             response = self._request_vhost_api("put")
 
             if not response.ok:
-                msg = ("Error trying to create vhost %s in rabbitmq. "
-                       "Status code '%s'.") % (self.name, response.status_code)
+                msg = (
+                    "Error trying to create vhost %s in rabbitmq. " "Status code '%s'."
+                ) % (self.name, response.status_code)
                 self.module.fail_json(msg=msg)
         else:
-            return self._exec(['add_vhost', self.name])
+            return self._exec(["add_vhost", self.name])
 
     def delete(self):
         if self.login_host is not None:
             response = self._request_vhost_api("delete")
 
             if not response.ok:
-                msg = ("Error trying to remove vhost %s in rabbitmq. "
-                       "Status code '%s'.") % (self.name, response.status_code)
+                msg = (
+                    "Error trying to remove vhost %s in rabbitmq. " "Status code '%s'."
+                ) % (self.name, response.status_code)
                 self.module.fail_json(msg=msg)
         else:
-            return self._exec(['delete_vhost', self.name])
+            return self._exec(["delete_vhost", self.name])
 
     def set_tracing(self):
         if self.tracing != self._tracing:
@@ -203,35 +219,43 @@ class RabbitMqVhost(object):
             response = self._request_vhost_api("put", data={"tracing": True})
 
             if not response.ok:
-                msg = ("Error trying to enable tracing on vhost %s in rabbitmq. "
-                       "Status code '%s'.") % (self.name, response.status_code)
+                msg = (
+                    "Error trying to enable tracing on vhost %s in rabbitmq. "
+                    "Status code '%s'."
+                ) % (self.name, response.status_code)
                 self.module.fail_json(msg=msg)
         else:
-            return self._exec(['trace_on', '-p', self.name])
+            return self._exec(["trace_on", "-p", self.name])
 
     def _disable_tracing(self):
         if self.login_host is not None:
             response = self._request_vhost_api("put", data={"tracing": False})
 
             if not response.ok:
-                msg = ("Error trying to disable tracing on vhost %s in rabbitmq. "
-                       "Status code '%s'.") % (self.name, response.status_code)
+                msg = (
+                    "Error trying to disable tracing on vhost %s in rabbitmq. "
+                    "Status code '%s'."
+                ) % (self.name, response.status_code)
                 self.module.fail_json(msg=msg)
         else:
-            return self._exec(['trace_off', '-p', self.name])
+            return self._exec(["trace_off", "-p", self.name])
 
     def _request_vhost_api(self, method, data=None):
         try:
             url = "%s://%s:%s/api/vhosts/%s" % (
-                    self.login_protocol,
-                    self.login_host,
-                    self.login_port,
-                    parse.quote(self.name, ""),
-                )
-            response = requests.request(method=method, url=url, 
-                                        auth=(self.login_user, self.login_password), 
-                                        verify=self.verify, cert=(self.cert, self.key),
-                                        json=data)
+                self.login_protocol,
+                self.login_host,
+                self.login_port,
+                parse.quote(self.name, ""),
+            )
+            response = requests.request(
+                method=method,
+                url=url,
+                auth=(self.login_user, self.login_password),
+                verify=self.verify,
+                cert=(self.cert, self.key),
+                json=data,
+            )
 
         except requests.exceptions.RequestException as exception:
             msg = "Error in HTTP request (method %s) for user %s in rabbitmq." % (
@@ -239,67 +263,76 @@ class RabbitMqVhost(object):
                 self.username,
             )
             self.module.fail_json(msg=msg, exception=exception)
-        
+
         return response
-    
+
+
 def main():
     arg_spec = dict(
-        name=dict(required=True, aliases=['vhost']),
-        tracing=dict(default='off', aliases=['trace'], type='bool'),
-        state=dict(default='present', choices=['present', 'absent']),
-        node=dict(default='rabbit'),
-        login_user=dict(type="str", no_log=True),
-        login_password=dict(type="str", no_log=True),
+        name=dict(required=True, aliases=["vhost"]),
+        tracing=dict(default="off", aliases=["trace"], type="bool"),
+        state=dict(default="present", choices=["present", "absent"]),
+        node=dict(default="rabbit"),
+        login_user=dict(type="str", no_log=True, default="guest"),
+        login_password=dict(type="str", no_log=True, default="guest"),
         login_host=dict(type="str"),
         login_port=dict(type="str", default="15672"),
         login_protocol=dict(type="str", default="http", choices=["http", "https"]),
-        ca_cert=dict(type="path", aliases=['cacert']),
-        client_cert=dict(type="path", aliases=['cert']),
-        client_key=dict(type="path", aliases=['key']),
+        ca_cert=dict(type="path", aliases=["cacert"]),
+        client_cert=dict(type="path", aliases=["cert"]),
+        client_key=dict(type="path", aliases=["key"]),
     )
 
-    module = AnsibleModule(
-        argument_spec=arg_spec,
-        supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=arg_spec, supports_check_mode=True)
 
     if not HAS_REQUESTS:
-        module.fail_json(msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR)
+        module.fail_json(
+            msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR
+        )
 
-    name = module.params['name']
-    tracing = module.params['tracing']
-    state = module.params['state']
-    node = module.params['node']
-    login_user = module.params['login_user']
-    login_password = module.params['login_password']
-    login_host = module.params['login_host']
-    login_port = module.params['login_port']
-    login_protocol = module.params['login_protocol']
-    ca_cert = module.params['ca_cert']
-    client_cert = module.params['client_cert']
-    client_key = module.params['client_key']
+    name = module.params["name"]
+    tracing = module.params["tracing"]
+    state = module.params["state"]
+    node = module.params["node"]
+    login_user = module.params["login_user"]
+    login_password = module.params["login_password"]
+    login_host = module.params["login_host"]
+    login_port = module.params["login_port"]
+    login_protocol = module.params["login_protocol"]
+    ca_cert = module.params["ca_cert"]
+    client_cert = module.params["client_cert"]
+    client_key = module.params["client_key"]
 
     result = dict(changed=False, name=name, state=state)
-    rabbitmq_vhost = RabbitMqVhost(module, name, tracing, node, 
-                                   login_user, login_password, login_host,
-                                   login_port, login_protocol, 
-                                   ca_cert, client_cert, client_key
-                                   )
+    rabbitmq_vhost = RabbitMqVhost(
+        module,
+        name,
+        tracing,
+        node,
+        login_user,
+        login_password,
+        login_host,
+        login_port,
+        login_protocol,
+        ca_cert,
+        client_cert,
+        client_key,
+    )
 
     if rabbitmq_vhost.get():
-        if state == 'absent':
+        if state == "absent":
             rabbitmq_vhost.delete()
-            result['changed'] = True
+            result["changed"] = True
         else:
             if rabbitmq_vhost.set_tracing():
-                result['changed'] = True
-    elif state == 'present':
+                result["changed"] = True
+    elif state == "present":
         rabbitmq_vhost.add()
         rabbitmq_vhost.set_tracing()
-        result['changed'] = True
+        result["changed"] = True
 
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
