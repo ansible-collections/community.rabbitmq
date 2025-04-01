@@ -111,7 +111,6 @@ class RabbitMqBinding(object):
         self.verify = self.module.params['ca_cert']
         self.cert = self.module.params['client_cert']
         self.key = self.module.params['client_key']
-        self.props = urllib_parse.quote(self.routing_key) if self.routing_key != '' else '~'
         self.base_url = '{0}://{1}:{2}/api/bindings'.format(self.login_protocol,
                                                             self.login_host,
                                                             self.login_port)
