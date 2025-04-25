@@ -45,45 +45,45 @@ class TestRabbitMQUserModule(ModuleTestCase):
     def test_without_required_parameters(self):
         """Failure must occur when all parameters are missing."""
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._check_version')
     def test_permissions_with_same_vhost(self, _check_version, get_bin_path):
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'permissions': [{'vhost': '/'}, {'vhost': '/'}],
-        })
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        get_bin_path.return_value = '/rabbitmqctl'
-        try:
-            self.module.main()
-        except AnsibleFailJson as e:
-            self._assert(e, 'failed', True)
-            self._assert(e, 'msg', "Error parsing vhost "
-                                   "permissions: You can't have two permission dicts for the same vhost")
+        }):
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            get_bin_path.return_value = '/rabbitmqctl'
+            try:
+                self.module.main()
+            except AnsibleFailJson as e:
+                self._assert(e, 'failed', True)
+                self._assert(e, 'msg', "Error parsing vhost "
+                                       "permissions: You can't have two permission dicts for the same vhost")
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._check_version')
     def test_topic_permissions_with_same_vhost(self, _check_version, get_bin_path):
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'topic_permissions': [{'vhost': '/', 'exchange': 'amq.topic'}, {'vhost': '/', 'exchange': 'amq.topic'}],
-        })
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        get_bin_path.return_value = '/rabbitmqctl'
-        try:
-            self.module.main()
-        except AnsibleFailJson as e:
-            self._assert(e, 'failed', True)
-            self._assert(e, 'msg', "Error parsing vhost topic_permissions: "
-                                   "You can't have two topic permission dicts for "
-                                   "the same vhost and the same exchange")
+        }):
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            get_bin_path.return_value = '/rabbitmqctl'
+            try:
+                self.module.main()
+            except AnsibleFailJson as e:
+                self._assert(e, 'failed', True)
+                self._assert(e, 'msg', "Error parsing vhost topic_permissions: "
+                                       "You can't have two topic permission dicts for "
+                                       "the same vhost and the same exchange")
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser.get')
@@ -98,23 +98,23 @@ class TestRabbitMQUserModule(ModuleTestCase):
                                                _check_version,
                                                get,
                                                get_bin_path):
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'update_password': 'always',
-        })
-        get.return_value = True
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        get_bin_path.return_value = '/rabbitmqctl'
-        check_password.return_value = True
-        has_tags_modifications.return_value = False
-        has_permissions_modifications.return_value = False
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', False)
-            self._assert(e, 'state', 'present')
+        }):
+            get.return_value = True
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            get_bin_path.return_value = '/rabbitmqctl'
+            check_password.return_value = True
+            has_tags_modifications.return_value = False
+            has_permissions_modifications.return_value = False
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', False)
+                self._assert(e, 'state', 'present')
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
@@ -127,22 +127,22 @@ class TestRabbitMQUserModule(ModuleTestCase):
                                            _check_version,
                                            _exec,
                                            get_bin_path):
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'permissions': [{'vhost': '/', 'configure_priv': '.*', 'write_priv': '.*', 'read_priv': '.*'}],
-        })
-        _get_permissions.return_value = {'/': {'read': '.*', 'write': '.*', 'configure': '.*', 'vhost': '/'}}
-        _exec.return_value = 'someuser\t[]'
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        get_bin_path.return_value = '/rabbitmqctl'
-        has_tags_modifications.return_value = False
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', False)
-            self._assert(e, 'state', 'present')
+        }):
+            _get_permissions.return_value = {'/': {'read': '.*', 'write': '.*', 'configure': '.*', 'vhost': '/'}}
+            _exec.return_value = 'someuser\t[]'
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            get_bin_path.return_value = '/rabbitmqctl'
+            has_tags_modifications.return_value = False
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', False)
+                self._assert(e, 'state', 'present')
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
@@ -157,23 +157,23 @@ class TestRabbitMQUserModule(ModuleTestCase):
                                                  _check_version,
                                                  _exec,
                                                  get_bin_path):
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'topic_permissions': [{'vhost': '/', 'exchange': 'amq.topic', 'write': '.*', 'read': '.*'}],
-        })
-        _get_permissions.return_value = {'/': {'configure': '^$', 'read': '^$', 'write': '^$', 'vhost': '/'}}
-        _get_topic_permissions.return_value = {('/', 'amq.topic'): {'read': '.*', 'write': '.*', 'vhost': '/', 'exchange': 'amq.topic'}}
-        _exec.return_value = 'someuser\t[]'
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        get_bin_path.return_value = '/rabbitmqctl'
-        has_tags_modifications.return_value = False
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', False)
-            self._assert(e, 'state', 'present')
+        }):
+            _get_permissions.return_value = {'/': {'configure': '^$', 'read': '^$', 'write': '^$', 'vhost': '/'}}
+            _get_topic_permissions.return_value = {('/', 'amq.topic'): {'read': '.*', 'write': '.*', 'vhost': '/', 'exchange': 'amq.topic'}}
+            _exec.return_value = 'someuser\t[]'
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            get_bin_path.return_value = '/rabbitmqctl'
+            has_tags_modifications.return_value = False
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', False)
+                self._assert(e, 'state', 'present')
 
     @patch('ansible.module_utils.basic.AnsibleModule')
     def test_status_can_be_parsed(self, module):
@@ -244,7 +244,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         fixed and permissions are cleared when needed, with the minimum number of operations. The
         permissions are fed into the module using the pre-3.7 version format.
         """
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
@@ -252,41 +252,41 @@ class TestRabbitMQUserModule(ModuleTestCase):
                 {'vhost': '/', 'configure_priv': '.*', 'write_priv': '.*', 'read_priv': '.*'},
                 {'vhost': '/ok', 'configure': '^$', 'write': '^$', 'read': '^$'}
             ],
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
-        has_tags_modifications.return_value = False
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        _get_permissions.return_value = {
-            '/wrong_vhost': {'vhost': '/wrong_vhost', 'configure': '', 'write': '', 'read': ''},
-            '/ok': {'vhost': '/ok', 'configure': '^$', 'write': '^$', 'read': '^$'}
-        }
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
+            has_tags_modifications.return_value = False
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            _get_permissions.return_value = {
+                '/wrong_vhost': {'vhost': '/wrong_vhost', 'configure': '', 'write': '', 'read': ''},
+                '/ok': {'vhost': '/ok', 'configure': '^$', 'write': '^$', 'read': '^$'}
+            }
 
-        def side_effect(args):
-            if 'list_users' in args:
-                self.assertTrue('--formatter' not in args)
-                self.assertTrue('json' not in args)
-                return 'someuser\t[administrator, management]'
-            if 'clear_permissions' in args:
-                self.assertTrue('someuser' in args)
-                self.assertTrue('/wrong_vhost' in args)
-                return ''
-            if 'set_permissions' in args:
-                self.assertTrue('someuser' in args)
-                self.assertTrue('/' in args)
-                self.assertTrue(['.*', '.*', '.*'] == args[-3:])
-                return ''
-        _exec.side_effect = side_effect
+            def side_effect(args):
+                if 'list_users' in args:
+                    self.assertTrue('--formatter' not in args)
+                    self.assertTrue('json' not in args)
+                    return 'someuser\t[administrator, management]'
+                if 'clear_permissions' in args:
+                    self.assertTrue('someuser' in args)
+                    self.assertTrue('/wrong_vhost' in args)
+                    return ''
+                if 'set_permissions' in args:
+                    self.assertTrue('someuser' in args)
+                    self.assertTrue('/' in args)
+                    self.assertTrue(['.*', '.*', '.*'] == args[-3:])
+                    return ''
+            _exec.side_effect = side_effect
 
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', True)
-            self._assert(e, 'state', 'present')
-            self.assertEqual(_exec.call_count, 3)
-            self.assertTrue(['clear_permissions', '-p', '/wrong_vhost', 'someuser'] ==
-                            flatten(_exec.call_args_list[-2][0]))
-            self.assertTrue(['set_permissions', '-p', '/', 'someuser', '.*', '.*', '.*'] ==
-                            flatten(_exec.call_args_list[-1][0]))
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', True)
+                self._assert(e, 'state', 'present')
+                self.assertEqual(_exec.call_count, 3)
+                self.assertTrue(['clear_permissions', '-p', '/wrong_vhost', 'someuser'] ==
+                                flatten(_exec.call_args_list[-2][0]))
+                self.assertTrue(['set_permissions', '-p', '/', 'someuser', '.*', '.*', '.*'] ==
+                                flatten(_exec.call_args_list[-1][0]))
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
@@ -306,7 +306,7 @@ class TestRabbitMQUserModule(ModuleTestCase):
         Ensure that topic permissions that do not need to be changed are not, topic permissions with differences are
         fixed and topic permissions are cleared when needed, with the minimum number of operations.
         """
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
@@ -314,42 +314,42 @@ class TestRabbitMQUserModule(ModuleTestCase):
                 {'vhost': '/', 'exchange': 'amq.topic', 'write_priv': '.*', 'read_priv': '.*'},
                 {'vhost': '/ok', 'exchange': 'amq.topic', 'write': '^$', 'read': '^$'}
             ],
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
-        has_tags_modifications.return_value = False
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        _get_permissions.return_value = {}
-        _get_topic_permissions.return_value = {
-            ('/wrong_vhost', 'amq.topic'): {'vhost': '/wrong_vhost', 'exchange': 'amq.topic', 'write': '', 'read': ''},
-            ('/ok', 'amq.topic'): {'vhost': '/ok', 'exchange': 'amq.topic', 'write': '^$', 'read': '^$'}
-        }
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
+            has_tags_modifications.return_value = False
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            _get_permissions.return_value = {}
+            _get_topic_permissions.return_value = {
+                ('/wrong_vhost', 'amq.topic'): {'vhost': '/wrong_vhost', 'exchange': 'amq.topic', 'write': '', 'read': ''},
+                ('/ok', 'amq.topic'): {'vhost': '/ok', 'exchange': 'amq.topic', 'write': '^$', 'read': '^$'}
+            }
 
-        def side_effect(args):
-            if 'list_users' in args:
-                self.assertTrue('--formatter' not in args)
-                self.assertTrue('json' not in args)
-                return 'someuser\t[administrator, management]'
-            if 'clear_topic_permissions' in args:
-                self.assertTrue('someuser' in args)
-                self.assertTrue('/wrong_vhost' in args)
-                return ''
-            if 'set_topic_permissions' in args:
-                self.assertTrue('someuser' in args)
-                self.assertTrue('/' in args, args)
-                self.assertTrue(['amq.topic', '.*', '.*'] == args[-3:])
-                return ''
-        _exec.side_effect = side_effect
+            def side_effect(args):
+                if 'list_users' in args:
+                    self.assertTrue('--formatter' not in args)
+                    self.assertTrue('json' not in args)
+                    return 'someuser\t[administrator, management]'
+                if 'clear_topic_permissions' in args:
+                    self.assertTrue('someuser' in args)
+                    self.assertTrue('/wrong_vhost' in args)
+                    return ''
+                if 'set_topic_permissions' in args:
+                    self.assertTrue('someuser' in args)
+                    self.assertTrue('/' in args, args)
+                    self.assertTrue(['amq.topic', '.*', '.*'] == args[-3:])
+                    return ''
+            _exec.side_effect = side_effect
 
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', True)
-            self._assert(e, 'state', 'present')
-            self.assertEqual(_exec.call_count, 4)
-            self.assertTrue(['clear_topic_permissions', '-p', '/wrong_vhost', 'someuser', 'amq.topic'] ==
-                            flatten(_exec.call_args_list[-2][0]))
-            self.assertTrue(['set_topic_permissions', '-p', '/', 'someuser', 'amq.topic', '.*', '.*'] ==
-                            flatten(_exec.call_args_list[-1][0]))
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', True)
+                self._assert(e, 'state', 'present')
+                self.assertEqual(_exec.call_count, 4)
+                self.assertTrue(['clear_topic_permissions', '-p', '/wrong_vhost', 'someuser', 'amq.topic'] ==
+                                flatten(_exec.call_args_list[-2][0]))
+                self.assertTrue(['set_topic_permissions', '-p', '/', 'someuser', 'amq.topic', '.*', '.*'] ==
+                                flatten(_exec.call_args_list[-1][0]))
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
@@ -365,40 +365,40 @@ class TestRabbitMQUserModule(ModuleTestCase):
                                         _exec,
                                         get_bin_path):
         """Test that the topic permissions defaults are set."""
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'topic_permissions': [
                 {'write_priv': '.*', 'read_priv': '.*'},
             ],
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
-        has_tags_modifications.return_value = False
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        _get_permissions.return_value = {}
-        _get_topic_permissions.return_value = {}
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
+            has_tags_modifications.return_value = False
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            _get_permissions.return_value = {}
+            _get_topic_permissions.return_value = {}
 
-        def side_effect(args):
-            if 'list_users' in args:
-                self.assertTrue('--formatter' not in args)
-                self.assertTrue('json' not in args)
-                return 'someuser\t[administrator, management]'
-            if 'set_topic_permissions' in args:
-                self.assertTrue('someuser' in args)
-                self.assertTrue('/' in args, args)
-                self.assertTrue(['amq.topic', '.*', '.*'] == args[-3:])
-                return ''
-        _exec.side_effect = side_effect
+            def side_effect(args):
+                if 'list_users' in args:
+                    self.assertTrue('--formatter' not in args)
+                    self.assertTrue('json' not in args)
+                    return 'someuser\t[administrator, management]'
+                if 'set_topic_permissions' in args:
+                    self.assertTrue('someuser' in args)
+                    self.assertTrue('/' in args, args)
+                    self.assertTrue(['amq.topic', '.*', '.*'] == args[-3:])
+                    return ''
+            _exec.side_effect = side_effect
 
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', True)
-            self._assert(e, 'state', 'present')
-            self.assertEqual(_exec.call_count, 3)
-            self.assertTrue(['set_topic_permissions', '-p', '/', 'someuser', 'amq.topic', '.*', '.*'] ==
-                            flatten(_exec.call_args_list[-1][0]))
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', True)
+                self._assert(e, 'state', 'present')
+                self.assertEqual(_exec.call_count, 3)
+                self.assertTrue(['set_topic_permissions', '-p', '/', 'someuser', 'amq.topic', '.*', '.*'] ==
+                                flatten(_exec.call_args_list[-1][0]))
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._exec')
@@ -406,32 +406,32 @@ class TestRabbitMQUserModule(ModuleTestCase):
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_user.RabbitMqUser._get_permissions')
     def test_tags_are_fixed(self, _get_permissions, _check_version, _exec, get_bin_path):
         """Test user tags are fixed."""
-        set_module_args({
+        with set_module_args({
             'user': 'someuser',
             'password': 'somepassword',
             'state': 'present',
             'tags': 'tag1,tags2',
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
-        _check_version.return_value = version.StrictVersion('3.6.10')
-        _get_permissions.return_value = {'/': {'vhost': '/', 'configure': '^$', 'write': '^$', 'read': '^$'}}
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
+            _check_version.return_value = version.StrictVersion('3.6.10')
+            _get_permissions.return_value = {'/': {'vhost': '/', 'configure': '^$', 'write': '^$', 'read': '^$'}}
 
-        def side_effect(args):
-            if 'list_users' in args:
-                self.assertTrue('--formatter' not in args)
-                self.assertTrue('json' not in args)
-                return 'someuser\t[tag1, tag3]'
-            return ''
-        _exec.side_effect = side_effect
+            def side_effect(args):
+                if 'list_users' in args:
+                    self.assertTrue('--formatter' not in args)
+                    self.assertTrue('json' not in args)
+                    return 'someuser\t[tag1, tag3]'
+                return ''
+            _exec.side_effect = side_effect
 
-        try:
-            self.module.main()
-        except AnsibleExitJson as e:
-            self._assert(e, 'changed', True)
-            self._assert(e, 'state', 'present')
-            self.assertEqual(_exec.call_count, 2)
-            self.assertTrue(lists_equal(['set_user_tags', 'someuser', 'tag1', 'tags2'],
-                                        flatten(_exec.call_args_list[-1][0])))
+            try:
+                self.module.main()
+            except AnsibleExitJson as e:
+                self._assert(e, 'changed', True)
+                self._assert(e, 'state', 'present')
+                self.assertEqual(_exec.call_count, 2)
+                self.assertTrue(lists_equal(['set_user_tags', 'someuser', 'tag1', 'tags2'],
+                                            flatten(_exec.call_args_list[-1][0])))
 
     @patch('ansible.module_utils.basic.AnsibleModule')
     def test_user_json_data_can_be_parsed(self, module):
