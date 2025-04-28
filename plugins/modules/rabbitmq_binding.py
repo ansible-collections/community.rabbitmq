@@ -111,16 +111,14 @@ class RabbitMqBinding(object):
         self.verify = self.module.params['ca_cert']
         self.cert = self.module.params['client_cert']
         self.key = self.module.params['client_key']
-        self.props = urllib_parse.quote(self.routing_key) if self.routing_key != '' else '~'
         self.base_url = '{0}://{1}:{2}/api/bindings'.format(self.login_protocol,
                                                             self.login_host,
                                                             self.login_port)
-        self.url = '{0}/{1}/e/{2}/{3}/{4}/{5}'.format(self.base_url,
-                                                      urllib_parse.quote(self.vhost, safe=''),
-                                                      urllib_parse.quote(self.name, safe=''),
-                                                      self.destination_type,
-                                                      urllib_parse.quote(self.destination, safe=''),
-                                                      self.props)
+        self.url = '{0}/{1}/e/{2}/{3}/{4}'.format(self.base_url,
+                                                  urllib_parse.quote(self.vhost, safe=''),
+                                                  urllib_parse.quote(self.name, safe=''),
+                                                  self.destination_type,
+                                                  urllib_parse.quote(self.destination, safe=''))
         self.result = {
             'changed': False,
             'name': self.module.params['name'],
@@ -171,7 +169,10 @@ class RabbitMqBinding(object):
         """
         :return:
         """
-        return self.http_check_states.get(self.api_result.status_code, False)
+        for binding in self.api_result.json():
+            if binding["arguments"] == self.arguments and binding["routing_key"] == self.routing_key:
+                return True
+        return False
 
     def check_mode(self):
         """
@@ -240,11 +241,6 @@ class RabbitMqBinding(object):
         """
         :return:
         """
-        self.url = '{0}/{1}/e/{2}/{3}/{4}'.format(self.base_url,
-                                                  urllib_parse.quote(self.vhost, safe=''),
-                                                  urllib_parse.quote(self.name, safe=''),
-                                                  self.destination_type,
-                                                  urllib_parse.quote(self.destination, safe=''))
         self.api_result = self.request.post(self.url,
                                             auth=self.authentication,
                                             verify=self.verify,
@@ -255,11 +251,22 @@ class RabbitMqBinding(object):
                                                 'arguments': self.arguments
                                             }))
 
+    def get_properties_key(self):
+        """
+        :return:
+        """
+        for binding in self.api_result.json():
+            if binding["arguments"] == self.arguments and binding["routing_key"] == self.routing_key:
+                return binding["properties_key"]
+        return None
+
     def remove(self):
         """
         :return:
         """
-        self.api_result = self.request.delete(self.url, auth=self.authentication, verify=self.verify, cert=(self.cert, self.key))
+        properties_key = self.get_properties_key()
+        url = '{0}/{1}'.format(self.url, properties_key)
+        self.api_result = self.request.delete(url, auth=self.authentication, verify=self.verify, cert=(self.cert, self.key))
 
     def fail(self):
         """
