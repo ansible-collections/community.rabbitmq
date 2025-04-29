@@ -24,39 +24,39 @@ class TestRabbitMQFeatureFlagModule(ModuleTestCase):
     def test_without_required_parameters(self):
         """Failure must occur when all parameters are missing."""
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_feature_flag.RabbitMqFeatureFlag._exec')
     def test_enable_feature_flag(self, _exec, get_bin_path):
         """Test enabling feature flag."""
-        set_module_args({
+        with set_module_args({
             'name': 'maintenance_mode_status',
             'node': 'rabbit@node-1',
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
 
-        for out in 'name\tstate\nmaintenance_mode_status\tdisabled', 'name\tstate\nmaintenance_mode_status\tdisabled\n':
-            _exec.return_value = out.splitlines()
-            try:
-                self.module.main()
-            except AnsibleExitJson as e:
-                self._assert(e, 'changed', True)
+            for out in 'name\tstate\nmaintenance_mode_status\tdisabled', 'name\tstate\nmaintenance_mode_status\tdisabled\n':
+                _exec.return_value = out.splitlines()
+                try:
+                    self.module.main()
+                except AnsibleExitJson as e:
+                    self._assert(e, 'changed', True)
 
     @patch('ansible.module_utils.basic.AnsibleModule.get_bin_path')
     @patch('ansible_collections.community.rabbitmq.plugins.modules.rabbitmq_feature_flag.RabbitMqFeatureFlag._exec')
     def test_enable_no_change_feature_flag(self, _exec, get_bin_path):
         """Test that there is no change when enabling feature flag which is already enabled"""
-        set_module_args({
+        with set_module_args({
             'name': 'maintenance_mode_status',
             'node': 'rabbit@node-1',
-        })
-        get_bin_path.return_value = '/rabbitmqctl'
+        }):
+            get_bin_path.return_value = '/rabbitmqctl'
 
-        for out in 'name\tstate\nmaintenance_mode_status\tenabled', 'name\tstate\nmaintenance_mode_status\tenabled\n':
-            _exec.return_value = out.splitlines()
-            try:
-                self.module.main()
-            except AnsibleExitJson as e:
-                self._assert(e, 'changed', False)
+            for out in 'name\tstate\nmaintenance_mode_status\tenabled', 'name\tstate\nmaintenance_mode_status\tenabled\n':
+                _exec.return_value = out.splitlines()
+                try:
+                    self.module.main()
+                except AnsibleExitJson as e:
+                    self._assert(e, 'changed', False)
