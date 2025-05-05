@@ -44,41 +44,46 @@ options:
           - RabbitMQ user for connection.
       type: str
       default: guest
+      version_added: '1.5.0'
   login_password:
       description:
           - RabbitMQ password for connection.
       type: str
       default: guest
+      version_added: '1.5.0'
   login_host:
       description:
           - RabbitMQ host for connection.
       type: str
+      version_added: '1.5.0'
   login_port:
       description:
           - RabbitMQ management API port.
       type: str
       default: '15672'
+      version_added: '1.5.0'
   login_protocol:
       description:
           - RabbitMQ management API protocol.
       type: str
       choices: [ http , https ]
       default: http
+      version_added: '1.5.0'
   ca_cert:
       description:
           - CA certificate to verify SSL connection to management API.
       type: path
-      aliases: [ cacert ]
+      version_added: '1.5.0'
   client_cert:
       description:
           - Client certificate to send on SSL connections to management API.
       type: path
-      aliases: [ cert ]
+      version_added: '1.5.0'
   client_key:
       description:
           - Private key matching the client certificate.
       type: path
-      aliases: [ key ]
+      version_added: '1.5.0'
 """
 
 EXAMPLES = r"""
@@ -98,7 +103,7 @@ EXAMPLES = r"""
 
 import traceback
 from ansible.module_utils.six.moves.urllib import parse
-from ansible.module_utils.basic import AnsibleModule, missing_required_lib
+from ansible.module_utils.basic import AnsibleModule
 
 REQUESTS_IMP_ERR = None
 try:
@@ -185,7 +190,7 @@ class RabbitMqVhost(object):
         if self.login_host is not None:
             response = self._request_vhost_api("put")
 
-            if not response.ok:
+            if response is not None and not response.ok:
                 msg = (
                     "Error trying to create vhost %s in rabbitmq. " "Status code '%s'."
                 ) % (self.name, response.status_code)
@@ -197,7 +202,7 @@ class RabbitMqVhost(object):
         if self.login_host is not None:
             response = self._request_vhost_api("delete")
 
-            if not response.ok:
+            if response is not None and not response.ok:
                 msg = (
                     "Error trying to remove vhost %s in rabbitmq. " "Status code '%s'."
                 ) % (self.name, response.status_code)
@@ -218,7 +223,7 @@ class RabbitMqVhost(object):
         if self.login_host is not None:
             response = self._request_vhost_api("put", data={"tracing": True})
 
-            if not response.ok:
+            if response is not None and not response.ok:
                 msg = (
                     "Error trying to enable tracing on vhost %s in rabbitmq. "
                     "Status code '%s'."
@@ -231,7 +236,7 @@ class RabbitMqVhost(object):
         if self.login_host is not None:
             response = self._request_vhost_api("put", data={"tracing": False})
 
-            if not response.ok:
+            if response is not None and not response.ok:
                 msg = (
                     "Error trying to disable tracing on vhost %s in rabbitmq. "
                     "Status code '%s'."
@@ -241,6 +246,8 @@ class RabbitMqVhost(object):
             return self._exec(["trace_off", "-p", self.name])
 
     def _request_vhost_api(self, method, data=None):
+        if self.module.check_mode and method != "get":
+            return None
         try:
             url = "%s://%s:%s/api/vhosts/%s" % (
                 self.login_protocol,
@@ -278,17 +285,12 @@ def main():
         login_host=dict(type="str"),
         login_port=dict(type="str", default="15672"),
         login_protocol=dict(type="str", default="http", choices=["http", "https"]),
-        ca_cert=dict(type="path", aliases=["cacert"]),
-        client_cert=dict(type="path", aliases=["cert"]),
-        client_key=dict(type="path", aliases=["key"]),
+        ca_cert=dict(type="path"),
+        client_cert=dict(type="path"),
+        client_key=dict(type="path"),
     )
 
     module = AnsibleModule(argument_spec=arg_spec, supports_check_mode=True)
-
-    if not HAS_REQUESTS:
-        module.fail_json(
-            msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR
-        )
 
     name = module.params["name"]
     tracing = module.params["tracing"]
@@ -302,6 +304,10 @@ def main():
     ca_cert = module.params["ca_cert"]
     client_cert = module.params["client_cert"]
     client_key = module.params["client_key"]
+
+    if not HAS_REQUESTS:
+        module.warn("requests module not present. Using RabbitMQ cli.")
+        login_host = None
 
     result = dict(changed=False, name=name, state=state)
     rabbitmq_vhost = RabbitMqVhost(

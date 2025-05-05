@@ -1,6 +1,21 @@
 - block:
   - set_fact:
-      vhost_name: /test
+      vhost_name: /test  
+
+  - name: Add host (check_mode)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: present
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode result for adding host
+    assert:
+      that:
+        - result_check_mode is success
 
   - name: Add host
     rabbitmq_vhost:
@@ -11,16 +26,32 @@
       login_host: 127.0.0.1
     register: result
 
-  # - name: Check that the host was created successfuly
-  #   shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
-  #   register: ctl_result
+  - name: Check that the host was created successfully
+    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+    register: ctl_result
 
   - name: Check that the host is added
     assert:
       that:
         - result is changed
         - result is success
-        # - '"false" in ctl_result.stdout'
+        - '"false" in ctl_result.stdout'
+
+  - name: Add host (check_mode - idempotency)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: present
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert idempotency check_mode result
+    assert:
+      that:
+        - result_check_mode is success
+        - result_check_mode is not changed
 
   - name: Add host (idempotency)
     rabbitmq_vhost:
@@ -36,6 +67,21 @@
       that:
         - result is not changed
 
+  - name: Enable tracing (check_mode)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      tracing: yes
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode for enable tracing
+    assert:
+      that:
+        - result_check_mode is success
+
   - name: Enable tracing
     rabbitmq_vhost:
       name: "{{ vhost_name }}"
@@ -45,16 +91,32 @@
       login_host: 127.0.0.1
     register: result
 
-  # - name: Get rabbitmqctl output
-  #   shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
-  #   register: ctl_result
+  - name: Get rabbitmqctl output
+    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+    register: ctl_result
 
   - name: Check that tracing is enabled
     assert:
       that:
         - result is changed
         - result is success
-        # - '"true" in ctl_result.stdout'
+        - '"true" in ctl_result.stdout'
+
+  - name: Enable tracing (check_mode - idempotency)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      tracing: yes
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode is not changed (idempotent)
+    assert:
+      that:
+        - result_check_mode is success
+        - result_check_mode is not changed
 
   - name: Enable tracing (idempotency)
     rabbitmq_vhost:
@@ -70,6 +132,21 @@
       that:
         - result is not changed
 
+  - name: Disable tracing (check_mode)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      tracing: no
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode for disabling tracing
+    assert:
+      that:
+        - result_check_mode is success
+
   - name: Disable tracing
     rabbitmq_vhost:
       name: "{{ vhost_name }}"
@@ -79,16 +156,32 @@
       login_host: 127.0.0.1
     register: result
 
-  # - name: Get rabbitmqctl output
-  #   shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
-  #   register: ctl_result
+  - name: Get rabbitmqctl output
+    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+    register: ctl_result
 
   - name: Check that tracing is disabled
     assert:
       that:
         - result is changed
         - result is success
-        # - '"false" in ctl_result.stdout' 
+        - '"false" in ctl_result.stdout'
+
+  - name: Disable tracing (check_mode - idempotency)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      tracing: no
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode is not changed (idempotent)
+    assert:
+      that:
+        - result_check_mode is success
+        - result_check_mode is not changed
 
   - name: Disable tracing (idempotency)
     rabbitmq_vhost:
@@ -104,6 +197,21 @@
       that:
         - result is not changed
 
+  - name: Remove host (check_mode)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: absent
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode for remove host
+    assert:
+      that:
+        - result_check_mode is success
+
   - name: Remove host
     rabbitmq_vhost:
       name: "{{ vhost_name }}"
@@ -113,16 +221,32 @@
       login_host: 127.0.0.1
     register: result
 
-  # - name: Get rabbitmqctl output
-  #   shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
-  #   register: ctl_result
-  #   failed_when: ctl_result.rc == 0
+  - name: Get rabbitmqctl output
+    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+    register: ctl_result
+    failed_when: ctl_result.rc == 0
 
   - name: Check that the host is removed
     assert:
       that:
         - result is changed
         - result is success
+
+  - name: Remove host (check_mode - idempotency)
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: absent
+      login_user: guest 
+      login_password: guest 
+      login_host: 127.0.0.1
+    register: result_check_mode
+    check_mode: yes
+
+  - name: Assert check_mode is not changed (idempotent removal)
+    assert:
+      that:
+        - result_check_mode is success
+        - result_check_mode is not changed
 
   - name: Remove host (idempotency)
     rabbitmq_vhost:
