@@ -1,0 +1,2 @@
+minor_changes:
+  - rabbitmq_vhost - add support to vhost manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/171)
