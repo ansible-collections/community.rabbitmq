@@ -102,6 +102,297 @@
         that:
           - remove_binding.changed == false
 
+- name: Test add binding with arguments in check mode
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+      check_mode: true
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with arguments
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with arguments idempotence
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+      register: add_binding
+
+    - name: Check that binding succeeds without a change
+      assert:
+        that:
+          - add_binding.changed == false
+
+- name: Test remove binding with arguments in check mode
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        state: absent
+      check_mode: true
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with arguments
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with arguments idempotence
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == false
+
+- name: Test add binding with routing_key in check mode
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+      check_mode: true
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with routing_key
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with routing_key idempotence
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+      register: add_binding
+
+    - name: Check that binding succeeds without a change
+      assert:
+        that:
+          - add_binding.changed == false
+
+- name: Test remove binding with routing_key in check mode
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+        state: absent
+      check_mode: true
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with routing_key
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with routing_key idempotence
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        routing_key: priority
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == false
+
+- name: Test add binding with arguments and routing_key in check mode
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+      check_mode: true
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with arguments and routing_key
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+      register: add_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - add_binding.changed == true
+
+- name: Test add binding with arguments and routing_key idempotence
+  block:
+    - name: Add binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+      register: add_binding
+
+    - name: Check that binding succeeds without a change
+      assert:
+        that:
+          - add_binding.changed == false
+
+- name: Test remove binding with arguments and routing_key in check mode
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+        state: absent
+      check_mode: true
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with arguments and routing_key
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == true
+
+- name: Test remove binding with arguments and routing_key idempotence
+  block:
+    - name: Remove binding
+      rabbitmq_binding:
+        source: exchange-foo
+        destination: queue-foo
+        type: queue
+        arguments: {"x-match": all}
+        routing_key: priority
+        state: absent
+      register: remove_binding
+
+    - name: Check that binding succeeds with a change
+      assert:
+        that:
+          - remove_binding.changed == false
+
 - name: Test add exchange to exchange binding
   block:
     - name: Add binding
