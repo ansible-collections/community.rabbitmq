@@ -43,13 +43,11 @@ options:
       description:
           - RabbitMQ user for connection.
       type: str
-      default: guest
       version_added: '1.5.0'
   login_password:
       description:
           - RabbitMQ password for connection.
       type: str
-      default: guest
       version_added: '1.5.0'
   login_host:
       description:
@@ -280,8 +278,8 @@ def main():
         tracing=dict(default="off", aliases=["trace"], type="bool"),
         state=dict(default="present", choices=["present", "absent"]),
         node=dict(default="rabbit"),
-        login_user=dict(type="str", no_log=True, default="guest"),
-        login_password=dict(type="str", no_log=True, default="guest"),
+        login_user=dict(type="str", no_log=True),
+        login_password=dict(type="str", no_log=True),
         login_host=dict(type="str"),
         login_port=dict(type="str", default="15672"),
         login_protocol=dict(type="str", default="http", choices=["http", "https"]),
