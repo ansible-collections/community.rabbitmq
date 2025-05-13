@@ -26,16 +26,19 @@
       login_host: 127.0.0.1
     register: result
 
-  - name: Check that the host was created successfully
-    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+  - name: Check that the host was created successfully using CLI module
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: present
     register: ctl_result
 
   - name: Check that the host is added
     assert:
       that:
-        - result is changed
-        - result is success
-        - '"false" in ctl_result.stdout'
+        - ctl_result is not changed
+        - ctl_result is success
+        - '"/test" in ctl_result.name'
+        - '"present" in ctl_result.state'
 
   - name: Add host (check_mode - idempotency)
     rabbitmq_vhost:
@@ -221,16 +224,19 @@
       login_host: 127.0.0.1
     register: result
 
-  - name: Get rabbitmqctl output
-    shell: "rabbitmqctl list_vhosts name tracing | grep {{ vhost_name }}"
+  - name: Check that the host was removed successfully using CLI module
+    rabbitmq_vhost:
+      name: "{{ vhost_name }}"
+      state: absent
     register: ctl_result
-    failed_when: ctl_result.rc == 0
 
-  - name: Check that the host is removed
+  - name: Check that the host is added
     assert:
       that:
-        - result is changed
-        - result is success
+        - ctl_result is not changed
+        - ctl_result is success
+        - '"/test" in ctl_result.name'
+        - '"absent" in ctl_result.state'
 
   - name: Remove host (check_mode - idempotency)
     rabbitmq_vhost:
