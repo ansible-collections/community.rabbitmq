@@ -265,7 +265,7 @@ class RabbitMqVhost(object):
         except requests.exceptions.RequestException as exception:
             msg = "Error in HTTP request (method %s) for user %s in rabbitmq." % (
                 method,
-                self.username,
+                self.login_user,
             )
             self.module.fail_json(msg=msg, exception=exception)
 
