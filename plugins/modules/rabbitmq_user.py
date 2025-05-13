@@ -564,7 +564,7 @@ class RabbitMqUser(object):
                 self.login_host,
                 self.login_port)
             try:
-                response = requests.get(url, auth=(self.login_user, self.login_password))
+                response = requests.get(url, auth=(self.username, self.password))
             except requests.exceptions.RequestException as exception:
                 msg = ("Error trying to request permissions "
                        "of the user %s info in rabbitmq.") % (self.username)
