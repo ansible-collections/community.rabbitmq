@@ -149,3 +149,20 @@ releases:
     - 177-adjust-apply_to-parameter-to-support-additional-types.yml
     - 182-support-headers-publish.yml
     release_date: '2024-12-17'
+  1.5.0:
+    changes:
+      bugfixes:
+      - rabbitmq_binding - fix idempotency when arguments and/or routing_key are given
+        (https://github.com/ansible-collections/community.rabbitmq/pull/191)
+      minor_changes:
+      - rabbitmq_vhost - add support to vhost manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/171)
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release.'
+    fragments:
+    - 1.5.0.yml
+    - 191-fix-rabbitmq-binding-idempotency-with-arguments-and-or-routing-key.yml
+    - 193-api-managed-vhosts.yaml
+    release_date: '2025-05-26'
