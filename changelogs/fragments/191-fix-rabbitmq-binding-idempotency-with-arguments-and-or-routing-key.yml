@@ -1,2 +1,0 @@
-bugfixes:
-  - rabbitmq_binding - fix idempotency when arguments and/or routing_key are given (https://github.com/ansible-collections/community.rabbitmq/pull/191)
