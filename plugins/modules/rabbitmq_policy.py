@@ -67,45 +67,45 @@ options:
       description:
           - RabbitMQ user for connection.
       type: str
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   login_password:
       description:
           - RabbitMQ password for connection.
       type: str
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   login_host:
       description:
           - RabbitMQ host for connection.
       type: str
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   login_port:
       description:
           - RabbitMQ management API port.
       type: str
       default: '15672'
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   login_protocol:
       description:
           - RabbitMQ management API protocol.
       type: str
       choices: [ http , https ]
       default: http
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   ca_cert:
       description:
           - CA certificate to verify SSL connection to management API.
       type: path
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   client_cert:
       description:
           - Client certificate to send on SSL connections to management API.
       type: path
-      version_added: '1.5.1'
+      version_added: '1.6.0'
   client_key:
       description:
           - Private key matching the client certificate.
       type: path
-      version_added: '1.5.1'
+      version_added: '1.6.0'
 '''
 
 EXAMPLES = r'''
@@ -316,7 +316,7 @@ class RabbitMqPolicy(object):
                 # Prior to 3.7.0, the apply-to & pattern fields were swapped.
                 for policy in policy_response:
                     policies.append("%s\t%s\t%s\t%s\t%s\t%s" % (
-                        policy['vhost'], policy['name'], policy['apply-to'], policy['pattern'],  json.dumps(policy['definition']), policy['priority']))
+                        policy['vhost'], policy['name'], policy['apply-to'], policy['pattern'], json.dumps(policy['definition']), policy['priority']))
             return policies
 
         else:
@@ -354,7 +354,7 @@ class RabbitMqPolicy(object):
                 "pattern": self._pattern,
                 "apply-to": self._apply_to,
                 "definition": self._tags,
-                "priority": int(self._priority) # Priority must be a number.
+                "priority": int(self._priority)  # Priority must be a number.
             }
             self._module.debug(f'[set_policy] {json.dumps(policy)}')
             response = self._request_policy_api('put', self._vhost, self._name, data=policy)
