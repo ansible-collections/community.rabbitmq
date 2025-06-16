@@ -145,7 +145,7 @@ class RabbitMqVhost(object):
         self.key = client_key
 
         self._tracing = False
-        require_rabbitmqctl = self.login_host is not None
+        require_rabbitmqctl = self.login_host is None
         self._rabbitmqctl = module.get_bin_path("rabbitmqctl", require_rabbitmqctl)
 
     def _exec(self, args, force_exec_in_check_mode=False):
