@@ -1,0 +1,2 @@
+bugfixes:
+  - setup_rabbitmq - incorrect SSL library was selected for install on Ubuntu Noble. Fix now installs the correct version on newer Ubuntu versions. (https://github.com/ansible-collections/community.rabbitmq/issues/199)
