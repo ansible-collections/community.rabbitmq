@@ -175,10 +175,8 @@ class RabbitMqPolicy(object):
         self._cert = module.params['client_cert']
         self._key = module.params['client_key']
 
-        if self._login_host is not None:
-            self._rabbitmqctl = module.get_bin_path('rabbitmqctl', False)
-        else:
-            self._rabbitmqctl = module.get_bin_path('rabbitmqctl', True)
+        require_rabbitmqctl = self._login_host is None
+        self._rabbitmqctl = module.get_bin_path('rabbitmqctl', require_rabbitmqctl)
         self._version = self._rabbit_version()
 
     def _exec(self,
