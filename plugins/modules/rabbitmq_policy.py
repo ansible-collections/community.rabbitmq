@@ -141,7 +141,7 @@ import traceback
 
 from ansible_collections.community.rabbitmq.plugins.module_utils.version import LooseVersion as Version
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six.moves.urllib import parse
+from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 
 REQUESTS_IMP_ERR = None
 try:
@@ -219,10 +219,11 @@ class RabbitMqPolicy(object):
 
         policies_endpoint = ['policies']
         if vhost:
-            # According to the RabbitMQ API reference, the virtual host name
-            # must be percent-encoded.
-            # https://www.rabbitmq.com/docs/http-api-reference#get-apipoliciesvhost
-            policies_endpoint.append(parse.quote(vhost, safe=''))
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            policies_endpoint.append(urllib_parse.quote(vhost, safe=''))
             if name:
                 policies_endpoint.append(name)
         return self._request_api(method, endpoint='/'.join(policies_endpoint), data=data)
