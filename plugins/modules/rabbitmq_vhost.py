@@ -100,7 +100,7 @@ EXAMPLES = r"""
 """
 
 import traceback
-from ansible.module_utils.six.moves.urllib import parse
+from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from ansible.module_utils.basic import AnsibleModule
 
 REQUESTS_IMP_ERR = None
@@ -251,7 +251,11 @@ class RabbitMqVhost(object):
                 self.login_protocol,
                 self.login_host,
                 self.login_port,
-                parse.quote(self.name, ""),
+                # Ensure provided data is safe to use in a URL.
+                # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+                # NOTE: This will also encode '/' characters, as they are required
+                # to be percent encoded in the RabbitMQ management API.
+                urllib_parse.quote(self.name, safe=''),
             )
             response = requests.request(
                 method=method,

@@ -216,7 +216,7 @@ import ansible_collections.community.rabbitmq.plugins.module_utils.version as Ve
 import json  # noqa: E402
 import re  # noqa: E402
 
-from ansible.module_utils.six.moves.urllib import parse
+from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 
 import traceback
 
@@ -724,7 +724,11 @@ class RabbitMqUser(object):
             self.login_protocol,
             self.login_host,
             self.login_port,
-            parse.quote(username, ""),
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            urllib_parse.quote(username, safe=''),
         )
 
     def get_permissions_api_url_builder(self, username):
@@ -732,7 +736,11 @@ class RabbitMqUser(object):
             self.login_protocol,
             self.login_host,
             self.login_port,
-            username,
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            urllib_parse.quote(username, safe=''),
         )
 
     def get_topic_permissions_api_url_builder(self, username):
@@ -740,29 +748,41 @@ class RabbitMqUser(object):
             self.login_protocol,
             self.login_host,
             self.login_port,
-            username,
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            urllib_parse.quote(username, safe=''),
         )
 
     def permissions_api_url_builder(self, username, vhost):
-        if vhost is None or vhost == "/":
-            vhost = "%2F"
+        if vhost is None:
+            vhost = "/"
         return "%s://%s:%s/api/permissions/%s/%s" % (
             self.login_protocol,
             self.login_host,
             self.login_port,
-            vhost,
-            username,
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            urllib_parse.quote(vhost, safe=''),
+            urllib_parse.quote(username, safe=''),
         )
 
     def topic_permissions_api_url_builder(self, username, vhost):
-        if vhost is None or vhost == "/":
-            vhost = "%2F"
+        if vhost is None:
+            vhost = "/"
         return "%s://%s:%s/api/topic-permissions/%s/%s" % (
             self.login_protocol,
             self.login_host,
             self.login_port,
-            vhost,
-            username,
+            # Ensure provided data is safe to use in a URL.
+            # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+            # NOTE: This will also encode '/' characters, as they are required
+            # to be percent encoded in the RabbitMQ management API.
+            urllib_parse.quote(vhost, safe=''),
+            urllib_parse.quote(username, safe=''),
         )
 
     def treat_tags_for_api(self):
