@@ -123,3 +123,49 @@
       assert:
         that:
           - remove_user.changed == false
+
+- name: Test add user with '/'
+  block:
+    - set_fact:
+        vhost_name: /test
+        user_name: /john_doe
+
+    - name: Add host with '/'
+      rabbitmq_vhost:
+        name: "{{ vhost_name }}"
+        state: present
+      register: add_vhost
+
+    - name: Check that the host is added
+      assert:
+        that:
+          - add_vhost is changed
+          - add_vhost is success
+          - '"/test" in add_vhost.name'
+          - '"present" in add_vhost.state'
+
+    - name: Add user with '/'
+      rabbitmq_user:
+        user: "{{ user_name }}"
+        password: changeme
+        vhost: "{{ vhost_name }}"
+        state: present
+      register: add_user
+
+    - name: Check that the user is added
+      assert:
+        that:
+          - add_user is changed
+          - add_user is success
+          - '"/john_doe" in add_user.user'
+          - '"present" in add_user.state'
+  always:
+    - name: Remove user
+      rabbitmq_user:
+        user: "{{ user_name }}"
+        state: absent
+
+    - name: Remove host
+      rabbitmq_vhost:
+        name: "{{ vhost_name }}"
+        state: absent
