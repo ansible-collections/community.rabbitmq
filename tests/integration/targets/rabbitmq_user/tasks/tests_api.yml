@@ -170,6 +170,7 @@
           - add_user is changed
           - add_user is success
           - '"/john_doe" in add_user.user'
+          - '"present" in add_user.state'
   always:
     - name: Remove user
       rabbitmq_user:
