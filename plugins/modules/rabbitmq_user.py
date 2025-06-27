@@ -897,9 +897,16 @@ def main():
                                  "and the same exchange")
 
     for permission in permissions:
+        permission_keys = permission.keys()
         if not permission['vhost']:
             module.fail_json(msg="Error parsing vhost permissions: You can't "
                                  "have an empty vhost when setting permissions")
+        if 'configure_priv' not in permission_keys:
+            permission['configure_priv'] = '^$'
+        if 'write_priv' not in permission_keys:
+            permission['write_priv'] = '^$'
+        if 'read_priv' not in permission_keys:
+            permission['read_priv'] = '^$'
 
     for permission in topic_permissions:
         permission.setdefault('vhost', '/')
