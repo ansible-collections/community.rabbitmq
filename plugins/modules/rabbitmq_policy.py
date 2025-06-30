@@ -140,7 +140,7 @@ import re
 import traceback
 
 from ansible_collections.community.rabbitmq.plugins.module_utils.version import LooseVersion as Version
-from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 
 REQUESTS_IMP_ERR = None
@@ -452,8 +452,7 @@ def main():
     )
 
     if not HAS_REQUESTS:
-        module.warn("requests module not present. Using RabbitMQ cli.")
-        module.params['login_host'] = None
+        module.fail_json(msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR)
 
     name = module.params['name']
     state = module.params['state']
