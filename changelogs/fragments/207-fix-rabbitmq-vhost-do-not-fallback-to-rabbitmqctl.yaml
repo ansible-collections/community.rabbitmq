@@ -1,0 +1,2 @@
+bugfixes:
+  - rabbitmq_vhost - Fail module if the requests library is missing. This maintains the same behavior across all the modules.
