@@ -100,19 +100,16 @@ EXAMPLES = r"""
 """
 
 import traceback
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
-from ansible.module_utils.basic import AnsibleModule
 
 REQUESTS_IMP_ERR = None
 try:
     import requests
-
     HAS_REQUESTS = True
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
     HAS_REQUESTS = False
-
-from ansible.module_utils.basic import AnsibleModule
 
 
 class RabbitMqVhost(object):
@@ -309,8 +306,7 @@ def main():
     client_key = module.params["client_key"]
 
     if not HAS_REQUESTS:
-        module.warn("requests module not present. Using RabbitMQ cli.")
-        login_host = None
+        module.fail_json(msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR)
 
     result = dict(changed=False, name=name, state=state)
     rabbitmq_vhost = RabbitMqVhost(
