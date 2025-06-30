@@ -114,6 +114,10 @@ class RabbitMqBinding(object):
         self.base_url = '{0}://{1}:{2}/api/bindings'.format(self.login_protocol,
                                                             self.login_host,
                                                             self.login_port)
+        # Ensure provided data is safe to use in a URL.
+        # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+        # NOTE: This will also encode '/' characters, as they are required
+        # to be percent encoded in the RabbitMQ management API.
         self.url = '{0}/{1}/e/{2}/{3}/{4}'.format(self.base_url,
                                                   urllib_parse.quote(self.vhost, safe=''),
                                                   urllib_parse.quote(self.name, safe=''),

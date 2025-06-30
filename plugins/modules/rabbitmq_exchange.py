@@ -120,8 +120,12 @@ def main():
         module.params['login_protocol'],
         module.params['login_host'],
         module.params['login_port'],
-        urllib_parse.quote(module.params['vhost'], ''),
-        urllib_parse.quote(module.params['name'], '')
+        # Ensure provided data is safe to use in a URL.
+        # https://docs.python.org/3/library/urllib.parse.html#url-quoting
+        # NOTE: This will also encode '/' characters, as they are required
+        # to be percent encoded in the RabbitMQ management API.
+        urllib_parse.quote(module.params['vhost'], safe=''),
+        urllib_parse.quote(module.params['name'], safe='')
     )
 
     if not HAS_REQUESTS:

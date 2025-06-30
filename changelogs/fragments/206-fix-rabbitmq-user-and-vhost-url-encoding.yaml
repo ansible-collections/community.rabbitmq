@@ -1,0 +1,2 @@
+bugfixes:
+  - rabbitmq_user - URL encode the `vhost` and `user` fields to allow for input with '/' characters. (https://github.com/ansible-collections/community.rabbitmq/issues/205)
