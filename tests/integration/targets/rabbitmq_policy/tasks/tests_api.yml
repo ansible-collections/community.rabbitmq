@@ -36,6 +36,9 @@
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
+      login_user: guest
+      login_password: guest
+      login_host: 127.0.0.1
       tags:
         message-ttl: 100
         expires: 100
@@ -54,6 +57,9 @@
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
+      login_user: guest
+      login_password: guest
+      login_host: 127.0.0.1
       tags:
         message-ttl: 100
         expires: 100
@@ -71,6 +77,9 @@
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
+      login_user: guest
+      login_password: guest
+      login_host: 127.0.0.1
       tags:
         message-ttl: 1000
         expires: 1000
@@ -89,6 +98,9 @@
       name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
+      login_user: guest
+      login_password: guest
+      login_host: 127.0.0.1
     register: remove_policy
 
   - name: Check that the policy is removed
@@ -102,6 +114,9 @@
       name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
+      login_user: guest
+      login_password: guest
+      login_host: 127.0.0.1
     register: remove_policy
 
   - name: Check that the policy is removed (idempotency)
