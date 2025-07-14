@@ -166,3 +166,29 @@ releases:
     - 191-fix-rabbitmq-binding-idempotency-with-arguments-and-or-routing-key.yml
     - 193-api-managed-vhosts.yaml
     release_date: '2025-05-26'
+  1.6.0:
+    changes:
+      bugfixes:
+      - rabbitmq_user - URL encode the `vhost` and `user` fields to allow for input
+        with '/' characters. (https://github.com/ansible-collections/community.rabbitmq/issues/205)
+      - rabbitmq_vhost - Fail module if the requests library is missing. This maintains
+        the same behavior across all the modules.
+      - setup_rabbitmq - incorrect SSL library was selected for install on Ubuntu
+        Noble. Fix now installs the correct version on newer Ubuntu versions. (https://github.com/ansible-collections/community.rabbitmq/issues/199)
+      minor_changes:
+      - rabbitmq_policy - add support to policy manipulation through RabbitMQ API
+        (https://github.com/ansible-collections/community.rabbitmq/issues/203)
+      - rabbitmq_vhost - make rabbitmqctl optional when configuring vhosts using the
+        RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/201)
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release.'
+    fragments:
+    - 200-fix-integraton-tests-for-ubuntu-noble.yaml
+    - 202-rabbitmq-vhost-make-rabbitmqctl-optional.yaml
+    - 204-api-managed-policies.yaml
+    - 206-fix-rabbitmq-user-and-vhost-url-encoding.yaml
+    - 207-fix-rabbitmq-vhost-do-not-fallback-to-rabbitmqctl.yaml
+    release_date: '2025-07-14'

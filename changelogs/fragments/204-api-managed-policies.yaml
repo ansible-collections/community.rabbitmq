@@ -1,2 +1,0 @@
-minor_changes:
-  - rabbitmq_policy - add support to policy manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/203)
