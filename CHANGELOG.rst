@@ -4,6 +4,29 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
+v1.6.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Minor Changes
+-------------
+
+- rabbitmq_policy - add support to policy manipulation through RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/203)
+- rabbitmq_vhost - make rabbitmqctl optional when configuring vhosts using the RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/201)
+
+Bugfixes
+--------
+
+- rabbitmq_user - URL encode the `vhost` and `user` fields to allow for input with '/' characters. (https://github.com/ansible-collections/community.rabbitmq/issues/205)
+- rabbitmq_vhost - Fail module if the requests library is missing. This maintains the same behavior across all the modules.
+- setup_rabbitmq - incorrect SSL library was selected for install on Ubuntu Noble. Fix now installs the correct version on newer Ubuntu versions. (https://github.com/ansible-collections/community.rabbitmq/issues/199)
+
 v1.5.0
 ======
 

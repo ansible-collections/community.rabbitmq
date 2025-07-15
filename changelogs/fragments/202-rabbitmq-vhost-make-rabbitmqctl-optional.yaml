@@ -1,2 +1,0 @@
-minor_changes:
-  - rabbitmq_vhost - make rabbitmqctl optional when configuring vhosts using the RabbitMQ API (https://github.com/ansible-collections/community.rabbitmq/issues/201)
