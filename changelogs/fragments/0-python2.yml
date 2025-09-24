@@ -1,0 +1,2 @@
+breaking_changes:
+- collection - Python 2 support will be dropped in version 2.0.0 of this collection. Make sure you have Python 3 installed on your target machines (https://github.com/ansible-collections/community.rabbitmq/issues/214).
