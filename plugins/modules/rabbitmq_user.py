@@ -586,7 +586,7 @@ class RabbitMqUser(object):
             data = {"password": self.password, "tags": self.treat_tags_for_api() or ""}
             response = self.request_users_api('PUT', data)
 
-            if not response.ok or (response.status_code == 204):
+            if response.status_code not in (201, 204):
                 msg = ("Error trying to create user %s in rabbitmq. "
                        "Status code '%s'.") % (self.username, response.status_code)
                 self.module.fail_json(msg=msg)
@@ -607,19 +607,13 @@ class RabbitMqUser(object):
 
     def change_password(self):
         if self.login_host is not None:
-            data = {"password": self.password or "", "tags": self.tags or ""}
+            data = {"password": self.password or "", "tags": self.treat_tags_for_api() or ""}
             response = self.request_users_api('PUT', data)
 
-            if not response.ok or (response.status_code == 204):
-                msg = ("Error trying to set tags for the user %s in rabbitmq. "
+            if response.status_code not in (201, 204):
+                msg = ("Error trying to change password for the user %s in rabbitmq. "
                        "Status code '%s'.") % (self.username, response.status_code)
                 self.module.fail_json(msg=msg)
-            else:
-                self.module.fail_json(
-                    msg="Error setting tags for the user",
-                    status=response.status_code,
-                    details=response.text
-                )
         else:
             if self.password:
                 self._exec(['change_password', self.username, self.password])
@@ -631,7 +625,7 @@ class RabbitMqUser(object):
             data = {"password": self.password, "tags": self.treat_tags_for_api() or ""}
             response = self.request_users_api('PUT', data)
 
-            if not response.status_code == 204:
+            if response.status_code not in (201, 204):
                 msg = ("Error trying to set tags for the user %s in rabbitmq. "
                        "Status code '%s'.") % (self.username, response.status_code)
                 self.module.fail_json(msg=msg)
