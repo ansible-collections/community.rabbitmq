@@ -16,6 +16,15 @@ description:
   - Manage the state of a policy in RabbitMQ using rabbitmqctl or REST APIs.
 author: John Dewey (@retr0h)
 requirements: [ "requests >= 1.0.0" ]
+extends_documentation_fragment:
+  - community.rabbitmq._attributes
+attributes:
+  check_mode:
+    support: full
+  diff_mode:
+    support: full
+  idempotent:
+    support: full
 options:
   name:
     description:
@@ -109,6 +118,7 @@ options:
       version_added: '1.6.0'
 notes:
   - This module requires the requests python library U(https://requests.readthedocs.io/).
+  - This module requires the C(--formatter) flag on the RabbitMQ CLI which is available in RabbitMQ 3.7.
 '''
 
 EXAMPLES = r'''
@@ -139,10 +149,8 @@ EXAMPLES = r'''
 '''
 
 import json
-import re
 import traceback
 
-from ansible_collections.community.rabbitmq.plugins.module_utils.version import LooseVersion as Version
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 
@@ -153,6 +161,54 @@ try:
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
     HAS_REQUESTS = False
+
+
+class Policy(object):
+    def __init__(self, vhost, name, pattern, apply_to, definition, priority):
+        self.vhost = vhost
+        self.name = name
+        self.pattern = pattern
+        self.apply_to = apply_to
+        self.definition = definition
+        # The priority field is a non-negative integral value.
+        # https://www.rabbitmq.com/docs/priority#classic-queues
+        # https://www.rabbitmq.com/docs/priority#quorum-queues
+        self.priority = int(priority)
+
+    @staticmethod
+    def parse(policy):
+        return Policy(
+            vhost=policy['vhost'],
+            name=policy['name'],
+            pattern=policy['pattern'],
+            apply_to=policy['apply-to'],
+            definition=Policy.parse_definition(policy['definition']),
+            priority=policy['priority']
+        )
+
+    @staticmethod
+    def parse_definition(definition):
+        # Parse the definition field.
+        if isinstance(definition, str):
+            try:
+                return json.loads(definition)
+            except json.decoder.JSONDecodeError:
+                return definition
+        else:
+            return definition
+
+    def json(self):
+        return {
+            'vhost': self.vhost,
+            'name': self.name,
+            'pattern': self.pattern,
+            'apply-to': self.apply_to,
+            'definition': self.definition,
+            'priority': self.priority,
+        }
+
+    def __str__(self):
+        return json.dumps(self.json())
 
 
 class RabbitMqPolicy(object):
@@ -179,7 +235,6 @@ class RabbitMqPolicy(object):
 
         require_rabbitmqctl = self._login_host is None
         self._rabbitmqctl = module.get_bin_path('rabbitmqctl', require_rabbitmqctl)
-        self._version = self._rabbit_version()
 
     def _exec(self,
               args,
@@ -264,38 +319,11 @@ class RabbitMqPolicy(object):
 
         return response
 
-    def _rabbit_version(self):
-        if self._login_host is not None:
-            response = self._request_overview()
-
-            if response is not None and not response.ok:
-                msg = (
-                    "Error trying to retrieve rabbitmq version. "
-                    "Status code '%s'."
-                ) % (response.status_code)
-                self._module.fail_json(msg=msg)
-                return None
-
-            return Version(response.json()['rabbitmq_version'])
-        else:
-            status = self._exec(['status'], True, False, False)
-
-        # 3.7.x erlang style output
-        version_match = re.search('{rabbit,".*","(?P<version>.*)"}', status)
-        if version_match:
-            return Version(version_match.group('version'))
-
-        # 3.8.x style ouput
-        version_match = re.search('RabbitMQ version: (?P<version>.*)', status)
-        if version_match:
-            return Version(version_match.group('version'))
-
-        return None
-
     def _list_policies(self):
+        policies = {}
         if self._login_host is not None:
+            # Get the list of policies from the API.
             response = self._request_policy_api('get', self._vhost)
-
             if response is not None and not response.ok:
                 msg = (
                     "Error trying to retrieve policies on vhost %s in rabbitmq. "
@@ -303,29 +331,18 @@ class RabbitMqPolicy(object):
                 ) % (self._vhost, response.status_code)
                 self._module.fail_json(msg=msg)
                 return None
-
-            # PARSE THE RESPONSE DATA.
-            # The response data is a json list with field names. The logic of the code expects tab delimited strings.
-            policy_response = response.json()
-            self._module.debug('[list_policies] {0}'.format(json.dumps(policy_response)))
-            policies = []
-            if self._version and self._version >= Version('3.7.0'):
-                for policy in policy_response:
-                    policies.append("%s\t%s\t%s\t%s\t%s\t%s" % (
-                        policy['vhost'], policy['name'], policy['pattern'], policy['apply-to'], json.dumps(policy['definition']), policy['priority']))
-            else:
-                # Prior to 3.7.0, the apply-to & pattern fields were swapped.
-                for policy in policy_response:
-                    policies.append("%s\t%s\t%s\t%s\t%s\t%s" % (
-                        policy['vhost'], policy['name'], policy['apply-to'], policy['pattern'], json.dumps(policy['definition']), policy['priority']))
-            return policies
-
+            policies = response.json()
         else:
-            if self._version and self._version >= Version('3.7.9'):
-                # Remove first header line from policies list for version > 3.7.9
-                return self._exec(['list_policies'], True)[1:]
+            # Get the list of policies from the CLI.
+            policies = json.loads(self._exec(['list_policies', '--formatter', 'json'], True, False))
 
-            return self._exec(['list_policies'], True)
+        # PARSE THE RESPONSE DATA.
+        self._module.debug('[list_policies] {0}'.format(json.dumps(policies)))
+        return [Policy.parse(policy) for policy in policies]
+
+    def get_policy_definition(self, default=None):
+        return next(
+            (policy.json() for policy in self._list_policies() if policy.name == self._name), default)
 
     def has_modifications(self):
         if self._pattern is None or self._tags is None:
@@ -333,30 +350,26 @@ class RabbitMqPolicy(object):
                 msg=('pattern and tags are required for '
                      'state=present'))
 
-        if self._version and self._version >= Version('3.7.0'):
-            # Change fields order in rabbitmqctl output in version 3.7
-            return not any(
-                self._policy_check(policy, apply_to_fno=3, pattern_fno=2)
-                for policy in self._list_policies())
-        else:
-            return not any(
-                self._policy_check(policy) for policy in self._list_policies())
+        return not any(
+            self._policy_check(policy) for policy in self._list_policies())
 
     def should_be_deleted(self):
         return any(
             self._policy_check_by_name(policy)
             for policy in self._list_policies())
 
+    def json(self):
+        return {
+            "vhost": self._vhost,
+            "name": self._name,
+            "pattern": self._pattern,
+            "apply-to": self._apply_to,
+            "definition": self._tags,
+            "priority": int(self._priority)}  # Priority must be a number.
+
     def set(self):
         if self._login_host is not None:
-            policy = {
-                "vhost": self._vhost,
-                "name": self._name,
-                "pattern": self._pattern,
-                "apply-to": self._apply_to,
-                "definition": self._tags,
-                "priority": int(self._priority)  # Priority must be a number.
-            }
+            policy = self.json()
             self._module.debug('[set_policy] {0}'.format(json.dumps(policy)))
             response = self._request_policy_api('put', self._vhost, self._name, data=policy)
 
@@ -391,40 +404,19 @@ class RabbitMqPolicy(object):
         else:
             return self._exec(['clear_policy', self._name])
 
-    def _policy_check(self,
-                      policy,
-                      name_fno=1,
-                      apply_to_fno=2,
-                      pattern_fno=3,
-                      tags_fno=4,
-                      priority_fno=5):
+    def _policy_check(self, policy):
         if not policy:
             return False
 
-        policy_data = policy.split('\t')
-
-        policy_name = policy_data[name_fno]
-        apply_to = policy_data[apply_to_fno]
-        pattern = policy_data[pattern_fno].replace('\\\\', '\\')
-
-        try:
-            tags = json.loads(policy_data[tags_fno])
-        except json.decoder.JSONDecodeError:
-            tags = policy_data[tags_fno]
-
-        priority = policy_data[priority_fno]
-
-        return (policy_name == self._name and apply_to == self._apply_to
-                and tags == self._tags and priority == self._priority
-                and pattern == self._pattern)
+        return (policy.name == self._name and policy.apply_to == self._apply_to
+                and policy.definition == self._tags and policy.priority == int(self._priority)
+                and policy.pattern == self._pattern)
 
     def _policy_check_by_name(self, policy):
         if not policy:
             return False
 
-        policy_name = policy.split('\t')[1]
-
-        return policy_name == self._name
+        return policy.name == self._name
 
 
 def main():
@@ -434,6 +426,12 @@ def main():
         pattern=dict(required=False, default=None),
         apply_to=dict(default='all', choices=['all', 'exchanges', 'queues', 'classic_queues', 'quorum_queues', 'streams']),
         tags=dict(type='dict', required=False, default=None),
+        # The priority field is a non-negative integral value.
+        # https://www.rabbitmq.com/docs/priority#classic-queues
+        # https://www.rabbitmq.com/docs/priority#quorum-queues
+        # This module does not support setting blanket policies
+        # https://www.rabbitmq.com/docs/policies#blanket
+        # which have negative values.
         priority=dict(default='0'),
         node=dict(default='rabbit'),
         state=dict(default='present', choices=['present', 'absent']),
@@ -463,11 +461,23 @@ def main():
     result = dict(changed=False, name=name, state=state)
 
     if state == 'present' and rabbitmq_policy.has_modifications():
+        # NOTE: This needs to be retrieved before the policy is modified.
+        cluster_policy = rabbitmq_policy.get_policy_definition({})
         rabbitmq_policy.set()
         result['changed'] = True
+        result['diff'] = dict(
+            before=cluster_policy,
+            after=rabbitmq_policy.json()
+        )
     elif state == 'absent' and rabbitmq_policy.should_be_deleted():
+        # NOTE: This needs to be retrieved before the policy is removed.
+        cluster_policy = rabbitmq_policy.get_policy_definition({})
         rabbitmq_policy.clear()
         result['changed'] = True
+        result['diff'] = dict(
+            before=cluster_policy,
+            after={}
+        )
 
     module.exit_json(**result)
 
