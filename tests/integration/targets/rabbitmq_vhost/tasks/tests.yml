@@ -3,7 +3,7 @@
       vhost_name: /test
 
   - name: Add host
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
     register: result
@@ -20,7 +20,7 @@
         - '"false" in ctl_result.stdout'  # value for tracing, false is disabled
 
   - name: Add host (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
     register: result
@@ -31,7 +31,7 @@
         - result is not changed
 
   - name: Enable tracing
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
     register: result
@@ -48,7 +48,7 @@
         - '"true" in ctl_result.stdout'  # value for tracing, true is enabled
 
   - name: Enable tracing (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
     register: result
@@ -59,7 +59,7 @@
         - result is not changed
 
   - name: Disable tracing
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
     register: result
@@ -76,7 +76,7 @@
         - '"false" in ctl_result.stdout'  # value for tracing, false is disabled
 
   - name: Disable tracing (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
     register: result
@@ -87,7 +87,7 @@
         - result is not changed
 
   - name: Remove host
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
     register: result
@@ -104,7 +104,7 @@
         - result is success
 
   - name: Remove host (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
     register: result
@@ -116,6 +116,6 @@
 
   always:
     - name: Remove host
-      rabbitmq_vhost:
+      community.rabbitmq.rabbitmq_vhost:
         name: "{{ vhost_name }}"
         state: absent

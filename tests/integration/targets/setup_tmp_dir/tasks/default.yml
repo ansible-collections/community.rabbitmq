@@ -1,0 +1,12 @@
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: .test
+  register: tmp_dir
+  delegate_to: localhost
+  notify:
+    - Delete temporary directory
+
+- name: Record temporary directory
+  ansible.builtin.set_fact:
+    tmp_dir: "{{ tmp_dir.path }}"

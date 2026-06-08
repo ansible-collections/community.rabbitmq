@@ -3,7 +3,7 @@
 - name: Test setting virtual host limits in check mode
   block:
     - name: Set virtual host limits in check mode
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         max_connections: 64
         max_queues: 256
@@ -31,7 +31,7 @@
 - name: Test setting virtual host limits
   block:
     - name: Set virtual host limits
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         max_connections: 64
         max_queues: 256
@@ -58,7 +58,7 @@
 - name: Test setting virtual host limits (idempotence)
   block:
     - name: Set virtual host limits (idempotence)
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         max_connections: 64
         max_queues: 256
@@ -74,7 +74,7 @@
 - name: Test changing virtual host limits
   block:
     - name: Change virtual host limits
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         max_connections: 32
         state: present
@@ -100,7 +100,7 @@
 - name: Test clearing virtual host limits in check mode
   block:
     - name: Clear virtual host limits in check mode
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         state: absent
       check_mode: true
@@ -126,7 +126,7 @@
 - name: Test clearing virtual host limits
   block:
     - name: Clear virtual host limits
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         state: absent
       register: module_result
@@ -151,7 +151,7 @@
 - name: Test clearing virtual host limits (idempotence)
   block:
     - name: Clear virtual host limits (idempotence)
-      rabbitmq_vhost_limits:
+      community.rabbitmq.rabbitmq_vhost_limits:
         vhost: /
         state: absent
       register: module_result

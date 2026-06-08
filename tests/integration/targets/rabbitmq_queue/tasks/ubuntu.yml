@@ -1,8 +1,4 @@
-- name: Install requests
-  pip:
-    name: requests
-    state: present
-  delegate_to: localhost
+---
 
 - name: Create RabbitMQ stream
   community.rabbitmq.rabbitmq_queue:

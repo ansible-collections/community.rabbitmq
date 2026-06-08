@@ -159,10 +159,10 @@ pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pi
 cd ${COLL_DIR}
 
 # Run the integration tests
-ansible-test integration --docker default -v --color --python 3.6
+ansible-test integration --docker default -v --color --python 3.13
 
 # Run the unit tests
-ansible-test units --docker default -v --color --python 3.6
+ansible-test units --docker default -v --color --python 3.13
 ```
 
 ## Collection maintenance

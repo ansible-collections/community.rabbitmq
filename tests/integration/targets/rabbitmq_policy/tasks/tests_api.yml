@@ -1,10 +1,12 @@
+---
+
 - block:
   - set_fact:
       vhost_name: /policytest
       ha_policy_name: HA
 
   - name: Add host
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
     register: result
@@ -21,7 +23,7 @@
         - '"false" in ctl_result.stdout'
 
   - name: Add host (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
     register: result
@@ -32,7 +34,7 @@
         - result is not changed
 
   - name: Add an policy
-    rabbitmq_policy:
+    community.rabbitmq.rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
@@ -53,7 +55,7 @@
         - add_policy is success
 
   - name: Add an policy (idempotency)
-    rabbitmq_policy:
+    community.rabbitmq.rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
@@ -73,7 +75,7 @@
         - add_policy is not changed
 
   - name: Update a policy
-    rabbitmq_policy:
+    community.rabbitmq.rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       apply_to: queues
       pattern: ".*"
@@ -94,7 +96,7 @@
         - update_policy is success
 
   - name: Remove the HA policy
-    rabbitmq_policy:
+    community.rabbitmq.rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
@@ -110,7 +112,7 @@
         - remove_policy is success
 
   - name: Remove the HA Policy (idempotency)
-    rabbitmq_policy:
+    community.rabbitmq.rabbitmq_policy:
       name: "{{ ha_policy_name }}"
       state: absent
       vhost: "{{ vhost_name }}"
@@ -126,6 +128,6 @@
 
   always:
     - name: Remove host
-      rabbitmq_vhost:
+      community.rabbitmq.rabbitmq_vhost:
         name: "{{ vhost_name }}"
         state: absent

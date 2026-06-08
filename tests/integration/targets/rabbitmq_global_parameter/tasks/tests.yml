@@ -4,7 +4,7 @@
       parameter_value: "{{ 'integration-test' | to_json }}"
 
   - name: Add global parameter
-    rabbitmq_global_parameter:
+    community.rabbitmq.rabbitmq_global_parameter:
       name: "{{ parameter_name }}"
       value: "{{ parameter_value }}"
       state: present
@@ -21,7 +21,7 @@
         - result is success
 
   - name: Add global parameter (idempotency)
-    rabbitmq_global_parameter:
+    community.rabbitmq.rabbitmq_global_parameter:
       name: "{{ parameter_name }}"
       value: "{{ parameter_value }}"
       state: present
@@ -33,7 +33,7 @@
         - result is not changed
 
   - name: Remove global parameter
-    rabbitmq_global_parameter:
+    community.rabbitmq.rabbitmq_global_parameter:
       name: "{{ parameter_name }}"
       state: absent
     register: result
@@ -50,7 +50,7 @@
         - result is success
 
   - name: Remove global parameter (idempotency)
-    rabbitmq_global_parameter:
+    community.rabbitmq.rabbitmq_global_parameter:
       name: "{{ parameter_name }}"
       state: absent
     register: result
@@ -62,6 +62,6 @@
 
   always:
     - name: Remove global parameter
-      rabbitmq_global_parameter:
+      community.rabbitmq.rabbitmq_global_parameter:
         name: "{{ parameter_name }}"
         state: absent

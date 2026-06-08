@@ -4,12 +4,12 @@
 # verify with: make info
 
 - name: ensure target directory is present
-  file:
+  ansible.builtin.file:
     path: /tls
     state: directory
 
 - name: ensure TLS files are present
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/tls/{{ item }}"
   loop:
