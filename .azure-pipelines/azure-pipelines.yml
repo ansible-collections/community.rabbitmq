@@ -37,6 +37,8 @@ resources:
   containers:
     - container: default
       image: quay.io/ansible/azure-pipelines-test-container:8.0.0
+    - container: previous
+      image: quay.io/ansible/azure-pipelines-test-container:7.0.0
 
 pool: Standard
 
@@ -108,6 +110,7 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          container: previous
           targets:
             - name: Sanity
               test: '2.17/sanity/1'
@@ -120,6 +123,7 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          container: previous
           targets:
             - name: Sanity
               test: '2.16/sanity/1'
@@ -185,6 +189,7 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          container: previous
           testFormat: 2.17/linux/{0}/1
           targets:
             - name: Ubuntu 22.04
@@ -198,6 +203,7 @@ stages:
     jobs:
       - template: templates/matrix.yml
         parameters:
+          container: previous
           testFormat: 2.16/linux/{0}/1
           targets:
             - name: Ubuntu 22.04
