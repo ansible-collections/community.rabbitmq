@@ -207,7 +207,6 @@ They also should be subscribed to Ansible's [The Bullhorn newsletter](https://do
 
 See the [Releasing guidelines](https://github.com/ansible/community-docs/blob/main/releasing_collections_without_release_branches.rst).
 
-
 ### Supported connections
 <!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
 TBD
