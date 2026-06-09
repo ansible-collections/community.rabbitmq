@@ -146,6 +146,19 @@ stages:
             - name: Ubuntu 24.04
               test: ubuntu2404
 
+  - stage: Docker_2_21
+    displayName: Docker 2.21
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          testFormat: 2.21/linux/{0}/1
+          targets:
+            - name: Ubuntu 24.04
+              test: ubuntu2404
+            - name: Ubuntu 22.04
+              test: ubuntu2204
+
   - stage: Docker_2_20
     displayName: Docker 2.20
     dependsOn: []
@@ -222,6 +235,7 @@ stages:
       - Ansible_2_17
       - Ansible_2_16
       - Docker_devel
+      - Docker_2_21
       - Docker_2_20
       - Docker_2_19
       - Docker_2_18
