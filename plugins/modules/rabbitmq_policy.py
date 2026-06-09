@@ -305,7 +305,7 @@ class RabbitMqPolicy(object):
             # PARSE THE RESPONSE DATA.
             # The response data is a json list with field names. The logic of the code expects tab delimited strings.
             policy_response = response.json()
-            self._module.debug(f'[list_policies] {json.dumps(policy_response)}')
+            self._module.debug('[list_policies] {0}'.format(json.dumps(policy_response)))
             policies = []
             if self._version and self._version >= Version('3.7.0'):
                 for policy in policy_response:
@@ -355,7 +355,7 @@ class RabbitMqPolicy(object):
                 "definition": self._tags,
                 "priority": int(self._priority)  # Priority must be a number.
             }
-            self._module.debug(f'[set_policy] {json.dumps(policy)}')
+            self._module.debug('[set_policy] {0}'.format(json.dumps(policy)))
             response = self._request_policy_api('put', self._vhost, self._name, data=policy)
 
             if response is not None and not response.ok:
