@@ -102,6 +102,30 @@ stages:
             - name: Units
               test: '2.18/units/1'
 
+  - stage: Ansible_2_17
+    displayName: Sanity & Units 2.17
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          targets:
+            - name: Sanity
+              test: '2.17/sanity/1'
+            - name: Units
+              test: '2.17/units/1'
+
+  - stage: Ansible_2_16
+    displayName: Sanity & Units 2.16
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          targets:
+            - name: Sanity
+              test: '2.16/sanity/1'
+            - name: Units
+              test: '2.16/units/1'
+
 ## Docker
   - stage: Docker_devel
     displayName: Docker devel
@@ -155,6 +179,32 @@ stages:
             - name: Ubuntu 22.04
               test: ubuntu2204
 
+  - stage: Docker_2_17
+    displayName: Docker 2.17
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          testFormat: 2.17/linux/{0}/1
+          targets:
+            - name: Ubuntu 22.04
+              test: ubuntu2204
+            - name: Ubuntu 20.04
+              test: ubuntu2004
+
+  - stage: Docker_2_16
+    displayName: Docker 2.16
+    dependsOn: []
+    jobs:
+      - template: templates/matrix.yml
+        parameters:
+          testFormat: 2.16/linux/{0}/1
+          targets:
+            - name: Ubuntu 22.04
+              test: ubuntu2204
+            - name: Ubuntu 20.04
+              test: ubuntu2004
+
   - stage: Summary
     condition: succeededOrFailed()
     dependsOn:
@@ -163,9 +213,13 @@ stages:
       - Ansible_2_20
       - Ansible_2_19
       - Ansible_2_18
+      - Ansible_2_17
+      - Ansible_2_16
       - Docker_devel
       - Docker_2_20
       - Docker_2_19
       - Docker_2_18
+      - Docker_2_17
+      - Docker_2_16
     jobs:
       - template: templates/coverage.yml
