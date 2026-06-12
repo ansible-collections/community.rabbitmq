@@ -14,6 +14,11 @@ parameters:
     type: object
     default: []
 
+  # An optional container resource name that will be used to deploy the tests.
+  - name: container
+    type: string
+    default: default
+
   # An optional format string used to generate the job name.
   # - {0} is the name of an item in the targets list.
   - name: nameFormat
@@ -48,8 +53,10 @@ jobs:
           - ${{ each target in parameters.targets }}:
             - name: ${{ format(parameters.nameFormat, coalesce(target.name, target.test)) }}
               test: ${{ format(parameters.testFormat, coalesce(target.test, target.name)) }}
+              container: ${{ parameters.container }}
         - ${{ if not(eq(length(parameters.groups), 0)) }}:
           - ${{ each group in parameters.groups }}:
             - ${{ each target in parameters.targets }}:
               - name: ${{ format(format(parameters.nameGroupFormat, parameters.nameFormat), coalesce(target.name, target.test), group) }}
                 test: ${{ format(format(parameters.testGroupFormat, parameters.testFormat), coalesce(target.test, target.name), group) }}
+                container: ${{ parameters.container }}

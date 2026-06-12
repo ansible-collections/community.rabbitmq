@@ -27,6 +27,8 @@ from contextlib import contextmanager
 from io import BytesIO, StringIO
 from ansible_collections.ansible.rabbitmq.tests.unit.compat import unittest
 from ansible.module_utils.six import PY3
+# TODO: Once https://github.com/ansible-collections/community.rabbitmq/issues/228 is merged, update the following import.
+# from ansible.module_utils.common.text.converters import to_bytes
 from ansible.module_utils._text import to_bytes
 
 

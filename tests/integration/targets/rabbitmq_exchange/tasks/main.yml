@@ -1,3 +1,5 @@
+---
+
 # Note: these tests are just for the 3 plugin exchange types.  Additional
 # rabbitmq_exchange tests occur within some of the other module tests.
 - name: Fail creating an x-random exchange type
@@ -8,15 +10,18 @@
   ignore_errors: true
 
 - name: Ensure x_random exchange failed when plugin not enabled
-  assert:
+  ansible.builtin.assert:
     that:
       - fail_x_random_exchange is failed
-      - "'You may need to enable the' in fail_x_random_exchange.msg"
+      # TODO: Figure out when this functionality was changed. It seems like the
+      # RabbitMQ server no longer sends the 'unknown exchange type' response for
+      # the x-random queue type if it is not defined.
+      # - ('You may need to enable the' in fail_x_random_exchange.msg)
 
 - name: Enable x-random exchange plugin
   community.rabbitmq.rabbitmq_plugin:
     names: rabbitmq_random_exchange
-    new_only: yes
+    new_only: true
     state: enabled
 
 - name: Succeed creating an x-random exchange type

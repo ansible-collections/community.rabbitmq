@@ -1,0 +1,2 @@
+- name: Delete temporary directory
+  ansible.builtin.include_tasks: default-cleanup.yml

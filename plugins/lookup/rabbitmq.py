@@ -100,6 +100,8 @@ import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
+# TODO: Once https://github.com/ansible-collections/community.rabbitmq/issues/228 is merged, update the following import.
+# from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils._text import to_native, to_text
 from ansible.utils.display import Display
 

@@ -7,6 +7,8 @@ import json
 from ansible_collections.community.rabbitmq.tests.unit.compat import unittest
 from ansible_collections.community.rabbitmq.tests.unit.compat.mock import patch
 from ansible.module_utils import basic
+# TODO: Once https://github.com/ansible-collections/community.rabbitmq/issues/228 is merged, update the following import.
+# from ansible.module_utils.common.text.converters import to_bytes
 from ansible.module_utils._text import to_bytes
 
 

@@ -3,10 +3,10 @@
       plugin_name: rabbitmq_top
 
   - name: Enable plugin [online]
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: enabled
-      new_only: True
+      new_only: true
     register: result
 
   - name: Get rabbitmq-plugins output
@@ -23,10 +23,10 @@
         - '"[E" in cli_result.stdout'
 
   - name: Enable plugin [online] (idempotency)
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: enabled
-      new_only: True
+      new_only: true
     register: result
 
   - name: Check idempotency
@@ -35,7 +35,7 @@
         - result is not changed
 
   - name: Disable plugin [online]
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: disabled
     register: result
@@ -54,7 +54,7 @@
         - '"[E" not in cli_result.stdout'
 
   - name: Disable plugin [online] (idempotency)
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: disabled
     register: result
@@ -65,11 +65,11 @@
         - result is not changed
 
   - name: Enable plugin [offline]
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: enabled
       broker_state: offline
-      new_only: True
+      new_only: true
     register: result
 
   - name: Get rabbitmq-plugins output
@@ -86,11 +86,11 @@
         - '"[E" in cli_result.stdout'
 
   - name: Enable plugin [offline] (idempotency)
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: enabled
       broker_state: offline
-      new_only: True
+      new_only: true
     register: result
 
   - name: Check idempotency
@@ -99,7 +99,7 @@
         - result is not changed
 
   - name: Disable plugin [offline]
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: disabled
       broker_state: offline
@@ -119,7 +119,7 @@
         - '"[E" not in cli_result.stdout'
 
   - name: Disable plugin [offline] (idempotency)
-    rabbitmq_plugin:
+    community.rabbitmq.rabbitmq_plugin:
       name: "{{ plugin_name }}"
       state: disabled
       broker_state: offline
@@ -132,6 +132,6 @@
 
   always:
     - name: Disable plugin
-      rabbitmq_plugin:
+      community.rabbitmq.rabbitmq_plugin:
         name: "{{ plugin_name }}"
         state: disabled

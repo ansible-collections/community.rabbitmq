@@ -8,6 +8,8 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
+# TODO: Once https://github.com/ansible-collections/community.rabbitmq/issues/228 is merged, update the following import.
+# from ansible.module_utils.common.text.converters import to_native
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
 from ansible.module_utils.six.moves.urllib import parse as urllib_parse
@@ -140,6 +142,7 @@ class RabbitClient():
 
         try:
             self.connection = pika.BlockingConnection(parameters)
+        # TODO: Replace the generic exception below with `pika.exceptions.AMQPConnectionError`.
         except Exception as e:
             self.module.fail_json(msg="Connection issue: %s" % to_native(e))
 

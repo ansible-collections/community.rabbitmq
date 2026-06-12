@@ -1,13 +1,15 @@
+---
+
 - block:
   - set_fact:
-      vhost_name: /test  
+      vhost_name: /test
 
   - name: Add host (check_mode)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -18,16 +20,16 @@
         - result_check_mode is success
 
   - name: Add host
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
   - name: Check that the host was created successfully using CLI module
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
     register: ctl_result
@@ -41,11 +43,11 @@
         - '"present" in ctl_result.state'
 
   - name: Add host (check_mode - idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -57,11 +59,11 @@
         - result_check_mode is not changed
 
   - name: Add host (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: present
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -71,11 +73,11 @@
         - result is not changed
 
   - name: Enable tracing (check_mode)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -86,11 +88,11 @@
         - result_check_mode is success
 
   - name: Enable tracing
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -106,11 +108,11 @@
         - '"true" in ctl_result.stdout'
 
   - name: Enable tracing (check_mode - idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -122,11 +124,11 @@
         - result_check_mode is not changed
 
   - name: Enable tracing (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: yes
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -136,11 +138,11 @@
         - result is not changed
 
   - name: Disable tracing (check_mode)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -151,11 +153,11 @@
         - result_check_mode is success
 
   - name: Disable tracing
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -171,11 +173,11 @@
         - '"false" in ctl_result.stdout'
 
   - name: Disable tracing (check_mode - idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -187,11 +189,11 @@
         - result_check_mode is not changed
 
   - name: Disable tracing (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       tracing: no
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -201,11 +203,11 @@
         - result is not changed
 
   - name: Remove host (check_mode)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -216,16 +218,16 @@
         - result_check_mode is success
 
   - name: Remove host
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
   - name: Check that the host was removed successfully using CLI module
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
     register: ctl_result
@@ -239,11 +241,11 @@
         - '"absent" in ctl_result.state'
 
   - name: Remove host (check_mode - idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result_check_mode
     check_mode: yes
@@ -255,11 +257,11 @@
         - result_check_mode is not changed
 
   - name: Remove host (idempotency)
-    rabbitmq_vhost:
+    community.rabbitmq.rabbitmq_vhost:
       name: "{{ vhost_name }}"
       state: absent
-      login_user: guest 
-      login_password: guest 
+      login_user: guest
+      login_password: guest
       login_host: 127.0.0.1
     register: result
 
@@ -270,6 +272,6 @@
 
   always:
     - name: Remove host
-      rabbitmq_vhost:
+      community.rabbitmq.rabbitmq_vhost:
         name: "{{ vhost_name }}"
         state: absent

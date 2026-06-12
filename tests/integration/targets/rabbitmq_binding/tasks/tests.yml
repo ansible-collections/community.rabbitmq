@@ -1,8 +1,9 @@
 ---
+
 - name: Add test requisites
   block:
     - name: Add exchange
-      rabbitmq_exchange:
+      community.rabbitmq.rabbitmq_exchange:
         name: "{{ item }}"
         type: direct
       with_items:
@@ -10,13 +11,13 @@
         - exchange-bar
 
     - name: Add queue
-      rabbitmq_queue:
+      community.rabbitmq.rabbitmq_queue:
         name: queue-foo
 
 - name: Test add binding in check mode
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -31,7 +32,7 @@
 - name: Test add binding
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -45,7 +46,7 @@
 - name: Test add binding idempotence
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -59,7 +60,7 @@
 - name: Test remove binding in check mode
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -75,7 +76,7 @@
 - name: Test remove binding
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -90,7 +91,7 @@
 - name: Test remove binding idempotence
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -105,7 +106,7 @@
 - name: Test add binding with arguments in check mode
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -121,7 +122,7 @@
 - name: Test add binding with arguments
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -136,7 +137,7 @@
 - name: Test add binding with arguments idempotence
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -151,7 +152,7 @@
 - name: Test remove binding with arguments in check mode
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -168,7 +169,7 @@
 - name: Test remove binding with arguments
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -184,7 +185,7 @@
 - name: Test remove binding with arguments idempotence
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -200,7 +201,7 @@
 - name: Test add binding with routing_key in check mode
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -216,7 +217,7 @@
 - name: Test add binding with routing_key
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -231,7 +232,7 @@
 - name: Test add binding with routing_key idempotence
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -246,7 +247,7 @@
 - name: Test remove binding with routing_key in check mode
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -263,7 +264,7 @@
 - name: Test remove binding with routing_key
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -279,7 +280,7 @@
 - name: Test remove binding with routing_key idempotence
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -295,7 +296,7 @@
 - name: Test add binding with arguments and routing_key in check mode
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -312,7 +313,7 @@
 - name: Test add binding with arguments and routing_key
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -328,7 +329,7 @@
 - name: Test add binding with arguments and routing_key idempotence
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -344,7 +345,7 @@
 - name: Test remove binding with arguments and routing_key in check mode
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -362,7 +363,7 @@
 - name: Test remove binding with arguments and routing_key
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -379,7 +380,7 @@
 - name: Test remove binding with arguments and routing_key idempotence
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: queue-foo
         type: queue
@@ -396,7 +397,7 @@
 - name: Test add exchange to exchange binding
   block:
     - name: Add binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: exchange-bar
         type: exchange
@@ -410,7 +411,7 @@
 - name: Test remove exchange to exchange binding
   block:
     - name: Remove binding
-      rabbitmq_binding:
+      community.rabbitmq.rabbitmq_binding:
         source: exchange-foo
         destination: exchange-bar
         type: exchange

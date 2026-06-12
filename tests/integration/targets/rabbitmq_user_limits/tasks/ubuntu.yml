@@ -3,7 +3,7 @@
 - name: Test setting user limits in check mode
   block:
     - name: Set user limits in check mode
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         max_connections: 64
         max_channels: 256
@@ -31,7 +31,7 @@
 - name: Test setting user limits
   block:
     - name: Set user limits
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         max_connections: 64
         max_channels: 256
@@ -58,7 +58,7 @@
 - name: Test setting user limits (idempotence)
   block:
     - name: Set user limits (idempotence)
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         max_connections: 64
         max_channels: 256
@@ -74,7 +74,7 @@
 - name: Test changing user limits
   block:
     - name: Change user limits
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         max_connections: 32
         state: present
@@ -100,7 +100,7 @@
 - name: Test clearing user limits in check mode
   block:
     - name: Clear user limits in check mode
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         state: absent
       check_mode: true
@@ -126,7 +126,7 @@
 - name: Test clearing user limits
   block:
     - name: Clear user limits
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         state: absent
       register: module_result
@@ -151,7 +151,7 @@
 - name: Test clearing user limits (idempotence)
   block:
     - name: Clear user limits (idempotence)
-      rabbitmq_user_limits:
+      community.rabbitmq.rabbitmq_user_limits:
         user: guest
         state: absent
       register: module_result

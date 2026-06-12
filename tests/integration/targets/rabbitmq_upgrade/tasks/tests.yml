@@ -3,7 +3,7 @@
       parameter_node: rabbit
 
   - name: Drain node (check_mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: drain
       node: "{{ parameter_node }}"
     register: result
@@ -16,7 +16,7 @@
         - result is changed
 
   - name: Drain node
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: drain
       node: "{{ parameter_node }}"
     register: result
@@ -31,7 +31,7 @@
     shell: "rabbitmq-diagnostics -n {{ parameter_node }} status | grep 'Is under maintenance?: true'"
 
   - name: Idempotent - Drain node (check mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: drain
       node: "{{ parameter_node }}"
     register: result
@@ -44,7 +44,7 @@
         - result is not changed
 
   - name: Idempotent - Drain node
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: drain
       node: "{{ parameter_node }}"
     register: result
@@ -56,7 +56,7 @@
         - result is not changed
 
   - name: Revive node (check mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: revive
       node: "{{ parameter_node }}"
     register: result
@@ -69,7 +69,7 @@
         - result is changed
 
   - name: Revive node
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: revive
       node: "{{ parameter_node }}"
     register: result
@@ -84,7 +84,7 @@
     shell: "rabbitmq-diagnostics -n {{ parameter_node }} status | grep 'Is under maintenance?: false'"
 
   - name: Idempotent - Revive node (check mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: revive
       node: "{{ parameter_node }}"
     register: result
@@ -96,7 +96,7 @@
         - result is not changed
 
   - name: Idempotent - Revive node
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: revive
       node: "{{ parameter_node }}"
     register: result
@@ -107,7 +107,7 @@
         - result is not changed
 
   - name: Execute await_online_quorum_plus_one (check mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: await_online_quorum_plus_one
       node: "{{ parameter_node }}"
     register: result
@@ -120,7 +120,7 @@
         - result is changed
 
   - name: Execute await_online_quorum_plus_one
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: await_online_quorum_plus_one
       node: "{{ parameter_node }}"
     register: result
@@ -134,7 +134,7 @@
   # FIXME: DIsabling rabbitmq_upgrade tests because v4 does not support the
   # await_online_synchronized_mirror command
   # - name: Execute await_online_synchronized_mirror (check mode)
-  #   rabbitmq_upgrade:
+  #   community.rabbitmq.rabbitmq_upgrade:
   #     action: await_online_synchronized_mirror
   #     node: "{{ parameter_node }}"
   #   register: result
@@ -147,7 +147,7 @@
   #       - result is changed
 
   # - name: Execute await_online_synchronized_mirror
-  #   rabbitmq_upgrade:
+  #   community.rabbitmq.rabbitmq_upgrade:
   #     action: await_online_synchronized_mirror
   #     node: "{{ parameter_node }}"
   #   register: result
@@ -159,7 +159,7 @@
   #       - result is changed
 
   - name: Execute post_upgrade (check_mode)
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: post_upgrade
       node: "{{ parameter_node }}"
     register: result
@@ -172,7 +172,7 @@
         - result is changed
 
   - name: Execute post_upgrade
-    rabbitmq_upgrade:
+    community.rabbitmq.rabbitmq_upgrade:
       action: post_upgrade
       node: "{{ parameter_node }}"
     register: result
