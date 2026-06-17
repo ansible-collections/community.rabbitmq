@@ -31,6 +31,31 @@ This project follows:
 
 For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
 
+## Tested with Ansible
+- 2.16
+- 2.17
+- 2.18
+- 2.19
+- 2.20
+- 2.21
+- devel
+
+## External requirements
+- python >= 2.7
+
+Some plugins require additional python libraries:
+- `rabbitmq`: Requires [pika](https://pypi.org/project/pika/)
+
+Some modules require additional system tools:
+- `rabbitmq_binding`: Requires [requests](https://pypi.org/project/requests/)
+- `rabbitmq_exchange`: Requires [requests](https://pypi.org/project/requests/)
+- `rabbitmq_policy`: Requires [requests](https://pypi.org/project/requests/)
+- `rabbitmq_publish`: Requires [pika](https://pypi.org/project/pika/)
+- `rabbitmq_queue`: Requires [requests](https://pypi.org/project/requests/)
+- `rabbitmq_user`: Requires [requests](https://pypi.org/project/requests/)
+- `rabbitmq_vhost`: Requires [requests](https://pypi.org/project/requests/)
+
+
 ## Included content
 <!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
 - Modules:
@@ -182,13 +207,6 @@ They also should be subscribed to Ansible's [The Bullhorn newsletter](https://do
 
 See the [Releasing guidelines](https://github.com/ansible/community-docs/blob/main/releasing_collections_without_release_branches.rst).
 
-## Tested with Ansible
-<!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
-TBD
-
-## External requirements
-<!-- List any external resources the collection depends on, for example minimum versions of an OS, libraries, or utilities. Do not list other Ansible collections here. -->
-TBD
 
 ### Supported connections
 <!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->

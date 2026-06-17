@@ -1,0 +1,2 @@
+bugfixes:
+- Update documentation for external requirements (https://github.com/ansible-collections/community.rabbitmq/issues/230)

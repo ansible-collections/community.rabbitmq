@@ -56,7 +56,8 @@ options:
       default: {}
 extends_documentation_fragment:
   - community.rabbitmq.rabbitmq
-
+notes:
+  - This module requires the requests python library U(https://requests.readthedocs.io/).
 '''
 
 EXAMPLES = r'''

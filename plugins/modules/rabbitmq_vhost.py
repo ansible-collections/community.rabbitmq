@@ -82,6 +82,8 @@ options:
           - Private key matching the client certificate.
       type: path
       version_added: '1.5.0'
+notes:
+  - This module requires the requests python library U(https://requests.readthedocs.io/).
 """
 
 EXAMPLES = r"""

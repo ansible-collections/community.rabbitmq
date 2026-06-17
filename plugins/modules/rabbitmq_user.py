@@ -15,6 +15,7 @@ short_description: Manage RabbitMQ users
 description:
   - Add or remove users to RabbitMQ and assign permissions
 author: Chris Hoffman (@chrishoffman)
+requirements: [ "requests >= 1.0.0" ]
 options:
   user:
     description:
@@ -134,6 +135,8 @@ options:
       - Login password of the management API.
     type: str
     version_added: '1.3.0'
+notes:
+  - This module requires the requests python library U(https://requests.readthedocs.io/).
 '''
 
 EXAMPLES = r'''
@@ -223,7 +226,6 @@ import traceback
 REQUESTS_IMP_ERR = None
 try:
     import requests
-
     HAS_REQUESTS = True
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()

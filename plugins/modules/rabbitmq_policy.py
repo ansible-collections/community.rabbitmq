@@ -15,6 +15,7 @@ short_description: Manage the state of policies in RabbitMQ
 description:
   - Manage the state of a policy in RabbitMQ using rabbitmqctl or REST APIs.
 author: John Dewey (@retr0h)
+requirements: [ "requests >= 1.0.0" ]
 options:
   name:
     description:
@@ -106,6 +107,8 @@ options:
           - Private key matching the client certificate.
       type: path
       version_added: '1.6.0'
+notes:
+  - This module requires the requests python library U(https://requests.readthedocs.io/).
 '''
 
 EXAMPLES = r'''
@@ -146,7 +149,6 @@ from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 REQUESTS_IMP_ERR = None
 try:
     import requests
-
     HAS_REQUESTS = True
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
