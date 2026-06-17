@@ -853,8 +853,6 @@ def main():
         supports_check_mode=False
     )
 
-
-
     username = module.params['user']
     password = module.params['password']
     tags = module.params['tags']
