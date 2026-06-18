@@ -14,6 +14,7 @@ module: rabbitmq_publish
 short_description: Publish a message to a RabbitMQ queue.
 description:
    - Publish a message on a RabbitMQ queue using a blocking connection.
+requirements: [ pika ]
 options:
   url:
     description:
@@ -112,10 +113,6 @@ options:
       - Client key to establish SSL connection.
       - If this option is specified, also I(cafile) and I(certfile) must be specified.
     type: str
-
-
-
-requirements: [ pika ]
 notes:
   - This module requires the pika python library U(https://pika.readthedocs.io/).
   - Pika is a pure-Python implementation of the AMQP 0-9-1 protocol that tries to stay fairly independent of the underlying network support library.

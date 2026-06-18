@@ -134,6 +134,9 @@ options:
       - Login password of the management API.
     type: str
     version_added: '1.3.0'
+notes:
+  - This module will attempt to import the requests python library U(https://requests.readthedocs.io/).
+  - This library is required when utilizing the API functionality of this module.
 '''
 
 EXAMPLES = r'''
@@ -223,7 +226,6 @@ import traceback
 REQUESTS_IMP_ERR = None
 try:
     import requests
-
     HAS_REQUESTS = True
 except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
