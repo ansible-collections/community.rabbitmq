@@ -1,0 +1,4 @@
+minor_changes:
+- rabbitmq_policy - Add support for `--diff` mode checks.
+breaking_changes:
+- Drops support for pre-3.7.0 rabbitmqctl cli in the rabbitmq_policy module as the older versions don't support the `json` formatter.
