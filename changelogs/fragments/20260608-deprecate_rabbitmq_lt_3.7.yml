@@ -1,5 +1,0 @@
-deprecated_features:
-- Support for RabbitMQ versions prior to 3.7.0 will be dropped in version 2.0.0 of this collection
-  (https://github.com/ansible-collections/community.rabbitmq/issues/224).
-- Support for ansible-core versions prior to 2.16.0 will be dropped in version 2.0.0 of this collection
-  (https://github.com/ansible-collections/community.rabbitmq/issues/224).

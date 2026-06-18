@@ -4,6 +4,23 @@ Community.Rabbitmq Release Notes
 
 .. contents:: Topics
 
+v1.7.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``community.rabbitmq`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Deprecated Features
+-------------------
+
+- Support for RabbitMQ versions prior to 3.7.0 will be dropped in version 2.0.0 of this collection (https://github.com/ansible-collections/community.rabbitmq/issues/224).
+- Support for ansible-core versions prior to 2.16.0 will be dropped in version 2.0.0 of this collection (https://github.com/ansible-collections/community.rabbitmq/issues/224).
+- collection - Python 2 support will be dropped in version 2.0.0 of this collection. Make sure you have Python 3 installed on your target machines (https://github.com/ansible-collections/community.rabbitmq/issues/214).
+
 v1.6.0
 ======
 
@@ -173,7 +190,7 @@ New Modules
 -----------
 
 - community.rabbitmq.rabbitmq_feature_flag - Enables feature flag
-- community.rabbitmq.rabbitmq_upgrade - Execute rabbitmq-upgrade commands
+- community.rabbitmq.rabbitmq_upgrade - Execute rabbitmq\-upgrade commands
 - community.rabbitmq.rabbitmq_user_limits - Manage RabbitMQ user limits
 
 v1.0.0
