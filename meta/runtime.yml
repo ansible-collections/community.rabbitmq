@@ -1,5 +1,5 @@
 ---
-requires_ansible: '>=2.9.10'
+requires_ansible: ">=2.16.0"
 action_groups:
   rabbitmq:
     - community.rabbitmq.rabbitmq_binding
