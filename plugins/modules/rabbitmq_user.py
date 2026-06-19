@@ -586,7 +586,9 @@ class RabbitMqUser(object):
             data = {"password": self.password, "tags": self.treat_tags_for_api() or ""}
             response = self.request_users_api('PUT', data)
 
-            if response.status_code not in (201, 204):
+            # Don't add a user if one already exists.
+            # The RabbitMQ API returns a 204 when the user exists.
+            if not response.ok or (response.status_code == 204):
                 msg = ("Error trying to create user %s in rabbitmq. "
                        "Status code '%s'.") % (self.username, response.status_code)
                 self.module.fail_json(msg=msg)
