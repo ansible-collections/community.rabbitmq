@@ -192,3 +192,22 @@ releases:
     - 206-fix-rabbitmq-user-and-vhost-url-encoding.yaml
     - 207-fix-rabbitmq-vhost-do-not-fallback-to-rabbitmqctl.yaml
     release_date: '2025-07-14'
+  1.7.0:
+    changes:
+      deprecated_features:
+      - Support for RabbitMQ versions prior to 3.7.0 will be dropped in version 2.0.0
+        of this collection (https://github.com/ansible-collections/community.rabbitmq/issues/224).
+      - Support for ansible-core versions prior to 2.16.0 will be dropped in version
+        2.0.0 of this collection (https://github.com/ansible-collections/community.rabbitmq/issues/224).
+      - collection - Python 2 support will be dropped in version 2.0.0 of this collection.
+        Make sure you have Python 3 installed on your target machines (https://github.com/ansible-collections/community.rabbitmq/issues/214).
+      release_summary: 'This is the minor release of the ``community.rabbitmq`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release.'
+    fragments:
+    - 0-python2.yml
+    - 1.7.0.yml
+    - 20260608-deprecate_rabbitmq_lt_3.7.yml
+    release_date: '2026-06-19'
