@@ -612,6 +612,9 @@ class RabbitMqUser(object):
             data = {"password": self.password or "", "tags": self.treat_tags_for_api() or ""}
             response = self.request_users_api('PUT', data)
 
+            # Accept both 201 and 204 status codes to ensure compatibility with a wide range of rabbitmq versions.
+            # - https://github.com/rabbitmq/rabbitmq-server/blob/main/release-notes/3.6.7.md?plain=1#L30
+            # - https://github.com/rabbitmq/rabbitmq-server/blob/main/release-notes/3.7.0.md?plain=1#L258
             if response.status_code not in (201, 204):
                 msg = ("Error trying to change password for the user %s in rabbitmq. "
                        "Status code '%s'.") % (self.username, response.status_code)
