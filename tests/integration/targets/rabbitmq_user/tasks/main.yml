@@ -7,6 +7,8 @@
 
   - import_tasks: tests_api.yml
 
+  - import_tasks: pr219_fix_update_password.yml
+
   - import_tasks: tests.yml
     environment:
       RABBITMQ_NODENAME: test
