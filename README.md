@@ -43,22 +43,22 @@ For more information about communication, see the [Ansible communication guide](
 ## External requirements
 - python >= 2.7
 
-Some plugins require additional python libraries:
-- `rabbitmq`: Requires [pika](https://pypi.org/project/pika/)
+### Modules:
+  - `rabbitmq_binding`: Requires [requests](https://pypi.org/project/requests/)
+  - `rabbitmq_exchange`: Requires [requests](https://pypi.org/project/requests/)
+  - `rabbitmq_policy`: Requires [requests](https://pypi.org/project/requests/)
+  - `rabbitmq_publish`: Requires [pika](https://pypi.org/project/pika/)
+  - `rabbitmq_queue`: Requires [requests](https://pypi.org/project/requests/)
+  - `rabbitmq_user`: Requires [requests](https://pypi.org/project/requests/)
+  - `rabbitmq_vhost`: Requires [requests](https://pypi.org/project/requests/)
 
-Some modules require additional system tools:
-- `rabbitmq_binding`: Requires [requests](https://pypi.org/project/requests/)
-- `rabbitmq_exchange`: Requires [requests](https://pypi.org/project/requests/)
-- `rabbitmq_policy`: Requires [requests](https://pypi.org/project/requests/)
-- `rabbitmq_publish`: Requires [pika](https://pypi.org/project/pika/)
-- `rabbitmq_queue`: Requires [requests](https://pypi.org/project/requests/)
-- `rabbitmq_user`: Requires [requests](https://pypi.org/project/requests/)
-- `rabbitmq_vhost`: Requires [requests](https://pypi.org/project/requests/)
-
+### Plugins:
+  - `rabbitmq`: Requires [pika](https://pypi.org/project/pika/)
 
 ## Included content
 <!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
-- Modules:
+
+### Modules:
   - `rabbitmq_binding`: Manage rabbitMQ bindings.
   - `rabbitmq_exchange`: Manage rabbitMQ exchanges.
   - `rabbitmq_feature_flag`: Enables feature flag.
@@ -74,7 +74,7 @@ Some modules require additional system tools:
   - `rabbitmq_vhost_limits`: Manage the state of virtual host limits in RabbitMQ.
   - `rabbitmq_vhost`: Manage the state of a virtual host in RabbitMQ.
 
-- Lookup:
+### Plugins:
   - `rabbitmq`: Retrieve messages from an AMQP/AMQPS RabbitMQ queue.
 
 ## Using this collection
