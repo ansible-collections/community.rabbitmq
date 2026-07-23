@@ -87,7 +87,7 @@ except ImportError:
     REQUESTS_IMP_ERR = traceback.format_exc()
     HAS_REQUESTS = False
 
-from ansible.module_utils.six.moves.urllib import parse as urllib_parse
+from urllib import parse as urllib_parse
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible_collections.community.rabbitmq.plugins.module_utils.rabbitmq import rabbitmq_argument_spec
 

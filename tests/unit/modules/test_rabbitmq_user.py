@@ -3,15 +3,11 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from itertools import zip_longest
+
 from ansible_collections.community.rabbitmq.plugins.module_utils import version
 from ansible_collections.community.rabbitmq.plugins.modules import rabbitmq_user
-from ansible.module_utils import six
 from itertools import chain
-
-if six.PY3:
-    from itertools import zip_longest
-else:
-    from itertools import izip_longest as zip_longest
 
 from ansible_collections.community.rabbitmq.tests.unit.compat.mock import patch
 from ansible_collections.community.rabbitmq.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
