@@ -10,9 +10,10 @@ __metaclass__ = type
 
 # TODO: Once https://github.com/ansible-collections/community.rabbitmq/issues/228 is merged, update the following import.
 # from ansible.module_utils.common.text.converters import to_native
+from urllib import parse as urllib_parse
+
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import missing_required_lib
-from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 from mimetypes import MimeTypes
 
 import os

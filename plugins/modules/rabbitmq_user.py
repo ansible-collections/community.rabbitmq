@@ -215,11 +215,11 @@ EXAMPLES = r'''
 
 '''
 
+from urllib import parse as urllib_parse
+
 import ansible_collections.community.rabbitmq.plugins.module_utils.version as Version  # noqa: E402
 import json  # noqa: E402
 import re  # noqa: E402
-
-from ansible.module_utils.six.moves.urllib import parse as urllib_parse
 
 import traceback
 
