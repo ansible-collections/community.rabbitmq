@@ -114,8 +114,43 @@
       that:
         - result is not changed
 
+  - name: Add host with a default queue type
+    community.rabbitmq.rabbitmq_vhost:
+      name: /test_quorum
+      default_queue_type: quorum
+      state: present
+    register: result
+
+  - name: Get rabbitmqctl output for the default queue type
+    shell: "rabbitmqctl list_vhosts name default_queue_type | grep /test_quorum"
+    register: ctl_result
+
+  - name: Check that the host was created with the quorum default queue type
+    assert:
+      that:
+        - result is changed
+        - result is success
+        - '"quorum" in ctl_result.stdout'
+
+  - name: Add host with a default queue type (idempotency)
+    community.rabbitmq.rabbitmq_vhost:
+      name: /test_quorum
+      default_queue_type: quorum
+      state: present
+    register: result
+
+  - name: Check idempotency
+    assert:
+      that:
+        - result is not changed
+
   always:
     - name: Remove host
       community.rabbitmq.rabbitmq_vhost:
         name: "{{ vhost_name }}"
+        state: absent
+
+    - name: Remove host with a default queue type
+      community.rabbitmq.rabbitmq_vhost:
+        name: /test_quorum
         state: absent

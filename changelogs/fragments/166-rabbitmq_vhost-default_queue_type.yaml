@@ -1,0 +1,2 @@
+minor_changes:
+  - rabbitmq_vhost - add ``default_queue_type`` option to set the default queue type when a vhost is created (https://github.com/ansible-collections/community.rabbitmq/issues/166).

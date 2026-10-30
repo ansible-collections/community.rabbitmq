@@ -33,6 +33,14 @@ options:
     type: bool
     default: false
     aliases: [trace]
+  default_queue_type:
+    description:
+      - The default queue type for queues declared in the vhost without an explicit C(x-queue-type) argument.
+      - Only applied when the vhost is created; changing it for an existing vhost is not supported by this module.
+      - Requires RabbitMQ 3.11 or later.
+    type: str
+    choices: [classic, quorum, stream]
+    version_added: '1.8.0'
   state:
     description:
       - The state of vhost
@@ -99,6 +107,12 @@ EXAMPLES = r"""
     login_host: localhost
     login_user: admin
     login_password: changeadmin
+
+- name: Ensure that the vhost /quorum exists and defaults to quorum queues.
+  community.rabbitmq.rabbitmq_vhost:
+    name: /quorum
+    default_queue_type: quorum
+    state: present
 """
 
 import traceback
@@ -129,6 +143,7 @@ class RabbitMqVhost(object):
         ca_cert,
         client_cert,
         client_key,
+        default_queue_type=None,
     ):
         self.module = module
         self.name = name
@@ -142,6 +157,7 @@ class RabbitMqVhost(object):
         self.verify = ca_cert
         self.cert = client_cert
         self.key = client_key
+        self.default_queue_type = default_queue_type
 
         self._tracing = False
         require_rabbitmqctl = self.login_host is None
@@ -186,7 +202,10 @@ class RabbitMqVhost(object):
 
     def add(self):
         if self.login_host is not None:
-            response = self._request_vhost_api("put")
+            data = None
+            if self.default_queue_type is not None:
+                data = {"default_queue_type": self.default_queue_type}
+            response = self._request_vhost_api("put", data=data)
 
             if response is not None and not response.ok:
                 msg = (
@@ -194,7 +213,10 @@ class RabbitMqVhost(object):
                 ) % (self.name, response.status_code)
                 self.module.fail_json(msg=msg)
         else:
-            return self._exec(["add_vhost", self.name])
+            args = ["add_vhost", self.name]
+            if self.default_queue_type is not None:
+                args.extend(["--default-queue-type", self.default_queue_type])
+            return self._exec(args)
 
     def delete(self):
         if self.login_host is not None:
@@ -280,6 +302,7 @@ def main():
     arg_spec = dict(
         name=dict(required=True, aliases=["vhost"]),
         tracing=dict(default="off", aliases=["trace"], type="bool"),
+        default_queue_type=dict(type="str", choices=["classic", "quorum", "stream"]),
         state=dict(default="present", choices=["present", "absent"]),
         node=dict(default="rabbit"),
         login_user=dict(type="str", no_log=True),
@@ -306,6 +329,7 @@ def main():
     ca_cert = module.params["ca_cert"]
     client_cert = module.params["client_cert"]
     client_key = module.params["client_key"]
+    default_queue_type = module.params["default_queue_type"]
 
     if not HAS_REQUESTS:
         module.fail_json(msg=missing_required_lib("requests"), exception=REQUESTS_IMP_ERR)
@@ -324,6 +348,7 @@ def main():
         ca_cert,
         client_cert,
         client_key,
+        default_queue_type=default_queue_type,
     )
 
     if rabbitmq_vhost.get():
